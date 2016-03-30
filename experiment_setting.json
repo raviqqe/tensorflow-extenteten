@@ -1,0 +1,4 @@
+{
+  "num_of_epochs" : 64,
+  "batch_size" : 64
+}

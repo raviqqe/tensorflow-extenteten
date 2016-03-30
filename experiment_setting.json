@@ -1,6 +1,6 @@
 {
   "num_of_epochs" : 64,
-  "batch_size" : 64,
+  "batch_size" : 100,
   "train_data_size" : 8000,
   "develop_data_size" : 1000,
   "test_data_size" : 1000

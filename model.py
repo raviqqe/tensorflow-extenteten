@@ -24,7 +24,9 @@ def predict(train_data,
 
   output_layer = nn.char2doc(
     x,
-    dropout_ratio,
+    char_space_size=data_info["char_space_size"],
+    char_embedding_size=hyper_params["embedding_size"],
+    dropout_ratio=dropout_ratio,
     hidden_layer_size=hyper_params["hidden_layer_size"],
     output_layer_size=data_info["num_of_labels"]*data_info["num_of_classes"],
   )
@@ -76,9 +78,13 @@ def _analyze_data(train_data, test_data):
          and train_data.documents.shape[1] == test_data.documents.shape[1]
   assert train_data.labels.ndim == test_data.labels.ndim == 2 \
          and train_data.labels.shape[1] == test_data.labels.shape[1]
+
+  all_documents = numpy.concatenate((train_data.documents,
+                                     test_data.documents))
   all_labels = numpy.concatenate((train_data.labels, test_data.labels))
 
   return {
+    "char_space_size" : all_documents.max() + 1,
     "document_length" : test_data.documents.shape[1],
     "num_of_labels" : test_data.labels.shape[1],
     "num_of_classes" : all_labels.max() + 1,

@@ -34,7 +34,7 @@ def classify(output_layer, true_labels, num_of_labels):
 def _split_labels(labels_tensor, num_of_labels):
   def reshape_label_tensor(label_tensor):
     batch_size = labels_tensor.get_shape()[0]
-    return tf.reshape(label_tensor, (batch_size,))
+    return tf.reshape(label_tensor, [batch_size])
 
   return map(reshape_label_tensor,
              util.split_by_labels(labels_tensor, num_of_labels))

@@ -19,6 +19,7 @@ def predict(train_data,
   y_true = tf.placeholder(tf.int32,
                           (None, data_info["num_of_labels"]),
                           name="y_true")
+  dropout_ratio = tf.placeholder(tf.float32, (), name="dropout_ratio")
 
   output_layer = nn.char2doc(
     x,
@@ -45,6 +46,7 @@ def predict(train_data,
       train_accuracy, train_error = session.run(train, {
         x : train_data.documents,
         t : train_data.labels,
+        dropout_ratio : hyper_params["dropout_ratio"],
       })
 
       logger.add_summary(tf.scalar_summary(
@@ -57,6 +59,7 @@ def predict(train_data,
       test_accuracy, test_error, predicted_labels = session.run(test, {
         x : test_data.documents,
         t : test_data.labels,
+        dropout_ratio : 0,
       })
 
       logger.add_summary(tf.scalar_summary(

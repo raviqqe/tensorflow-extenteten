@@ -20,8 +20,8 @@ def predict(train_data,
                           (None, data_info["num_of_labels"]),
                           name="y_true")
 
-  error, accuracy, predicted_labels = nn.mlmc.classify(
-      nn.my_net(x, hyper_params), y_true, data_info["num_of_labels"])
+  error, accuracy, predicted_labels \
+      = nn.mlmc.classify(nn.char2doc(x, hyper_params), y_true)
 
   train = tf.tuple((accuracy, error),
                    control_inputs=[tf.train.AdamOptimizer().minimize(error)])

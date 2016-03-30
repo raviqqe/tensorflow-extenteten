@@ -20,8 +20,13 @@ def predict(train_data,
                           (None, data_info["num_of_labels"]),
                           name="y_true")
 
-  error, accuracy, predicted_labels \
-      = nn.mlmc.classify(nn.char2doc(x, hyper_params), y_true)
+  output_layer = nn.char2doc(
+    x,
+    dropout_ratio,
+    hidden_layer_size=hyper_params["hidden_layer_size"],
+    output_layer_size=data_info["num_of_labels"]*data_info["num_of_classes"],
+  )
+  error, accuracy, predicted_labels = nn.mlmc.classify(output_layer, y_true)
 
   train = tf.tuple((accuracy, error),
                    control_inputs=[tf.train.AdamOptimizer().minimize(error)])

@@ -8,7 +8,6 @@ from . import dropout as do
 
 
 def char2doc(document,
-             true_labels,
              dropout_ratio,
              hidden_layer_size,
              output_layer_size):

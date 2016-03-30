@@ -36,7 +36,11 @@ def predict(train_data,
     hidden_layer_size=hyper_params["hidden_layer_size"],
     output_layer_size=data_info["num_of_labels"]*data_info["num_of_classes"],
   )
-  error, accuracy, predicted_labels = nn.mlmc.classify(output_layer, y_true)
+  error, accuracy, predicted_labels = nn.mlmc.classify(
+    output_layer,
+    y_true,
+    num_of_labels=data_info["num_of_labels"],
+  )
 
   train = tf.tuple((accuracy, error),
                    control_inputs=[tf.train.AdamOptimizer().minimize(error)])

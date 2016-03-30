@@ -10,7 +10,7 @@ def embeddings_to_embedding(child_embeddings):
   embedding_size = child_shape[2]
   rnn_cell = tf.nn.rnn_cell.GRUCell(embedding_size, embedding_size)
 
-  state = rnn_cell.zero_state(batch_size)
+  state = rnn_cell.zero_state(batch_size, tf.float32)
   for child_embedding in _split_child_embeddings(child_embeddings):
     parent_embedding, state = rnn_cell(child_embedding, state)
   return parent_embedding

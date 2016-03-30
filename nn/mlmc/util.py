@@ -16,8 +16,7 @@ def concat_by_labels(tensors):
 
   def reshape_tensor(tensor):
     return tf.reshape(tensor,
-                      (tensors.get_shape()[0],
-                       1,
-                       *tensors.get_shape()[1:]))
+                      [tensors.get_shape()[0], 1]
+                      + list(tensors.get_shape()[1:]))
 
   return tf.concat(1, map(reshape_tensor, tensors))

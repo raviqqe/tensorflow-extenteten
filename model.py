@@ -46,9 +46,8 @@ def predict(train_data,
                    control_inputs=[tf.train.AdamOptimizer().minimize(error)])
   test = tf.tuple((accuracy, error, predicted_labels))
 
-  logger = tf.train.SummaryWriter(log_dir, tf.get_default_graph())
-
   with tf.Session() as session:
+    logger = tf.train.SummaryWriter(log_dir, session.graph_def)
     session.run(tf.initialize_all_variables())
 
     for epoch in range(experiment_setting["num_of_epochs"]):

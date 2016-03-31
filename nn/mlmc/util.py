@@ -18,8 +18,5 @@ def concat_by_labels(tensors):
 
   #assert static_shape(tensors[0])[0] == (batch size)
 
-  def reshape_tensor(tensor):
-    tensor_shape = static_shape(tensor)
-    return tf.reshape(tensor, tensor_shape[0:1] + [1] + tensor_shape[1:])
-
-  return tf.concat(1, [reshape_tensor(tensor) for tensor in tensors])
+  return tf.transpose(tf.pack(tensors),
+                      [1, 0] + list(range(static_rank(tensors[0])))[1:])

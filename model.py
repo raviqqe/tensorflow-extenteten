@@ -17,16 +17,10 @@ def predict(train_data,
             summary_dir):
   data_info = _analyze_data(train_data, test_data)
 
-  x = tf.placeholder(
-    tf.int32,
-    (experiment_setting["batch_size"], data_info["document_length"]),
-    name="x",
-  )
-  y_true = tf.placeholder(
-    tf.int64,
-    (experiment_setting["batch_size"], data_info["num_of_labels"]),
-    name="y_true",
-  )
+  x = tf.placeholder(tf.int32, (None, data_info["document_length"]), name="x")
+  y_true = tf.placeholder(tf.int64,
+                          (None, data_info["num_of_labels"]),
+                          name="y_true")
   dropout_ratio = tf.placeholder(tf.float32, (), name="dropout_ratio")
 
   output_layer = nn.char2doc(

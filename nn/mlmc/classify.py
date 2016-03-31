@@ -20,7 +20,7 @@ def classify(output_layer, true_labels, num_of_labels):
      slmc.predicted_label(output_layer_per_label)]
     for output_layer_per_label, true_label
     in zip(util.split_by_labels(output_layer, num_of_labels),
-           _split_labels(true_labels, num_of_labels))
+           _split_labels(true_labels))
   ]
 
   losses, accuracies, predicted_labels = zip(*triples_per_label)
@@ -32,9 +32,5 @@ def classify(output_layer, true_labels, num_of_labels):
   )
 
 
-def _split_labels(labels_tensor, num_of_labels):
-  def reshape_label_tensor(label_tensor):
-    return tf.reshape(label_tensor, [static_shape(labels_tensor)[0]])
-
-  return map(reshape_label_tensor,
-             util.split_by_labels(labels_tensor, num_of_labels))
+def _split_labels(labels_tensor):
+  return tf.unpack(tf.transpose(labels_tensor))

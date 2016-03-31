@@ -1,5 +1,7 @@
 import tensorflow as tf
 
+from ..util import static_shape, static_rank
+
 
 
 def split_by_labels(tensor, num_of_labels):
@@ -11,12 +13,13 @@ def split_by_labels(tensor, num_of_labels):
 
 
 def concat_by_labels(tensors):
-  assert len(tensors.get_shape()) >= 1
-  #assert tensors.get_shape()[0] == (batch size)
+  if all(static_rank(tensor) == 0 for tensor in tensors):
+    return tf.concat(0, tensors)
 
-  tensors_shape = tensors.get_shape().as_list()
+  #assert static_shape(tensors[0])[0] == (batch size)
 
   def reshape_tensor(tensor):
-    return tf.reshape(tensor, tensors_shape[0:1] + [1] + tensors_shape[1:])
+    tensor_shape = static_shape(tensor)
+    return tf.reshape(tensor, tensor_shape[0:1] + [1] + tensor_shape[1:])
 
-  return tf.concat(1, map(reshape_tensor, tensors))
+  return tf.concat(1, [reshape_tensor(tensor) for tensor in tensors])

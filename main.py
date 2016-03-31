@@ -47,7 +47,7 @@ def load_documents(filename):
 
 
 def load_labels(filename):
-  return numpy.load(filename)
+  return numpy.load(filename).astype(numpy.int64)
 
 
 def split_data(documents, labels, experiment_setting):

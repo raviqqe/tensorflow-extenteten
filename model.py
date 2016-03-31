@@ -22,7 +22,7 @@ def predict(train_data,
     name="x",
   )
   y_true = tf.placeholder(
-    tf.int32,
+    tf.int64,
     (experiment_setting["batch_size"], data_info["num_of_labels"]),
     name="y_true",
   )

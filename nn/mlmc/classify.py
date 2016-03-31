@@ -8,11 +8,11 @@ from . import util
 
 def classify(output_layer, true_labels, num_of_labels):
   assert static_rank(output_layer) == 2
-  #assert output_layer.get_shape()[0] == (batch size)
-  #assert output_layer.get_shape()[1] == (num of labels) * (num of classes)
+  #assert static_shape(output_layer)[0] == (batch size)
+  #assert static_shape(output_layer)[1] == (num of labels) * (num of classes)
   assert static_rank(true_labels) == 2
-  #assert true_labels.get_shape()[0] == (batch size)
-  assert true_labels.get_shape()[1] == num_of_labels
+  #assert static_shape(true_labels)[0] == (batch size)
+  assert static_shape(true_labels)[1] == num_of_labels
 
   triples_per_label = [
     [slmc.error(output_layer_per_label, true_label),

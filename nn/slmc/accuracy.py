@@ -1,16 +1,16 @@
 import tensorflow as tf
 
-from ..util import static_rank
+from ..util import static_shape, static_rank
 
 
 
 def accuracy(output_layer, true_label):
   assert static_rank(output_layer) == 2
-  #assert output_layer.get_shape()[0] == (batch size)
-  #assert output_layer.get_shape()[1] == (number of classes)
+  #assert static_shape(output_layer)[0] == (batch size)
+  #assert static_shape(output_layer)[1] == (number of classes)
   assert static_rank(true_label) == 1
-  #assert true_label.get_shape()[0] == (batch size)
-  assert output_layer.get_shape()[0] == true_label.get_shape()[0]
+  #assert static_shape(true_label)[0] == (batch size)
+  assert static_shape(output_layer)[0] == static_shape(true_label)[0]
 
   correct_prediction = tf.equal(tf.argmax(output_layer, 1), true_label)
   return tf.reduce_mean(tf.cast(correct_prediction, tf.float32))

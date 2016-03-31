@@ -1,13 +1,13 @@
 import tensorflow as tf
 
-from .util import static_rank
+from .util import static_shape, static_rank
 
 
 
 def embeddings_to_embedding(child_embeddings):
   assert static_rank(child_embeddings) == 3
 
-  child_shape = child_embeddings.get_shape().as_list()
+  child_shape = static_shape(child_embeddings)
   batch_size = child_shape[0]
   embedding_size = child_shape[2]
   rnn_cell = tf.nn.rnn_cell.GRUCell(embedding_size, embedding_size)
@@ -21,9 +21,8 @@ def embeddings_to_embedding(child_embeddings):
 
 
 def _split_child_embeddings(child_embeddings):
-  child_shape = child_embeddings.get_shape()
-  num_of_childs = child_shape[1]
-  permutation = [1, 0] + _dimension_indices(child_shape)[2:]
+  num_of_childs = static_shape(child_embeddings)[1]
+  permutation = [1, 0] + _dimension_indices(static_rank(child_embeddings))[2:]
   splitted_child_embeddings = tf.split(
       0,
       num_of_childs,
@@ -31,9 +30,9 @@ def _split_child_embeddings(child_embeddings):
   return map(_reshape_child_embedding, splitted_child_embeddings)
 
 
-def _dimension_indices(shape):
-  return list(range(shape.ndims))
+def _dimension_indices(rank):
+  return list(range(rank))
 
 
 def _reshape_child_embedding(child_embedding):
-  return tf.reshape(child_embedding, child_embedding.get_shape()[1:])
+  return tf.reshape(child_embedding, static_shape(child_embedding)[1:])

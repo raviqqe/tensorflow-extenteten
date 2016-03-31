@@ -3,7 +3,7 @@ import tensorflow as tf
 from .id_to_embedding import id_to_embedding
 from .embeddings_to_embedding import embeddings_to_embedding
 from .linear import linear
-from . import dropout as do
+from .dropout import dropout
 
 
 
@@ -18,8 +18,11 @@ def char2doc(document,
                                     embedding_size=char_embedding_size)
   document_embedding = embeddings_to_embedding(char_embeddings)
 
-  def dropout(x):
-    return do.dropout(x, dropout_ratio)
+  hidden_layer = dropout(_activate(linear(_activate(document_embedding),
+                                          hidden_layer_size)),
+                         dropout_ratio)
+  return linear(hidden_layer, output_layer_size)
 
-  hidden_layer = dropout(linear(document_embedding, hidden_layer_size))
-  return dropout(linear(hidden_layer, output_layer_size))
+
+def _activate(tensor):
+  return tf.nn.elu(tensor)

@@ -1,12 +1,14 @@
 import tensorflow as tf
 
+from ..util import static_rank
+
 
 
 def accuracy(output_layer, true_label):
-  assert len(output_layer.get_shape()) == 2
+  assert static_rank(output_layer) == 2
   #assert output_layer.get_shape()[0] == (batch size)
   #assert output_layer.get_shape()[1] == (number of classes)
-  assert len(true_label.get_shape()) == 1
+  assert static_rank(true_label) == 1
   #assert true_label.get_shape()[0] == (batch size)
   assert output_layer.get_shape()[0] == true_label.get_shape()[0]
 

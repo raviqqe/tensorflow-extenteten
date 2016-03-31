@@ -5,7 +5,7 @@ from ..util import static_shape, static_rank
 
 
 def split_by_labels(tensor, num_of_labels):
-  assert len(tensor.get_shape()) >= 2
+  assert static_rank(tensor) >= 2
   #assert tensor.get_shape()[0] == (batch size)
   #assert tensor.get_shape()[1] == (values concatenated by labels)
 

@@ -1,9 +1,11 @@
 import tensorflow as tf
 
+from .util import static_rank
+
 
 
 def embeddings_to_embedding(child_embeddings):
-  assert len(child_embeddings.get_shape()) == 3
+  assert static_rank(child_embeddings) == 3
 
   child_shape = child_embeddings.get_shape().as_list()
   batch_size = child_shape[0]

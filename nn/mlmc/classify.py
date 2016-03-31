@@ -1,16 +1,16 @@
 import tensorflow as tf
 
-from ..util import static_shape
+from ..util import static_shape, static_rank
 from .. import slmc
 from . import util
 
 
 
 def classify(output_layer, true_labels, num_of_labels):
-  assert len(output_layer.get_shape()) == 2
+  assert static_rank(output_layer) == 2
   #assert output_layer.get_shape()[0] == (batch size)
   #assert output_layer.get_shape()[1] == (num of labels) * (num of classes)
-  assert len(true_labels.get_shape()) == 2
+  assert static_rank(true_labels) == 2
   #assert true_labels.get_shape()[0] == (batch size)
   assert true_labels.get_shape()[1] == num_of_labels
 

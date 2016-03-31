@@ -18,3 +18,7 @@ class Data:
   @property
   def labels(self):
     return self._labels
+
+  @property
+  def size(self):
+    return self._documents.shape[0]

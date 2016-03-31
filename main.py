@@ -5,6 +5,7 @@ import collections
 import json
 import numpy
 
+import data
 import model
 
 
@@ -60,16 +61,14 @@ def split_data(documents, labels, experiment_setting):
 
   assert documents.shape[0] == labels.shape[0] >= sum(data_sizes)
 
-  Data = collections.namedtuple("Data", ["documents", "labels"])
-
   train_documents, develop_documents, test_documents, _ \
       = numpy.split(documents, data_sizes)
   train_labels, develop_labels, test_labels, _ \
       = numpy.split(labels, data_sizes)
 
-  return (Data(train_documents, train_labels),
-          Data(develop_documents, develop_labels),
-          Data(test_documents, test_labels))
+  return (data.Data(train_documents, train_labels),
+          data.Data(develop_documents, develop_labels),
+          data.Data(test_documents, test_labels))
 
 
 def save_labels(labels, filename):

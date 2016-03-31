@@ -36,15 +36,15 @@ def predict(train_data,
     hidden_layer_size=hyper_params["hidden_layer_size"],
     output_layer_size=data_info["num_of_labels"]*data_info["num_of_classes"],
   )
-  error, accuracy, predicted_labels = nn.mlmc.classify(
+  loss, accuracy, predicted_labels = nn.mlmc.classify(
     output_layer,
     y_true,
     num_of_labels=data_info["num_of_labels"],
   )
 
-  train = tf.tuple((accuracy, error),
-                   control_inputs=[tf.train.AdamOptimizer().minimize(error)])
-  test = tf.tuple((accuracy, error, predicted_labels))
+  train = tf.tuple((accuracy, loss),
+                   control_inputs=[tf.train.AdamOptimizer().minimize(loss)])
+  test = tf.tuple((accuracy, loss, predicted_labels))
 
   with tf.Session() as session:
     summarizer = tf.train.SummaryWriter(summary_dir, session.graph_def)
@@ -55,28 +55,28 @@ def predict(train_data,
 
       # train
 
-      train_accuracy, train_error = session.run(train, {
+      train_accuracy, train_loss = session.run(train, {
         x : train_data.documents,
         t : train_data.labels,
         dropout_ratio : hyper_params["dropout_ratio"],
       })
 
       summarizer.add_summary(tf.scalar_summary(
-        ["train_accuracy", "train_error"],
-        [ train_accuracy ,  train_error ]
+        ["train_accuracy", "train_loss"],
+        [ train_accuracy ,  train_loss ]
       ))
 
       # test
 
-      test_accuracy, test_error, predicted_labels = session.run(test, {
+      test_accuracy, test_loss, predicted_labels = session.run(test, {
         x : test_data.documents,
         t : test_data.labels,
         dropout_ratio : 0,
       })
 
       summarizer.add_summary(tf.scalar_summary(
-        ["test_accuracy", "test_error"],
-        [ test_accuracy ,  test_error ]
+        ["test_accuracy", "test_loss"],
+        [ test_accuracy ,  test_loss ]
       ))
 
     return predicted_labels

@@ -1,3 +1,3 @@
 from .accuracy import accuracy
-from .error import error
+from .loss import loss
 from .predicted_label import predicted_label

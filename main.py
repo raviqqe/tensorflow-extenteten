@@ -61,10 +61,14 @@ def split_data(documents, labels, experiment_setting):
 
   assert documents.shape[0] == labels.shape[0] >= sum(data_sizes)
 
+  partition_indices = (sum(data_sizes[0:1]),
+                       sum(data_sizes[0:2]),
+                       sum(data_sizes[0:3]))
+
   train_documents, develop_documents, test_documents, _ \
-      = numpy.split(documents, data_sizes)
+      = numpy.split(documents, partition_indices)
   train_labels, develop_labels, test_labels, _ \
-      = numpy.split(labels, data_sizes)
+      = numpy.split(labels, partition_indices)
 
   return (data.Data(train_documents, train_labels),
           data.Data(develop_documents, develop_labels),

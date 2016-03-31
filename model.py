@@ -13,7 +13,7 @@ def predict(train_data,
             test_data,
             hyper_params,
             experiment_setting,
-            log_dir="tensorflow_events"):
+            summary_dir):
   data_info = _analyze_data(train_data, test_data)
 
   x = tf.placeholder(
@@ -47,7 +47,7 @@ def predict(train_data,
   test = tf.tuple((accuracy, error, predicted_labels))
 
   with tf.Session() as session:
-    logger = tf.train.SummaryWriter(log_dir, session.graph_def)
+    logger = tf.train.SummaryWriter(summary_dir, session.graph_def)
     session.run(tf.initialize_all_variables())
 
     for epoch in range(experiment_setting["num_of_epochs"]):

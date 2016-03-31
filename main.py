@@ -26,6 +26,9 @@ def get_args():
                           required=True)
   arg_parser.add_argument("-d", "--develop",
                           action="store_true")
+  arg_parser.add_argument("-t", "--tensorflow-event-dir",
+                          dest="summary_dir",
+                          default="tensorflow_events")
   return arg_parser.parse_args()
 
 
@@ -90,8 +93,9 @@ def main():
   predicted_labels = model.predict(
       train_data,
       develop_data if args.develop else test_data,
-      load_hyper_params(args.hyper_param_filename),
-      experiment_setting)
+      hyper_params=load_hyper_params(args.hyper_param_filename),
+      experiment_setting=experiment_setting,
+      summary_dir=args.summary_dir)
 
   save_labels(predicted_labels, args.predicted_label_filename)
 

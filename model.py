@@ -1,6 +1,7 @@
 import numpy
 import tensorflow as tf
 
+import data
 import log
 import nn
 import nn.mlmc
@@ -42,9 +43,11 @@ def predict(train_data,
     num_of_labels=data_info["num_of_labels"],
   )
 
-  train = tf.tuple((accuracy, loss),
-                   control_inputs=[tf.train.AdamOptimizer().minimize(loss)])
-  test = tf.tuple((accuracy, loss, predicted_labels))
+  do_training = tf.train.AdamOptimizer().minimize(loss)
+  train_summary = tf.scalar_summary(["train_accuracy", "train_loss"],
+                                    tf.pack([accuracy, loss]))
+  test_summary = tf.scalar_summary(["test_accuracy", "test_loss"],
+                                   tf.pack([accuracy , loss]))
 
   with tf.Session() as session:
     summarizer = tf.train.SummaryWriter(summary_dir, session.graph_def)
@@ -55,31 +58,34 @@ def predict(train_data,
 
       # train
 
-      train_accuracy, train_loss = session.run(train, {
-        x : train_data.documents,
-        y_true : train_data.labels,
-        dropout_ratio : hyper_params["dropout_ratio"],
-      })
+      for batch in _batches(_shuffle(train_data),
+                            experiment_setting["batch_size"]):
+        session.run(do_training, {
+          x : batch.documents,
+          y_true : batch.labels,
+          dropout_ratio : hyper_params["dropout_ratio"],
+        })
 
-      summarizer.add_summary(tf.scalar_summary(
-        ["train_accuracy", "train_loss"],
-        [ train_accuracy ,  train_loss ]
-      ))
+      sampled_train_data = _sample(train_data, test_data.size)
+
+      summarizer.add_summary(session.run(
+        train_summary, {
+        x : sampled_train_data.documents,
+        y_true : sampled_train_data.labels,
+        dropout_ratio : 0,
+      }))
 
       # test
 
-      test_accuracy, test_loss, predicted_labels = session.run(test, {
+      new_test_summary, last_predicted_labels = session.run(
+        tf.tuple((test_summary, predicted_labels)), {
         x : test_data.documents,
         y_true : test_data.labels,
         dropout_ratio : 0,
       })
+      summarizer.add_summary(new_test_summary)
 
-      summarizer.add_summary(tf.scalar_summary(
-        ["test_accuracy", "test_loss"],
-        [ test_accuracy ,  test_loss ]
-      ))
-
-    return predicted_labels
+    return last_predicted_labels
 
 
 def _analyze_data(train_data, test_data):
@@ -98,3 +104,21 @@ def _analyze_data(train_data, test_data):
     "num_of_labels" : test_data.labels.shape[1],
     "num_of_classes" : all_labels.max() + 1,
   }
+
+
+def _batches(data_, batch_size):
+  for index in range(0, data_.size, batch_size):
+    index_range = slice(index, index + batch_size)
+    yield data.Data(data_.documents[index_range],
+                    data_.labels[index_range])
+
+
+def _sample(data_, sample_data_size):
+  shuffled_data = _shuffle(data_)
+  return data.Data(shuffled_data.documents[:sample_data_size],
+                   shuffled_data.labels[:sample_data_size])
+
+
+def _shuffle(data_):
+  indices = numpy.random.permutation(data_.size)
+  return data.Data(data_.documents[indices], data_.labels[indices])

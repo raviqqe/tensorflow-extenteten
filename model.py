@@ -57,7 +57,7 @@ def predict(train_data,
 
       train_accuracy, train_loss = session.run(train, {
         x : train_data.documents,
-        t : train_data.labels,
+        y_true : train_data.labels,
         dropout_ratio : hyper_params["dropout_ratio"],
       })
 
@@ -70,7 +70,7 @@ def predict(train_data,
 
       test_accuracy, test_loss, predicted_labels = session.run(test, {
         x : test_data.documents,
-        t : test_data.labels,
+        y_true : test_data.labels,
         dropout_ratio : 0,
       })
 

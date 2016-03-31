@@ -47,7 +47,7 @@ def predict(train_data,
   test = tf.tuple((accuracy, error, predicted_labels))
 
   with tf.Session() as session:
-    logger = tf.train.SummaryWriter(summary_dir, session.graph_def)
+    summarizer = tf.train.SummaryWriter(summary_dir, session.graph_def)
     session.run(tf.initialize_all_variables())
 
     for epoch in range(experiment_setting["num_of_epochs"]):
@@ -61,7 +61,7 @@ def predict(train_data,
         dropout_ratio : hyper_params["dropout_ratio"],
       })
 
-      logger.add_summary(tf.scalar_summary(
+      summarizer.add_summary(tf.scalar_summary(
         ["train_accuracy", "train_error"],
         [ train_accuracy ,  train_error ]
       ))
@@ -74,7 +74,7 @@ def predict(train_data,
         dropout_ratio : 0,
       })
 
-      logger.add_summary(tf.scalar_summary(
+      summarizer.add_summary(tf.scalar_summary(
         ["test_accuracy", "test_error"],
         [ test_accuracy ,  test_error ]
       ))

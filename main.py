@@ -93,9 +93,12 @@ def main():
                    load_labels(args.label_filename),
                    experiment_setting)
 
+  test_data = develop_data if args.develop else test_data,
+  assert len(train_data) > 0 and len(test_data) > 0
+
   predicted_labels = model.predict(
       train_data,
-      develop_data if args.develop else test_data,
+      test_data,
       hyper_params=load_hyper_params(args.hyper_param_filename),
       experiment_setting=experiment_setting,
       summary_dir=args.summary_dir)

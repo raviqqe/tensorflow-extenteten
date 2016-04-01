@@ -93,8 +93,8 @@ def main():
                    load_labels(args.label_filename),
                    experiment_setting)
 
-  test_data = develop_data if args.develop else test_data,
-  assert len(train_data) > 0 and len(test_data) > 0
+  test_data = develop_data if args.develop else test_data
+  assert train_data.size > 0 and test_data.size > 0
 
   predicted_labels = model.predict(
       train_data,

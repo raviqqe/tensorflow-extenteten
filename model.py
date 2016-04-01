@@ -52,15 +52,15 @@ def predict(train_data,
 
       # train
 
-      for batch in _batches(_shuffle(train_data),
-                            experiment_setting["batch_size"]):
+      for batch in data.batches(data.shuffle(train_data),
+                                experiment_setting["batch_size"]):
         session.run(do_training, {
           x : batch.documents,
           y_true : batch.labels,
           dropout_ratio : hyper_params["dropout_ratio"],
         })
 
-      sampled_train_data = _sample(train_data, test_data.size)
+      sampled_train_data = data.sample(train_data, test_data.size)
 
       summarizer.add_summary(session.run(
         train_summary, {
@@ -98,21 +98,3 @@ def _analyze_data(train_data, test_data):
     "num_of_labels" : test_data.labels.shape[1],
     "num_of_classes" : all_labels.max() + 1,
   }
-
-
-def _batches(data_, batch_size):
-  for index in range(0, data_.size, batch_size):
-    index_range = slice(index, index + batch_size)
-    yield data.Data(data_.documents[index_range],
-                    data_.labels[index_range])
-
-
-def _sample(data_, sample_data_size):
-  shuffled_data = _shuffle(data_)
-  return data.Data(shuffled_data.documents[:sample_data_size],
-                   shuffled_data.labels[:sample_data_size])
-
-
-def _shuffle(data_):
-  indices = numpy.random.permutation(data_.size)
-  return data.Data(data_.documents[indices], data_.labels[indices])

@@ -32,6 +32,7 @@ def predict(train_data,
     output_layer_size=data_info["num_of_labels"]*data_info["num_of_classes"],
   )
   loss, accuracy, predicted_labels = nn.mlmc.classify(output_layer, y_true)
+  loss += nn.regularize_with_l2_loss(hyper_params["l2_regularization_scale"])
 
   do_training = tf.train.AdamOptimizer().minimize(loss)
   train_summary = tf.scalar_summary(["train_accuracy", "train_loss"],

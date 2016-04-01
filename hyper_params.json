@@ -1,5 +1,6 @@
 {
   "embedding_size" : 64,
   "hidden_layer_size" : 64,
-  "dropout_ratio" : 0.5
+  "dropout_ratio" : 0.5,
+  "l2_regularization_scale" : 1e-6
 }

@@ -12,7 +12,7 @@ COMMAND_NAME = os.path.basename(sys.argv[0])
 # functions
 
 def message(*messages):
-  print(COMMAND_NAME, *messages, file=sys.stderr)
+  print("{}:".format(COMMAND_NAME), *messages, file=sys.stderr)
 
 
 def warn(*messages):

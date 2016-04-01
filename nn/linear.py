@@ -5,7 +5,7 @@ from .util import static_shape
 
 
 
-def linear(x, output_layer_size, regularizer_scale=1e-8):
+def linear(x, output_layer_size):
   weight = _weight([static_shape(x)[1], output_layer_size])
   bias = _bias(output_layer_size)
   tf.add_to_collection(tf.GraphKeys.WEIGHTS, weight)

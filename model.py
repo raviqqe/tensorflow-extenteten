@@ -67,7 +67,7 @@ def predict(train_data,
         x : sampled_train_data.documents,
         y_true : sampled_train_data.labels,
         dropout_ratio : 0,
-      }))
+      }), epoch)
 
       # test
 
@@ -77,7 +77,7 @@ def predict(train_data,
         y_true : test_data.labels,
         dropout_ratio : 0,
       })
-      summarizer.add_summary(new_test_summary)
+      summarizer.add_summary(new_test_summary, epoch)
 
     return last_predicted_labels
 

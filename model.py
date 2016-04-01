@@ -31,11 +31,7 @@ def predict(train_data,
     hidden_layer_size=hyper_params["hidden_layer_size"],
     output_layer_size=data_info["num_of_labels"]*data_info["num_of_classes"],
   )
-  loss, accuracy, predicted_labels = nn.mlmc.classify(
-    output_layer,
-    y_true,
-    num_of_labels=data_info["num_of_labels"],
-  )
+  loss, accuracy, predicted_labels = nn.mlmc.classify(output_layer, y_true)
 
   do_training = tf.train.AdamOptimizer().minimize(loss)
   train_summary = tf.scalar_summary(["train_accuracy", "train_loss"],

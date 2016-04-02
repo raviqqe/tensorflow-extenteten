@@ -17,14 +17,17 @@ def predict(train_data,
             summary_dir):
   data_info = _analyze_data(train_data, test_data)
 
-  x = tf.placeholder(tf.int32, (None, data_info["document_length"]), name="x")
+  document_type_and_shape = (tf.int32, (None, data_info["document_length"]))
+  x_forward = tf.placeholder(*document_type_and_shape, name="x_forward")
+  x_backward = tf.placeholder(*document_type_and_shape, name="x_backward")
   y_true = tf.placeholder(tf.int64,
                           (None, data_info["num_of_labels"]),
                           name="y_true")
   dropout_ratio = tf.placeholder(tf.float32, (), name="dropout_ratio")
 
   output_layer = nn.char2doc(
-    x,
+    x_forward,
+    x_backward,
     char_space_size=data_info["char_space_size"],
     char_embedding_size=hyper_params["character_embedding_size"],
     document_embedding_size=hyper_params["document_embedding_size"],
@@ -53,7 +56,8 @@ def predict(train_data,
       for batch in data.batches(data.shuffle(train_data),
                                 experiment_setting["batch_size"]):
         session.run(do_training, {
-          x : batch.documents,
+          x_forward : batch.forward_documents,
+          x_backward : batch.backward_documents,
           y_true : batch.labels,
           dropout_ratio : hyper_params["dropout_ratio"],
         })
@@ -62,7 +66,8 @@ def predict(train_data,
 
       summarizer.add_summary(session.run(
         train_summary, {
-        x : sampled_train_data.documents,
+        x_forward : sampled_train_data.forward_documents,
+        x_backward : sampled_train_data.backward_documents,
         y_true : sampled_train_data.labels,
         dropout_ratio : 0,
       }), epoch)

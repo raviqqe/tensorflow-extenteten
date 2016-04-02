@@ -7,14 +7,15 @@ from .dropout import dropout
 
 
 
-def char2doc(document,
+def char2doc(document_forward,
+             document_backward,
              char_space_size,
              char_embedding_size,
              document_embedding_size,
              dropout_ratio,
              hidden_layer_size,
              output_layer_size):
-  char_embeddings = id_to_embedding(document,
+  char_embeddings = id_to_embedding(document_forward,
                                     id_space_size=char_space_size,
                                     embedding_size=char_embedding_size)
   document_embedding = embeddings_to_embedding(char_embeddings,

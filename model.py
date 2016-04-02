@@ -76,7 +76,8 @@ def predict(train_data,
 
       new_test_summary, last_predicted_labels = session.run(
         tf.tuple((test_summary, predicted_labels)), {
-        x : test_data.documents,
+        x_forward : test_data.forward_documents,
+        x_backward : test_data.backward_documents,
         y_true : test_data.labels,
         dropout_ratio : 0,
       })

@@ -13,4 +13,4 @@ def accuracy(output_layer, true_label):
   assert static_shape(output_layer)[0] == static_shape(true_label)[0]
 
   correct_prediction = tf.equal(tf.argmax(output_layer, 1), true_label)
-  return tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
+  return tf.reduce_mean(tf.to_float(correct_prediction))

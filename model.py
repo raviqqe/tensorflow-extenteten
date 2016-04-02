@@ -23,7 +23,7 @@ def predict(train_data,
   y_true = tf.placeholder(tf.int64,
                           (None, data_info["num_of_labels"]),
                           name="y_true")
-  dropout_ratio = tf.placeholder(tf.float32, (), name="dropout_ratio")
+  dropout_prob = tf.placeholder(tf.float32, (), name="dropout_prob")
 
   output_layer = nn.char2doc(
     x_forward,
@@ -31,7 +31,7 @@ def predict(train_data,
     char_space_size=data_info["char_space_size"],
     char_embedding_size=hyper_params["character_embedding_size"],
     document_embedding_size=hyper_params["document_embedding_size"],
-    dropout_ratio=dropout_ratio,
+    dropout_prob=dropout_prob,
     hidden_layer_size=hyper_params["hidden_layer_size"],
     output_layer_size=data_info["num_of_labels"]*data_info["num_of_classes"],
   )
@@ -59,7 +59,7 @@ def predict(train_data,
           x_forward : batch.forward_documents,
           x_backward : batch.backward_documents,
           y_true : batch.labels,
-          dropout_ratio : hyper_params["dropout_ratio"],
+          dropout_prob : hyper_params["dropout_probability"],
         })
 
       sampled_train_data = data.sample(train_data, test_data.size)
@@ -69,7 +69,7 @@ def predict(train_data,
         x_forward : sampled_train_data.forward_documents,
         x_backward : sampled_train_data.backward_documents,
         y_true : sampled_train_data.labels,
-        dropout_ratio : 0,
+        dropout_prob : 0,
       }), epoch)
 
       # test
@@ -79,7 +79,7 @@ def predict(train_data,
         x_forward : test_data.forward_documents,
         x_backward : test_data.backward_documents,
         y_true : test_data.labels,
-        dropout_ratio : 0,
+        dropout_prob : 0,
       })
       summarizer.add_summary(new_test_summary, epoch)
 

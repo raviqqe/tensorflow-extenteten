@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-from .util import static_shape, static_rank
+from ..util import static_shape, static_rank
 
 
 

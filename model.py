@@ -17,32 +17,38 @@ def predict(train_data,
             summary_dir):
   data_info = _analyze_data(train_data, test_data)
 
-  document_type_and_shape = (tf.int32, (None, data_info["document_length"]))
-  x_forward = tf.placeholder(*document_type_and_shape, name="x_forward")
-  x_backward = tf.placeholder(*document_type_and_shape, name="x_backward")
-  y_true = tf.placeholder(tf.int64,
-                          (None, data_info["num_of_labels"]),
-                          name="y_true")
-  dropout_prob = tf.placeholder(tf.float32, (), name="dropout_prob")
 
-  output_layer = nn.char2doc(
-    x_forward,
-    x_backward,
-    char_space_size=data_info["char_space_size"],
-    char_embedding_size=hyper_params["character_embedding_size"],
-    document_embedding_size=hyper_params["document_embedding_size"],
-    dropout_prob=dropout_prob,
-    hidden_layer_size=hyper_params["hidden_layer_size"],
-    output_layer_size=data_info["num_of_labels"]*data_info["num_of_classes"],
-  )
-  loss, accuracy, predicted_labels = nn.mlmc.classify(output_layer, y_true)
-  loss += nn.regularize_with_l2_loss(hyper_params["l2_regularization_scale"])
+  with tf.name_scope("inputs"):
+    document_type_and_shape = (tf.int32, (None, data_info["document_length"]))
+    x_forward = tf.placeholder(*document_type_and_shape, name="x_forward")
+    x_backward = tf.placeholder(*document_type_and_shape, name="x_backward")
+    y_true = tf.placeholder(tf.int64,
+                            (None, data_info["num_of_labels"]),
+                            name="y_true")
+    dropout_prob = tf.placeholder(tf.float32, (), name="dropout_prob")
 
-  do_training = tf.train.AdamOptimizer().minimize(loss)
-  train_summary = tf.scalar_summary(["train_accuracy", "train_loss"],
-                                    tf.pack([accuracy, loss]))
-  test_summary = tf.scalar_summary(["test_accuracy", "test_loss"],
-                                   tf.pack([accuracy , loss]))
+  with tf.name_scope("model"):
+    output_layer = nn.char2doc(
+      x_forward,
+      x_backward,
+      char_space_size=data_info["char_space_size"],
+      char_embedding_size=hyper_params["character_embedding_size"],
+      document_embedding_size=hyper_params["document_embedding_size"],
+      dropout_prob=dropout_prob,
+      hidden_layer_size=hyper_params["hidden_layer_size"],
+      output_layer_size=data_info["num_of_labels"]*data_info["num_of_classes"],
+    )
+    loss, accuracy, predicted_labels = nn.mlmc.classify(output_layer, y_true)
+    loss += nn.regularize_with_l2_loss(hyper_params["l2_regularization_scale"])
+
+  with tf.name_scope("training"):
+    do_training = tf.train.AdamOptimizer().minimize(loss)
+    train_summary = tf.scalar_summary(["train_accuracy", "train_loss"],
+                                      tf.pack([accuracy, loss]))
+
+  with tf.name_scope("test"):
+    test_summary = tf.scalar_summary(["test_accuracy", "test_loss"],
+                                     tf.pack([accuracy , loss]))
 
   with tf.Session() as session:
     summarizer = tf.train.SummaryWriter(summary_dir, session.graph_def)

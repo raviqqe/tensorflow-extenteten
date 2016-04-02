@@ -1,24 +1,31 @@
 import tensorflow as tf
 
-from .embedding import embeddings_to_embedding, ids_to_embeddings
+from .embedding import embeddings_to_embedding, ids_to_embeddings, embeddings
 from .linear import linear
 from .dropout import dropout
 
 
 
-def char2doc(document_forward,
-             document_backward,
+def char2doc(forward_document,
+             backward_document,
              char_space_size,
              char_embedding_size,
              document_embedding_size,
              dropout_ratio,
              hidden_layer_size,
              output_layer_size):
-  char_embeddings = ids_to_embeddings(document_forward,
-                                      id_space_size=char_space_size,
-                                      embedding_size=char_embedding_size)
-  document_embedding = embeddings_to_embedding(char_embeddings,
-                                               document_embedding_size)
+  char_embeddings = embeddings(id_space_size=char_space_size,
+                               embedding_size=char_embedding_size)
+
+  def char_ids_to_doc_embedding(document):
+    return embeddings_to_embedding(
+        ids_to_embeddings(document, char_embeddings),
+        document_embedding_size)
+
+  document_embedding = tf.concat(
+      1,
+      list(map(char_ids_to_doc_embedding,
+               [forward_document, backward_document])))
 
   hidden_layer = dropout(_activate(linear(_activate(document_embedding),
                                           hidden_layer_size)),

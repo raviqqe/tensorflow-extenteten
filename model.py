@@ -17,7 +17,6 @@ def predict(train_data,
             summary_dir):
   data_info = _analyze_data(train_data, test_data)
 
-
   with tf.name_scope("inputs"):
     document_type_and_shape = (tf.int32, (None, data_info["document_length"]))
     x_forward = tf.placeholder(*document_type_and_shape, name="x_forward")

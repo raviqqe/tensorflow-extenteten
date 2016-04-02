@@ -4,11 +4,11 @@ from .util import static_shape, static_rank
 
 
 
-def embeddings_to_embedding(child_embeddings):
+def embeddings_to_embedding(child_embeddings, output_embedding_size):
   assert static_rank(child_embeddings) == 3
 
   embedding_size = static_shape(child_embeddings)[2]
-  rnn_cell = tf.nn.rnn_cell.GRUCell(embedding_size, embedding_size)
+  rnn_cell = tf.nn.rnn_cell.GRUCell(output_embedding_size, embedding_size)
 
   state = rnn_cell.zero_state(tf.shape(child_embeddings)[0], tf.float32)
   for iteration, child_embedding \

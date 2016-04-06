@@ -36,6 +36,7 @@ def predict(train_data,
       dropout_prob=dropout_prob,
       hidden_layer_size=hyper_params["hidden_layer_size"],
       output_layer_size=data_info["num_of_labels"]*data_info["num_of_classes"],
+      context_vector_size=hyper_params["context_vector_size"],
     )
     loss, accuracy, predicted_labels = nn.mlmc.classify(output_layer, y_true)
     loss += nn.regularize_with_l2_loss(hyper_params["l2_regularization_scale"])

@@ -13,7 +13,8 @@ def char2doc(forward_document,
              document_embedding_size,
              dropout_prob,
              hidden_layer_size,
-             output_layer_size):
+             output_layer_size,
+             context_vector_size):
   with tf.name_scope("char2doc"):
     char_embeddings = embeddings(id_space_size=char_space_size,
                                  embedding_size=char_embedding_size)
@@ -21,7 +22,8 @@ def char2doc(forward_document,
     def char_ids_to_doc_embedding(document):
       return embeddings_to_embedding(
           ids_to_embeddings(document, char_embeddings),
-          document_embedding_size)
+          output_embedding_size=document_embedding_size,
+          context_vector_size=context_vector_size)
 
     document_embedding = tf.concat(
         1,

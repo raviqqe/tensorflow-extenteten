@@ -43,11 +43,14 @@ def _attention_please(xs, context_vector_size):
         context_vector),
       [sequence_length, -1]))) # -1 denotes batch_size
 
-  return tf.transpose(tf.pack([
-      tf.squeeze(tf.batch_matmul(tf.expand_dims(x, 1),
-                                 tf.expand_dims(attention, 2)),
-                 [1, 2])
-      for x in tf.unpack(tf.transpose(xs))]))
+  return tf.transpose(tf.pack([_inner_product(x, attention)
+                               for x in tf.unpack(tf.transpose(xs))]))
+
+
+def _inner_product(x, y):
+  return tf.squeeze(tf.batch_matmul(tf.expand_dims(x, 1),
+                                    tf.expand_dims(y, 2)),
+                    [1, 2])
 
 
 def _split_child_embeddings(child_embeddings):

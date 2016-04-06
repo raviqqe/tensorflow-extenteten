@@ -1,7 +1,7 @@
 {
   "character_embedding_size" : 64,
-  "document_embedding_size" : 128,
-  "hidden_layer_size" : 128,
+  "document_embedding_size" : 32,
+  "hidden_layer_size" : 64,
   "dropout_probability" : 0.5,
   "l2_regularization_scale" : 1e-6
 }

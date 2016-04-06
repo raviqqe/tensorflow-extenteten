@@ -50,45 +50,45 @@ def predict(train_data,
                                      tf.pack([accuracy , loss]))
 
   with tf.Session() as session:
-    summarizer = tf.train.SummaryWriter(summary_dir, session.graph_def)
-    session.run(tf.initialize_all_variables())
+    with session.as_default():
+      summarizer = tf.train.SummaryWriter(summary_dir, session.graph_def)
+      tf.initialize_all_variables().run()
 
-    for epoch in range(experiment_setting["num_of_epochs"]):
-      log.message("epoch:", epoch)
+      for epoch in range(experiment_setting["num_of_epochs"]):
+        log.message("epoch:", epoch)
 
-      # train
+        # train
 
-      for batch in data.batches(data.shuffle(train_data),
-                                experiment_setting["batch_size"]):
-        session.run(do_training, {
-          x_forward : batch.forward_documents,
-          x_backward : batch.backward_documents,
-          y_true : batch.labels,
-          dropout_prob : hyper_params["dropout_probability"],
+        for batch in data.batches(data.shuffle(train_data),
+                                  experiment_setting["batch_size"]):
+          do_training.run({
+            x_forward : batch.forward_documents,
+            x_backward : batch.backward_documents,
+            y_true : batch.labels,
+            dropout_prob : hyper_params["dropout_probability"],
+          })
+
+        sampled_train_data = data.sample(train_data, test_data.size)
+
+        summarizer.add_summary(train_summary.eval({
+          x_forward : sampled_train_data.forward_documents,
+          x_backward : sampled_train_data.backward_documents,
+          y_true : sampled_train_data.labels,
+          dropout_prob : 0,
+        }), epoch)
+
+        # test
+
+        new_test_summary, last_predicted_labels \
+          = session.run([test_summary, predicted_labels], {
+          x_forward : test_data.forward_documents,
+          x_backward : test_data.backward_documents,
+          y_true : test_data.labels,
+          dropout_prob : 0,
         })
+        summarizer.add_summary(new_test_summary, epoch)
 
-      sampled_train_data = data.sample(train_data, test_data.size)
-
-      summarizer.add_summary(session.run(
-        train_summary, {
-        x_forward : sampled_train_data.forward_documents,
-        x_backward : sampled_train_data.backward_documents,
-        y_true : sampled_train_data.labels,
-        dropout_prob : 0,
-      }), epoch)
-
-      # test
-
-      new_test_summary, last_predicted_labels = session.run(
-        tf.tuple((test_summary, predicted_labels)), {
-        x_forward : test_data.forward_documents,
-        x_backward : test_data.backward_documents,
-        y_true : test_data.labels,
-        dropout_prob : 0,
-      })
-      summarizer.add_summary(new_test_summary, epoch)
-
-    return last_predicted_labels
+      return last_predicted_labels
 
 
 def _analyze_data(train_data, test_data):

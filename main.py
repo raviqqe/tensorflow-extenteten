@@ -16,6 +16,7 @@ def get_args():
   arg_parser = argparse.ArgumentParser()
   arg_parser.add_argument("document_filename")
   arg_parser.add_argument("label_filename")
+  arg_parser.add_argument("-w", "--word-filename", required=True)
   arg_parser.add_argument("-l", "--predicted-labels",
                           dest="predicted_label_filename",
                           default=None)
@@ -47,6 +48,10 @@ def load_experiment_setting(filename):
 
 
 def load_documents(filename):
+  return numpy.load(filename)
+
+
+def load_words(filename):
   return numpy.load(filename)
 
 
@@ -99,6 +104,7 @@ def main():
   predicted_labels = model.predict(
       train_data,
       test_data,
+      word_array=load_words(args.word_filename),
       hyper_params=load_hyper_params(args.hyper_param_filename),
       experiment_setting=experiment_setting,
       summary_dir=args.summary_dir)

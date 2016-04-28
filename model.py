@@ -12,6 +12,7 @@ import nn.mlmc
 
 def predict(train_data,
             test_data,
+            word_array,
             hyper_params,
             experiment_setting,
             summary_dir):
@@ -23,6 +24,7 @@ def predict(train_data,
                                       name="forward_document")
     backward_document = tf.placeholder(*document_type_and_shape,
                                        name="backward_document")
+    words = tf.placeholder(tf.int32, word_array.shape, name="words")
     true_labels = tf.placeholder(tf.int64,
                                  (None, data_info["num_of_labels"]),
                                  name="true_labels")
@@ -32,6 +34,7 @@ def predict(train_data,
     output_layer = nn.models.char2doc(
       forward_document,
       backward_document,
+      words=words,
       char_space_size=data_info["char_space_size"],
       char_embedding_size=hyper_params["character_embedding_size"],
       document_embedding_size=hyper_params["document_embedding_size"],
@@ -68,6 +71,7 @@ def predict(train_data,
           do_training.run({
             forward_document : batch.forward_documents,
             backward_document : batch.backward_documents,
+            words : word_array,
             true_labels : batch.labels,
             dropout_prob : hyper_params["dropout_probability"],
           })
@@ -77,6 +81,7 @@ def predict(train_data,
         summarizer.add_summary(train_summary.eval({
           forward_document : sampled_train_data.forward_documents,
           backward_document : sampled_train_data.backward_documents,
+          words : word_array,
           true_labels : sampled_train_data.labels,
           dropout_prob : 0,
         }), epoch)
@@ -87,6 +92,7 @@ def predict(train_data,
           = session.run([test_summary, predicted_labels], {
           forward_document : test_data.forward_documents,
           backward_document : test_data.backward_documents,
+          words : word_array,
           true_labels : test_data.labels,
           dropout_prob : 0,
         })

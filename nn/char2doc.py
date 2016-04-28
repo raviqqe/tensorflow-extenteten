@@ -8,6 +8,7 @@ from .dropout import dropout
 
 def char2doc(forward_document,
              backward_document,
+             *,
              char_space_size,
              char_embedding_size,
              document_embedding_size,

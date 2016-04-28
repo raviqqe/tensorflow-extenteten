@@ -1,8 +1,8 @@
 import tensorflow as tf
 
-from .embedding import embeddings_to_embedding, ids_to_embeddings, embeddings
-from .linear import linear
-from .dropout import dropout
+from ..embedding import embeddings_to_embedding, ids_to_embeddings, embeddings
+from ..linear import linear
+from ..dropout import dropout
 
 
 

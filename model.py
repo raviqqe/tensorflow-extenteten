@@ -3,7 +3,7 @@ import tensorflow as tf
 
 import data
 import log
-import nn
+import nn.models
 import nn.mlmc
 
 
@@ -29,7 +29,7 @@ def predict(train_data,
     dropout_prob = tf.placeholder(tf.float32, (), name="dropout_prob")
 
   with tf.name_scope("model"):
-    output_layer = nn.char2doc(
+    output_layer = nn.models.char2doc(
       forward_document,
       backward_document,
       char_space_size=data_info["char_space_size"],

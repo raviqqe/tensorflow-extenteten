@@ -19,17 +19,19 @@ def predict(train_data,
 
   with tf.name_scope("inputs"):
     document_type_and_shape = (tf.int32, (None, data_info["document_length"]))
-    x_forward = tf.placeholder(*document_type_and_shape, name="x_forward")
-    x_backward = tf.placeholder(*document_type_and_shape, name="x_backward")
-    y_true = tf.placeholder(tf.int64,
-                            (None, data_info["num_of_labels"]),
-                            name="y_true")
+    forward_document = tf.placeholder(*document_type_and_shape,
+                                      name="forward_document")
+    backward_document = tf.placeholder(*document_type_and_shape,
+                                       name="backward_document")
+    true_labels = tf.placeholder(tf.int64,
+                                 (None, data_info["num_of_labels"]),
+                                 name="true_labels")
     dropout_prob = tf.placeholder(tf.float32, (), name="dropout_prob")
 
   with tf.name_scope("model"):
     output_layer = nn.char2doc(
-      x_forward,
-      x_backward,
+      forward_document,
+      backward_document,
       char_space_size=data_info["char_space_size"],
       char_embedding_size=hyper_params["character_embedding_size"],
       document_embedding_size=hyper_params["document_embedding_size"],
@@ -38,7 +40,8 @@ def predict(train_data,
       output_layer_size=data_info["num_of_labels"]*data_info["num_of_classes"],
       context_vector_size=hyper_params["context_vector_size"],
     )
-    loss, accuracy, predicted_labels = nn.mlmc.classify(output_layer, y_true)
+    loss, accuracy, predicted_labels = nn.mlmc.classify(output_layer,
+                                                        true_labels)
     loss += nn.regularize_with_l2_loss(hyper_params["l2_regularization_scale"])
 
   with tf.name_scope("training"):
@@ -63,18 +66,18 @@ def predict(train_data,
         for batch in data.batches(data.shuffle(train_data),
                                   experiment_setting["batch_size"]):
           do_training.run({
-            x_forward : batch.forward_documents,
-            x_backward : batch.backward_documents,
-            y_true : batch.labels,
+            forward_document : batch.forward_documents,
+            backward_document : batch.backward_documents,
+            true_labels : batch.labels,
             dropout_prob : hyper_params["dropout_probability"],
           })
 
         sampled_train_data = data.sample(train_data, test_data.size)
 
         summarizer.add_summary(train_summary.eval({
-          x_forward : sampled_train_data.forward_documents,
-          x_backward : sampled_train_data.backward_documents,
-          y_true : sampled_train_data.labels,
+          forward_document : sampled_train_data.forward_documents,
+          backward_document : sampled_train_data.backward_documents,
+          true_labels : sampled_train_data.labels,
           dropout_prob : 0,
         }), epoch)
 
@@ -82,9 +85,9 @@ def predict(train_data,
 
         new_test_summary, last_predicted_labels \
           = session.run([test_summary, predicted_labels], {
-          x_forward : test_data.forward_documents,
-          x_backward : test_data.backward_documents,
-          y_true : test_data.labels,
+          forward_document : test_data.forward_documents,
+          backward_document : test_data.backward_documents,
+          true_labels : test_data.labels,
           dropout_prob : 0,
         })
         summarizer.add_summary(new_test_summary, epoch)

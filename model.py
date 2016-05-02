@@ -31,12 +31,14 @@ def predict(train_data,
     dropout_prob = tf.placeholder(tf.float32, (), name="dropout_prob")
 
   with tf.name_scope("model"):
-    output_layer = nn.models.char2doc(
+    output_layer = nn.models.char2word2sent2doc(
       forward_document,
       backward_document,
       words=words,
       char_space_size=data_info["char_space_size"],
       char_embedding_size=hyper_params["character_embedding_size"],
+      word_embedding_size=hyper_params["word_embedding_size"],
+      sentence_embedding_size=hyper_params["sentence_embedding_size"],
       document_embedding_size=hyper_params["document_embedding_size"],
       dropout_prob=dropout_prob,
       hidden_layer_size=hyper_params["hidden_layer_size"],
@@ -102,8 +104,8 @@ def predict(train_data,
 
 
 def _analyze_data(train_data, test_data):
-  assert train_data.documents.ndim == test_data.documents.ndim == 2 \
-         and train_data.documents.shape[1] == test_data.documents.shape[1]
+  assert train_data.documents.ndim == test_data.documents.ndim == 3 \
+         and train_data.documents.shape[1:] == test_data.documents.shape[1:]
   assert train_data.labels.ndim == test_data.labels.ndim == 2 \
          and train_data.labels.shape[1] == test_data.labels.shape[1]
 

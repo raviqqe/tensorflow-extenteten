@@ -64,8 +64,7 @@ def _restore_document_shape(sentences, document):
 
 
 def _flatten_document_to_sentences(document):
-  assert static_rank(document) == 3
-  return tf.reshape(document, [-1, static_shape(document)[2]])
+  return tf.reshape(document, [-1] + static_shape(document)[2:])
 
 
 def _activate(tensor):

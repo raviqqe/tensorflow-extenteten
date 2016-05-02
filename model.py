@@ -19,7 +19,9 @@ def predict(train_data,
   data_info = _analyze_data(train_data, test_data)
 
   with tf.name_scope("inputs"):
-    document_type_and_shape = (tf.int32, (None, data_info["document_length"]))
+    document_type_and_shape = (tf.int32, (None,
+                                          data_info["document_length"],
+                                          data_info["sentence_length"]))
     forward_document = tf.placeholder(*document_type_and_shape,
                                       name="forward_document")
     backward_document = tf.placeholder(*document_type_and_shape,
@@ -116,6 +118,7 @@ def _analyze_data(train_data, test_data):
   return {
     "char_space_size" : all_documents.max() + 1,
     "document_length" : test_data.documents.shape[1],
+    "sentence_length" : test_data.documents.shape[2],
     "num_of_labels" : test_data.labels.shape[1],
     "num_of_classes" : all_labels.max() + 1,
   }

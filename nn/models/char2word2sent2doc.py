@@ -46,7 +46,7 @@ def char2word2sent2doc(forward_document,
           context_vector_size=context_vector_size)
 
     document_embedding = _concat(
-        map(word_id_sequence_to_sentence_embedding,
+        map(word_id_sequence_to_document_embedding,
             [forward_document, backward_document]))
 
     hidden_layer = dropout(_activate(linear(_activate(document_embedding),

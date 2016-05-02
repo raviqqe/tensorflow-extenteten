@@ -3,7 +3,7 @@ from .embeddings_to_embedding import embeddings_to_embedding
 from ..util import static_rank
 
 
-def id_sequecne_to_embedding(child_id_sequence,
+def id_sequence_to_embedding(child_id_sequence,
                              child_embeddings,
                              *,
                              output_embedding_size,

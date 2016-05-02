@@ -1,5 +1,7 @@
 {
   "character_embedding_size" : 64,
+  "word_embedding_size" : 64,
+  "sentence_embedding_size" : 64,
   "document_embedding_size" : 32,
   "hidden_layer_size" : 64,
   "dropout_probability" : 0.5,

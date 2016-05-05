@@ -60,7 +60,8 @@ def _concat(tensors):
 
 
 def _restore_document_shape(sentences, document):
-  return tf.reshape(sentences, static_shape(document)[0:2] + [-1])
+  return tf.reshape(sentences, [-1] + [static_shape(document)[1]]
+                                    + static_shape(sentences)[1:])
 
 
 def _flatten_document_to_sentences(document):

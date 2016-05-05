@@ -23,31 +23,38 @@ def char2word2sent2doc(forward_document,
                        output_layer_size,
                        context_vector_size):
   with tf.name_scope("char2word2sent2doc"):
-    char_embeddings = embeddings(id_space_size=char_space_size,
-                                 embedding_size=char_embedding_size)
+    with tf.variable_scope("char_embedding"):
+      char_embeddings = embeddings(id_space_size=char_space_size,
+                                   embedding_size=char_embedding_size)
 
-    word_embeddings = id_sequence_to_embedding(
-        words,
-        char_embeddings,
-        output_embedding_size=word_embedding_size,
-        context_vector_size=context_vector_size)
-
-    def word_id_sequence_to_document_embedding(document):
-      sentences = _flatten_document_to_sentences(document)
-      sentence_embeddings = id_sequence_to_embedding(
-          sentences,
-          word_embeddings,
-          output_embedding_size=sentence_embedding_size,
+    with tf.variable_scope("word_embedding"):
+      word_embeddings = id_sequence_to_embedding(
+          words,
+          char_embeddings,
+          output_embedding_size=word_embedding_size,
           context_vector_size=context_vector_size)
 
-      return embeddings_to_embedding(
-          _restore_document_shape(sentence_embeddings, document),
-          output_embedding_size=document_embedding_size,
-          context_vector_size=context_vector_size)
+    def word_id_sequence_to_document_embedding(document, scope_name):
+      with tf.variable_scope(scope_name):
+        with tf.variable_scope("sentence_embedding"):
+          sentences = _flatten_document_to_sentences(document)
+          sentence_embeddings = id_sequence_to_embedding(
+              sentences,
+              word_embeddings,
+              output_embedding_size=sentence_embedding_size,
+              context_vector_size=context_vector_size)
 
-    document_embedding = _concat(
-        map(word_id_sequence_to_document_embedding,
-            [forward_document, backward_document]))
+        with tf.variable_scope("document_embedding"):
+          return embeddings_to_embedding(
+              _restore_document_shape(sentence_embeddings, document),
+              output_embedding_size=document_embedding_size,
+              context_vector_size=context_vector_size)
+
+    with tf.variable_scope("document_embedding"):
+      document_embedding = _concat(
+          map(lambda x: word_id_sequence_to_document_embedding(*x),
+              [(forward_document, "forward"),
+               (backward_document, "backward")]))
 
     hidden_layer = dropout(_activate(linear(_activate(document_embedding),
                                             hidden_layer_size)),

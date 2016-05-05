@@ -9,8 +9,7 @@ from ..util import static_shape, static_rank
 
 
 
-def char2word2sent2doc(forward_document,
-                       backward_document,
+def char2word2sent2doc(document,
                        *,
                        words,
                        char_space_size,
@@ -34,27 +33,18 @@ def char2word2sent2doc(forward_document,
           output_embedding_size=word_embedding_size,
           context_vector_size=context_vector_size)
 
-    def word_id_sequence_to_document_embedding(document, scope_name):
-      with tf.variable_scope(scope_name):
-        with tf.variable_scope("sentence_embedding"):
-          sentences = _flatten_document_to_sentences(document)
-          sentence_embeddings = id_sequence_to_embedding(
-              sentences,
-              word_embeddings,
-              output_embedding_size=sentence_embedding_size,
-              context_vector_size=context_vector_size)
-
-        with tf.variable_scope("document_embedding"):
-          return embeddings_to_embedding(
-              _restore_document_shape(sentence_embeddings, document),
-              output_embedding_size=document_embedding_size,
-              context_vector_size=context_vector_size)
+    with tf.variable_scope("sentence_embedding"):
+      sentence_embeddings = id_sequence_to_embedding(
+          _flatten_document_to_sentences(document),
+          word_embeddings,
+          output_embedding_size=sentence_embedding_size,
+          context_vector_size=context_vector_size)
 
     with tf.variable_scope("document_embedding"):
-      document_embedding = _concat(
-          map(lambda x: word_id_sequence_to_document_embedding(*x),
-              [(forward_document, "forward"),
-               (backward_document, "backward")]))
+      document_embedding = embeddings_to_embedding(
+          _restore_document_shape(sentence_embeddings, document),
+          output_embedding_size=document_embedding_size,
+          context_vector_size=context_vector_size)
 
     hidden_layer = dropout(_activate(linear(_activate(document_embedding),
                                             hidden_layer_size)),

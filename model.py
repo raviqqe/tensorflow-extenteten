@@ -18,11 +18,9 @@ def predict(train_data,
   data_info = _analyze_data(train_data, test_data)
 
   with tf.variable_scope("inputs"):
-    document_type_and_shape = (tf.int32, (None, data_info["document_length"]))
-    forward_document = tf.placeholder(*document_type_and_shape,
-                                      name="forward_document")
-    backward_document = tf.placeholder(*document_type_and_shape,
-                                       name="backward_document")
+    document = tf.placeholder(tf.int32,
+                              (None, data_info["document_length"]),
+                              name="document")
     true_labels = tf.placeholder(tf.int64,
                                  (None, data_info["num_of_labels"]),
                                  name="true_labels")
@@ -30,8 +28,7 @@ def predict(train_data,
 
   with tf.variable_scope("model"):
     output_layer = nn.models.char2doc(
-      forward_document,
-      backward_document,
+      document,
       char_space_size=data_info["char_space_size"],
       char_embedding_size=hyper_params["character_embedding_size"],
       document_embedding_size=hyper_params["document_embedding_size"],
@@ -66,8 +63,7 @@ def predict(train_data,
         for batch in data.batches(data.shuffle(train_data),
                                   experiment_setting["batch_size"]):
           do_training.run({
-            forward_document : batch.forward_documents,
-            backward_document : batch.backward_documents,
+            document : batch.documents,
             true_labels : batch.labels,
             dropout_prob : hyper_params["dropout_probability"],
           })
@@ -75,8 +71,7 @@ def predict(train_data,
         sampled_train_data = data.sample(train_data, test_data.size)
 
         summarizer.add_summary(train_summary.eval({
-          forward_document : sampled_train_data.forward_documents,
-          backward_document : sampled_train_data.backward_documents,
+          document : sampled_train_data.documents,
           true_labels : sampled_train_data.labels,
           dropout_prob : 0,
         }), epoch)
@@ -85,8 +80,7 @@ def predict(train_data,
 
         new_test_summary, last_predicted_labels \
           = session.run([test_summary, predicted_labels], {
-          forward_document : test_data.forward_documents,
-          backward_document : test_data.backward_documents,
+          document : test_data.documents,
           true_labels : test_data.labels,
           dropout_prob : 0,
         })

@@ -1,1 +1,3 @@
-# char2word2sent2doc
+# nn
+
+some models and utils on tensorflow

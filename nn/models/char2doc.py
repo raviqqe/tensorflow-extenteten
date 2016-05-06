@@ -16,7 +16,7 @@ def char2doc(forward_document,
              hidden_layer_size,
              output_layer_size,
              context_vector_size):
-  with tf.name_scope("char2doc"):
+  with tf.variable_scope("char2doc"):
     char_embeddings = embeddings(id_space_size=char_space_size,
                                  embedding_size=char_embedding_size)
 

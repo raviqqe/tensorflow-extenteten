@@ -17,7 +17,7 @@ def predict(train_data,
             summary_dir):
   data_info = _analyze_data(train_data, test_data)
 
-  with tf.name_scope("inputs"):
+  with tf.variable_scope("inputs"):
     document_type_and_shape = (tf.int32, (None, data_info["document_length"]))
     forward_document = tf.placeholder(*document_type_and_shape,
                                       name="forward_document")
@@ -28,7 +28,7 @@ def predict(train_data,
                                  name="true_labels")
     dropout_prob = tf.placeholder(tf.float32, (), name="dropout_prob")
 
-  with tf.name_scope("model"):
+  with tf.variable_scope("model"):
     output_layer = nn.models.char2doc(
       forward_document,
       backward_document,
@@ -44,12 +44,12 @@ def predict(train_data,
                                                         true_labels)
     loss += nn.regularize_with_l2_loss(hyper_params["l2_regularization_scale"])
 
-  with tf.name_scope("training"):
+  with tf.variable_scope("training"):
     do_training = tf.train.AdamOptimizer().minimize(loss)
     train_summary = tf.scalar_summary(["train_accuracy", "train_loss"],
                                       tf.pack([accuracy, loss]))
 
-  with tf.name_scope("test"):
+  with tf.variable_scope("test"):
     test_summary = tf.scalar_summary(["test_accuracy", "test_loss"],
                                      tf.pack([accuracy , loss]))
 

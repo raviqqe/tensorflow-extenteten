@@ -1,6 +1,5 @@
 import tensorflow as tf
 
-from . import var_init
 from .util import static_shape
 from .variable import variable
 

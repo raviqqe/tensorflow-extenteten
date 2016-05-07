@@ -1,11 +1,12 @@
 import functools
 import tensorflow as tf
 
-from ..util import static_shape
+from ..util import static_shape, funcname_scope
 from .embeddings_to_embedding import embeddings_to_embedding
 
 
 
+@funcname_scope
 def bidirectional_embeddings_to_embedding(child_embeddings,
                                           **kwargs):
   child_embeddings_to_embedding = functools.partial(

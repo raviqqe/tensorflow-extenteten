@@ -1,10 +1,11 @@
 import tensorflow as tf
 
-from ..util import static_shape, static_rank
+from ..util import static_shape, static_rank, funcname_scope
 from .. import slmc
 
 
 
+@funcname_scope
 def classify(output_layer, true_labels):
   assert static_rank(output_layer) == 2
   #assert static_shape(output_layer)[0] == (batch size)

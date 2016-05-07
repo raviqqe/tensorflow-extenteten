@@ -1,10 +1,11 @@
 import tensorflow as tf
 
-from .util import static_shape
+from .util import static_shape, funcname_scope
 from .variable import variable
 
 
 
+@funcname_scope
 def linear(x, output_layer_size):
   weight = variable([static_shape(x)[1], output_layer_size])
   bias = variable([output_layer_size])

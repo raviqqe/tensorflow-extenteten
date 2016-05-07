@@ -1,9 +1,10 @@
 import tensorflow as tf
 
-from ..util import static_shape, static_rank
+from ..util import static_shape, static_rank, funcname_scope
 
 
 
+@funcname_scope
 def accuracy(output_layer, true_label):
   assert static_rank(output_layer) == 2
   #assert static_shape(output_layer)[0] == (batch size)

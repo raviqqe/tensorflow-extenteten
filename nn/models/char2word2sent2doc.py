@@ -1,7 +1,7 @@
 import tensorflow as tf
 
-from ..embedding import embeddings_to_embedding, \
-                        id_sequence_to_embedding, \
+from ..embedding import bidirectional_embeddings_to_embedding, \
+                        bidirectional_id_sequence_to_embedding, \
                         embeddings
 from ..linear import linear
 from ..dropout import dropout
@@ -27,21 +27,21 @@ def char2word2sent2doc(document,
                                    embedding_size=char_embedding_size)
 
     with tf.variable_scope("word_embedding"):
-      word_embeddings = id_sequence_to_embedding(
+      word_embeddings = bidirectional_id_sequence_to_embedding(
           words,
           char_embeddings,
           output_embedding_size=word_embedding_size,
           context_vector_size=context_vector_size)
 
     with tf.variable_scope("sentence_embedding"):
-      sentence_embeddings = id_sequence_to_embedding(
+      sentence_embeddings = bidirectional_id_sequence_to_embedding(
           _flatten_document_to_sentences(document),
           word_embeddings,
           output_embedding_size=sentence_embedding_size,
           context_vector_size=context_vector_size)
 
     with tf.variable_scope("document_embedding"):
-      document_embedding = embeddings_to_embedding(
+      document_embedding = bidirectional_embeddings_to_embedding(
           _restore_document_shape(sentence_embeddings, document),
           output_embedding_size=document_embedding_size,
           context_vector_size=context_vector_size)

@@ -15,13 +15,11 @@ def embeddings_to_embedding(child_embeddings,
     embedding_size = static_shape(child_embeddings)[2]
     rnn_cell = tf.nn.rnn_cell.GRUCell(output_embedding_size, embedding_size)
 
-    cell_outputs = []
-    cell_state = rnn_cell.zero_state(tf.shape(child_embeddings)[0], tf.float32)
-    for iteration, child_embedding \
-        in enumerate(_split_child_embeddings(child_embeddings)):
-      if iteration != 0: tf.get_variable_scope().reuse_variables()
-      cell_output, cell_state = rnn_cell(child_embedding, cell_state)
-      cell_outputs.append(cell_output)
+    cell_outputs, _ = tf.nn.rnn(
+        rnn_cell,
+        _split_child_embeddings(child_embeddings),
+        initial_state=rnn_cell.zero_state(tf.shape(child_embeddings)[0],
+                                          tf.float32))
 
     return _attention_please(tf.pack(cell_outputs), context_vector_size)
 

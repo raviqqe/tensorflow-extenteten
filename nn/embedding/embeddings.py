@@ -1,8 +1,8 @@
 import tensorflow as tf
 
-from .. import var_init
+from ..variable import variable
 
 
 
 def embeddings(*, id_space_size, embedding_size):
-  return tf.Variable(var_init.normal([id_space_size, embedding_size]))
+  return variable([id_space_size, embedding_size])

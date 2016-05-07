@@ -31,20 +31,23 @@ def char2word2sent2doc(document,
           words,
           char_embeddings,
           output_embedding_size=word_embedding_size,
-          context_vector_size=context_vector_size)
+          context_vector_size=context_vector_size,
+          dropout_prob=dropout_prob)
 
     with tf.variable_scope("sentence_embedding"):
       sentence_embeddings = bidirectional_id_sequence_to_embedding(
           _flatten_document_to_sentences(document),
           word_embeddings,
           output_embedding_size=sentence_embedding_size,
-          context_vector_size=context_vector_size)
+          context_vector_size=context_vector_size,
+          dropout_prob=dropout_prob)
 
     with tf.variable_scope("document_embedding"):
       document_embedding = bidirectional_embeddings_to_embedding(
           _restore_document_shape(sentence_embeddings, document),
           output_embedding_size=document_embedding_size,
-          context_vector_size=context_vector_size)
+          context_vector_size=context_vector_size,
+          dropout_prob=dropout_prob)
 
     hidden_layer = dropout(_activate(linear(_activate(document_embedding),
                                             hidden_layer_size)),

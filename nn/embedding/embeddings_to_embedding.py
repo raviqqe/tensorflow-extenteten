@@ -9,11 +9,14 @@ from ..variable import variable
 def embeddings_to_embedding(child_embeddings,
                             *,
                             output_embedding_size,
-                            context_vector_size):
+                            context_vector_size,
+                            dropout_prob):
   assert static_rank(child_embeddings) == 3
 
   with tf.variable_scope("embeddings_to_embedding"):
-    rnn_cell = tf.nn.rnn_cell.GRUCell(output_embedding_size)
+    rnn_cell = tf.nn.rnn_cell.DropoutWrapper(
+        tf.nn.rnn_cell.GRUCell(output_embedding_size),
+        1 - dropout_prob)
 
     cell_outputs, _ = tf.nn.rnn(
         rnn_cell,

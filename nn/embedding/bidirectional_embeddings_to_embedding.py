@@ -7,13 +7,10 @@ from .embeddings_to_embedding import embeddings_to_embedding
 
 
 def bidirectional_embeddings_to_embedding(child_embeddings,
-                                          *,
-                                          output_embedding_size,
-                                          context_vector_size):
+                                          **kwargs):
   child_embeddings_to_embedding = functools.partial(
       embeddings_to_embedding,
-      output_embedding_size=output_embedding_size,
-      context_vector_size=context_vector_size)
+      **kwargs)
 
   with tf.variable_scope("forward"):
     forward_embedding = child_embeddings_to_embedding(child_embeddings)

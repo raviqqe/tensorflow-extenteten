@@ -14,6 +14,15 @@ def embeddings_to_embedding(child_embeddings,
   assert static_rank(child_embeddings) == 3
 
   with tf.variable_scope("embeddings_to_embedding"):
+    cell_outputs = _rnn(child_embeddings,
+                        output_embedding_size=output_embedding_size,
+                        dropout_prob=dropout_prob)
+
+    return _attention_please(cell_outputs, context_vector_size)
+
+
+def _rnn(child_embeddings, *, output_embedding_size, dropout_prob):
+  with tf.variable_scope("RNN"):
     rnn_cell = tf.nn.rnn_cell.DropoutWrapper(
         tf.nn.rnn_cell.GRUCell(output_embedding_size),
         1 - dropout_prob)
@@ -24,34 +33,36 @@ def embeddings_to_embedding(child_embeddings,
         initial_state=rnn_cell.zero_state(tf.shape(child_embeddings)[0],
                                           tf.float32))
 
-    return _attention_please(tf.pack(cell_outputs), context_vector_size)
+    return _pack_cell_outputs_in_batch_seq_embed_order(cell_outputs)
+
+
+def _pack_cell_outputs_in_batch_seq_embed_order(cell_outputs):
+  return tf.transpose(tf.pack(cell_outputs), [1, 0, 2])
 
 
 def _attention_please(xs, context_vector_size):
-  sequence_length = static_shape(xs)[0]
-  batch_size = tf.shape(xs)[1]
+  return _give_attention(xs, _calculate_attention(xs, context_vector_size))
+
+
+def _calculate_attention(xs : ("batch", "sequence", "embedding"),
+                         context_vector_size):
+  sequence_length = static_shape(xs)[1]
   embedding_size = static_shape(xs)[2]
 
   context_vector = variable([context_vector_size, 1])
 
-  attention = tf.nn.softmax(tf.transpose(tf.reshape(
-      tf.matmul(
-        tf.tanh(linear(
-          tf.reshape(
-            xs,
-            [-1, embedding_size]), # -1 denotes sequence_length * batch_size
-          context_vector_size)),
-        context_vector),
-      [sequence_length, -1]))) # -1 denotes batch_size
+  attention_logits = tf.reshape(
+      tf.matmul(tf.tanh(linear(tf.reshape(xs, [-1, embedding_size]),
+                        context_vector_size)),
+                context_vector),
+      [-1, sequence_length])
 
-  return tf.transpose(tf.pack([_inner_product(x, attention)
-                               for x in tf.unpack(tf.transpose(xs))]))
+  return tf.nn.softmax(attention_logits)
 
 
-def _inner_product(x, y):
-  return tf.squeeze(tf.batch_matmul(tf.expand_dims(x, 1),
-                                    tf.expand_dims(y, 2)),
-                    [1, 2])
+def _give_attention(xs, attention):
+  return tf.squeeze(tf.batch_matmul(tf.transpose(xs, [0, 2, 1]),
+                                    tf.expand_dims(attention, 2)), [2])
 
 
 def _split_child_embeddings(child_embeddings):

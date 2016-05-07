@@ -1,8 +1,10 @@
 import tensorflow as tf
 
-from . import var_init
-
 
 
 def variable(shape):
-  return tf.Variable(var_init.normal(shape))
+  return tf.Variable(_normal(shape))
+
+
+def _normal(shape):
+  return tf.truncated_normal(shape, stddev=0.1)

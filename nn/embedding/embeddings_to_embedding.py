@@ -7,6 +7,7 @@ from ..variable import variable
 
 
 def embeddings_to_embedding(child_embeddings,
+                            *,
                             output_embedding_size,
                             context_vector_size):
   assert static_rank(child_embeddings) == 3

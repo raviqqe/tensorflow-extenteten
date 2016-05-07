@@ -12,8 +12,7 @@ def embeddings_to_embedding(child_embeddings,
   assert static_rank(child_embeddings) == 3
 
   with tf.variable_scope("embeddings_to_embedding"):
-    embedding_size = static_shape(child_embeddings)[2]
-    rnn_cell = tf.nn.rnn_cell.GRUCell(output_embedding_size, embedding_size)
+    rnn_cell = tf.nn.rnn_cell.GRUCell(output_embedding_size)
 
     cell_outputs, _ = tf.nn.rnn(
         rnn_cell,

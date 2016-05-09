@@ -3,7 +3,7 @@ import tensorflow as tf
 from ..util import static_shape, static_rank, funcname_scope
 from .accuracy import accuracy
 from .loss import loss
-from .predicted_labels import predicted_labels
+from .predicted_label import predicted_label
 
 
 
@@ -15,4 +15,4 @@ def classify(output_layer, true_labels):
 
   return loss(output_layer, true_labels), \
          accuracy(output_layer, true_labels), \
-         predicted_labels(output_layer)
+         predicted_label(output_layer)

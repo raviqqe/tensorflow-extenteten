@@ -5,6 +5,18 @@ from .util import static_shape, static_rank, funcname_scope
 
 
 
+def _squeeze_output_layer(func):
+  @functools.wraps(func)
+  def wrapper(output_layer, *args, **kwargs):
+    assert static_rank(output_layer) == 1 or static_rank(output_layer) == 2
+    return func(
+        tf.squeeze(output_layer, [1]) if static_rank(output_layer) == 2 else
+          output_layer,
+        *args,
+        **kwargs)
+  return wrapper
+
+
 @funcname_scope
 @_squeeze_output_layer
 def classify(output_layer, true_label):
@@ -44,15 +56,3 @@ def accuracy(output_layer, true_label):
 def predicted_label(output_layer):
   assert static_rank(output_layer) == 1
   return tf.sigmoid(output_layer) > 0.5
-
-
-def _squeeze_output_layer(func):
-  @functools.wraps(func)
-  def wrapper(output_layer, *args, **kwargs):
-    assert static_rank(output_layer) == 1 or static_rank(output_layer) == 2
-    return func(
-        tf.squeeze(output_layer, [1]) if static_rank(output_layer) == 2 else
-          output_layer,
-        *args,
-        **kwargs)
-  return wrapper

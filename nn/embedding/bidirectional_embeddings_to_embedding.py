@@ -1,7 +1,7 @@
 import functools
 import tensorflow as tf
 
-from ..util import static_shape, funcname_scope
+from ..util import static_shape, static_rank, funcname_scope
 from .embeddings_to_embedding import embeddings_to_embedding
 
 
@@ -28,9 +28,5 @@ def _concat_embeddings(*embeddings):
 
 
 def _reverse_embedding_sequence(embedding_sequence):
-  embedding_dim = 1
-  return tf.concat(embedding_dim,
-                   list(reversed(tf.split(
-                     embedding_dim,
-                     static_shape(embedding_sequence)[embedding_dim],
-                     embedding_sequence))))
+  assert static_rank(embedding_sequence) == 3
+  return tf.reverse(embedding_sequence, [False, True, False])

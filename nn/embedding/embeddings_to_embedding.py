@@ -52,7 +52,7 @@ def _calculate_attention(xs : ("batch", "sequence", "embedding"),
   sequence_length = static_shape(xs)[1]
   embedding_size = static_shape(xs)[2]
 
-  context_vector = variable([context_vector_size, 1])
+  context_vector = variable([context_vector_size, 1], name="context_vector")
 
   attention_logits = tf.reshape(
       tf.matmul(tf.tanh(linear(tf.reshape(xs, [-1, embedding_size]),

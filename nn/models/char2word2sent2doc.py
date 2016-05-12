@@ -24,7 +24,8 @@ def char2word2sent2doc(document,
                        context_vector_size):
   with tf.variable_scope("char_embedding"):
     char_embeddings = embeddings(id_space_size=char_space_size,
-                                 embedding_size=char_embedding_size)
+                                 embedding_size=char_embedding_size,
+                                 name="char_embeddings")
 
   with tf.variable_scope("word_embedding"):
     word_embeddings = bidirectional_id_sequence_to_embedding(

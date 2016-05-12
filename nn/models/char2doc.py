@@ -18,7 +18,8 @@ def char2doc(document,
              output_layer_size,
              context_vector_size):
   char_embeddings = embeddings(id_space_size=char_space_size,
-                               embedding_size=char_embedding_size)
+                               embedding_size=char_embedding_size,
+                               name="char_embeddings")
 
   document_embedding = id_sequence_to_embedding(
       document,

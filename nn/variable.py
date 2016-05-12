@@ -2,8 +2,8 @@ import tensorflow as tf
 
 
 
-def variable(shape):
-  return tf.Variable(_normal(shape))
+def variable(shape, name=None):
+  return tf.Variable(_normal(shape), name=name)
 
 
 def _normal(shape):

@@ -64,8 +64,9 @@ def char2word2sent2doc(document,
 
 
 def _restore_document_shape(sentences, document):
-  return tf.reshape(sentences, [-1] + [static_shape(document)[1]]
-                                    + static_shape(sentences)[1:])
+  return tf.reshape(
+      sentences,
+      [-1, static_shape(document)[1]] + static_shape(sentences)[1:])
 
 
 def _restore_sentence_shape(words, document):

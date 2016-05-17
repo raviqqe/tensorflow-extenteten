@@ -17,3 +17,7 @@ def funcname_scope(func):
     with tf.variable_scope(func.__name__):
       return func(*args, **kwargs)
   return wrapper
+
+
+def dimension_indices(tensor, start=0):
+  return list(range(static_rank(tensor)))[start:]

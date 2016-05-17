@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-from ..util import static_rank, funcname_scope
+from ..util import static_rank, funcname_scope, dimension_indices
 from ..linear import linear
 from ..variable import variable
 from ..attention import attention_please
@@ -46,9 +46,4 @@ def _pack_cell_outputs_in_batch_seq_embed_order(cell_outputs):
 def _split_child_embeddings(child_embeddings):
   return tf.unpack(tf.transpose(
       child_embeddings,
-      [1, 0] + _dimension_indices(child_embeddings)[2:]))
-
-
-@funcname_scope
-def _dimension_indices(tensor):
-  return list(range(static_rank(tensor)))
+      [1, 0] + dimension_indices(child_embeddings, 2)))

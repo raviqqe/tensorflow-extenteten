@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-from .util import static_shape, static_rank, funcname_scope
+from .util import static_shape, static_rank, funcname_scope, dimension_indices
 
 
 
@@ -53,8 +53,4 @@ def _split_output_layer_by_labels(tensor, num_of_labels):
 def _concat_by_labels(tensors: [("batch", ...)]):
   packed_tensor = tf.pack(tensors) # (label, batch, ...)
   return tf.transpose(packed_tensor,
-                      [1, 0] + _dimensions(packed_tensor, start=2))
-
-
-def _dimensions(tensor, start=0):
-  return list(range(static_rank(tensor)))[start:]
+                      [1, 0] + dimension_indices(packed_tensor, start=2))

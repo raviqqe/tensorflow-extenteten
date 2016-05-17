@@ -63,10 +63,6 @@ def char2word2sent2doc(document,
   return linear(hidden_layer, output_layer_size)
 
 
-def _concat(tensors):
-  return tf.concat(1, list(tensors))
-
-
 def _restore_document_shape(sentences, document):
   return tf.reshape(sentences, [-1] + [static_shape(document)[1]]
                                     + static_shape(sentences)[1:])

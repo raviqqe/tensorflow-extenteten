@@ -1,8 +1,9 @@
 import tensorflow as tf
 
-from ..util import static_shape, static_rank, funcname_scope
+from ..util import static_rank, funcname_scope
 from ..linear import linear
 from ..variable import variable
+from ..attention import attention_please
 
 
 
@@ -18,7 +19,7 @@ def embeddings_to_embedding(child_embeddings,
                       output_embedding_size=output_embedding_size,
                       dropout_prob=dropout_prob)
 
-  return _attention_please(cell_outputs, context_vector_size)
+  return attention_please(cell_outputs, context_vector_size)
 
 
 @funcname_scope
@@ -39,34 +40,6 @@ def _rnn(child_embeddings, *, output_embedding_size, dropout_prob):
 @funcname_scope
 def _pack_cell_outputs_in_batch_seq_embed_order(cell_outputs):
   return tf.transpose(tf.pack(cell_outputs), [1, 0, 2])
-
-
-@funcname_scope
-def _attention_please(xs, context_vector_size):
-  return _give_attention(xs, _calculate_attention(xs, context_vector_size))
-
-
-@funcname_scope
-def _calculate_attention(xs : ("batch", "sequence", "embedding"),
-                         context_vector_size):
-  sequence_length = static_shape(xs)[1]
-  embedding_size = static_shape(xs)[2]
-
-  context_vector = variable([context_vector_size, 1], name="context_vector")
-
-  attention_logits = tf.reshape(
-      tf.matmul(tf.tanh(linear(tf.reshape(xs, [-1, embedding_size]),
-                        context_vector_size)),
-                context_vector),
-      [-1, sequence_length])
-
-  return tf.nn.softmax(attention_logits)
-
-
-@funcname_scope
-def _give_attention(xs, attention):
-  return tf.squeeze(tf.batch_matmul(tf.transpose(xs, [0, 2, 1]),
-                                    tf.expand_dims(attention, 2)), [2])
 
 
 @funcname_scope

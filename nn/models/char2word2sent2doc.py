@@ -3,7 +3,7 @@ import tensorflow as tf
 from ..embedding import bidirectional_embeddings_to_embedding, \
                         bidirectional_id_sequence_to_embedding, \
                         embeddings
-from ..linear import linear
+from ..layer import linear
 from ..dropout import dropout
 from ..util import static_shape, static_rank, funcname_scope
 from ..mlp import mlp

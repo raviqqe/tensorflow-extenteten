@@ -3,7 +3,7 @@ import tensorflow as tf
 
 from .util import static_rank, funcname_scope
 from .variable import variable
-from .linear import fully_connected
+from .layer import fully_connected
 
 
 

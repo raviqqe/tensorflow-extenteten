@@ -1,7 +1,7 @@
 import tensorflow as tf
 
 from ..embedding import id_sequence_to_embedding, embeddings
-from ..linear import linear
+from ..layer import linear
 from ..dropout import dropout
 from ..util import funcname_scope
 

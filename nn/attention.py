@@ -1,7 +1,7 @@
 import tensorflow as tf
 
 from .util import static_shape, funcname_scope
-from .linear import linear
+from .layer import linear
 from .variable import variable
 
 

@@ -20,7 +20,7 @@ def char2word2sent2doc(document,
                        sentence_embedding_size,
                        document_embedding_size,
                        dropout_prob,
-                       hidden_layer_size,
+                       hidden_layer_sizes,
                        output_layer_size,
                        context_vector_size):
   """
@@ -59,7 +59,7 @@ def char2word2sent2doc(document,
         dropout_prob=dropout_prob)
 
   return mlp(document_embedding,
-             layer_sizes=[hidden_layer_size, output_layer_size],
+             layer_sizes=list(hidden_layer_sizes)+[output_layer_size],
              dropout_prob=dropout_prob)
 
 

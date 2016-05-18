@@ -6,6 +6,7 @@ from ..embedding import bidirectional_embeddings_to_embedding, \
 from ..linear import linear
 from ..dropout import dropout
 from ..util import static_shape, static_rank, funcname_scope
+from ..mlp import mlp
 
 
 
@@ -57,10 +58,9 @@ def char2word2sent2doc(document,
         context_vector_size=context_vector_size,
         dropout_prob=dropout_prob)
 
-  hidden_layer = dropout(_activate(linear(_activate(document_embedding),
-                                          hidden_layer_size)),
-                         dropout_prob)
-  return linear(hidden_layer, output_layer_size)
+  return mlp(document_embedding,
+             layer_sizes=[hidden_layer_size, output_layer_size],
+             dropout_prob=dropout_prob)
 
 
 def _restore_document_shape(sentences, document):

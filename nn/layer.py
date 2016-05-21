@@ -1,3 +1,4 @@
+import functools
 import tensorflow as tf
 
 from .util import static_shape, funcname_scope
@@ -21,7 +22,11 @@ def fully_connected(x,
                     dropout_prob,
                     output_layer_size,
                     activate=None):
-  return dropout(
-      ((lambda x: x) if activate is None else activate)
-          (linear(x, output_layer_size)),
-      dropout_prob)
+  may_dropout = _identity if dropout_prob == 0 else \
+                functools.partial(dropout, dropout_prob=dropout_prob)
+  may_activate = _identity if activate == None else activate
+  return may_dropout(may_activate((linear(x, output_layer_size))))
+
+
+def _identity(x):
+  return x

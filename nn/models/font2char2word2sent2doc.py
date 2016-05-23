@@ -26,4 +26,5 @@ def font2char2word2sent2doc(document,
   return ar2word2sent2doc(document,
                           words=words,
                           char_embeddings=char_embeddings,
+                          dropout_prob=dropout_prob,
                           **ar2word2sent2doc_hyper_params)

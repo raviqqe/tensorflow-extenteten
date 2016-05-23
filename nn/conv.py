@@ -1,7 +1,7 @@
 import functools
 import tensorflow as tf
 
-from .util import funcname_scope
+from .util import funcname_scope, static_rank, static_shape
 from .variable import variable
 from .assertion import check_natural_num
 
@@ -20,13 +20,15 @@ def lenet(x):
 
 
 def conv2d(x, kernel_shape, num_of_output_channels):
+  assert static_rank(x) == 4
   assert _check_kernel_shape(kernel_shape)
   assert check_natural_num(num_of_output_channels)
 
   return tf.nn.conv2d(
       x,
-      variable(list(kernel_shape) + [None, num_of_output_channels],
-               name="kernel"),
+      variable(
+        list(kernel_shape) + [static_shape(x)[-1], num_of_output_channels],
+        name="kernel"),
       strides=[1, 1, 1, 1],
       padding="SAME")
 

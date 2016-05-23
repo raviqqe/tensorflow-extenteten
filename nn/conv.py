@@ -19,6 +19,7 @@ def lenet(x):
   return pool(h)
 
 
+@funcname_scope
 def conv2d(x, kernel_shape, num_of_output_channels):
   assert static_rank(x) == 4
   assert _check_kernel_shape(kernel_shape)
@@ -33,6 +34,7 @@ def conv2d(x, kernel_shape, num_of_output_channels):
       padding="SAME")
 
 
+@funcname_scope
 def max_pool(x, kernel_shape):
   assert _check_kernel_shape(kernel_shape)
 

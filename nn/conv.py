@@ -1,6 +1,7 @@
 import functools
 import tensorflow as tf
 
+from .util import funcname_scope
 from .variable import variable
 from .assertion import check_natural_num
 
@@ -24,7 +25,8 @@ def conv2d(x, kernel_shape, num_of_output_channels):
 
   return tf.nn.conv2d(
       x,
-      variable(list(kernel) + [None, num_of_output_channels], name="kernel"),
+      variable(list(kernel_shape) + [None, num_of_output_channels],
+               name="kernel"),
       strides=[1, 1, 1, 1],
       padding="SAME")
 
@@ -32,7 +34,7 @@ def conv2d(x, kernel_shape, num_of_output_channels):
 def max_pool(x, kernel_shape):
   assert _check_kernel_shape(kernel_shape)
 
-  strides = [1] + list(kernel) + [1]
+  strides = [1] + list(kernel_shape) + [1]
   return tf.nn.max_pool(x, ksize=strides, strides=strides, padding="SAME")
 
 

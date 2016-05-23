@@ -1,10 +1,11 @@
 import tensorflow as tf
 
 from .conv import lenet
-from .util import static_rank, static_shape
+from .util import static_rank, static_shape, funcname_scope
 
 
 
+@funcname_scope
 def font2char(fonts):
   assert static_rank(fonts) == 3
 

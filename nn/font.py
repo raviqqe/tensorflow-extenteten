@@ -17,4 +17,4 @@ def font2char(fonts, *, dropout_prob, char_embedding_size):
       tf.reshape(lenet(images), [static_shape(fonts)[0], -1]),
       dropout_prob=dropout_prob,
       output_layer_size=char_embedding_size,
-      activate=None)
+      activate=tf.nn.elu)

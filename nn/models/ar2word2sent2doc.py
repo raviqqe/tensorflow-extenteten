@@ -29,7 +29,7 @@ def ar2word2sent2doc(document,
   assert static_rank(words) == 2
   assert static_rank(char_embeddings) == 2
 
-  with tf.variable_scope("word_embedding"):
+  with tf.variable_scope("char2word"):
     word_embeddings = bidirectional_id_sequence_to_embedding(
         tf.gather(words, _flatten_document_to_words(document)),
         char_embeddings,
@@ -37,14 +37,14 @@ def ar2word2sent2doc(document,
         context_vector_size=context_vector_size,
         dropout_prob=dropout_prob)
 
-  with tf.variable_scope("sentence_embedding"):
+  with tf.variable_scope("word2sent"):
     sentence_embeddings = bidirectional_embeddings_to_embedding(
         _restore_sentence_shape(word_embeddings, document),
         output_embedding_size=sentence_embedding_size,
         context_vector_size=context_vector_size,
         dropout_prob=dropout_prob)
 
-  with tf.variable_scope("document_embedding"):
+  with tf.variable_scope("sent2doc"):
     document_embedding = bidirectional_embeddings_to_embedding(
         _restore_document_shape(sentence_embeddings, document),
         output_embedding_size=document_embedding_size,

@@ -21,7 +21,7 @@ def char2word2sent2doc(document,
   assert static_rank(document) == 3
   assert static_rank(words) == 2
 
-  with tf.variable_scope("char_embedding"):
+  with tf.variable_scope("char_embeddings"):
     char_embeddings = embeddings(id_space_size=char_space_size,
                                  embedding_size=char_embedding_size,
                                  name="char_embeddings")

@@ -20,9 +20,6 @@ def ar2word2sent2doc(document,
                      context_vector_size):
   """
   char2word2sent2doc model lacking character embeddings
-
-  The argument `document` is in the shape of
-  (batch size, #sentences / document, #words / sentence).
   """
 
   assert static_rank(document) == 3
@@ -30,23 +27,27 @@ def ar2word2sent2doc(document,
   assert static_rank(char_embeddings) == 2
 
   with tf.variable_scope("char2word"):
-    word_embeddings = bidirectional_id_sequence_to_embedding(
-        tf.gather(words, _flatten_document_to_words(document)),
-        char_embeddings,
-        output_embedding_size=word_embedding_size,
-        context_vector_size=context_vector_size,
-        dropout_prob=dropout_prob)
+    word_embeddings = _restore_sentence_shape(
+        bidirectional_id_sequence_to_embedding(
+            tf.gather(words, _flatten_document_to_words(document)),
+            char_embeddings,
+            output_embedding_size=word_embedding_size,
+            context_vector_size=context_vector_size,
+            dropout_prob=dropout_prob),
+        document)
 
   with tf.variable_scope("word2sent"):
-    sentence_embeddings = bidirectional_embeddings_to_embedding(
-        _restore_sentence_shape(word_embeddings, document),
-        output_embedding_size=sentence_embedding_size,
-        context_vector_size=context_vector_size,
-        dropout_prob=dropout_prob)
+    sentence_embeddings = _restore_document_shape(
+        bidirectional_embeddings_to_embedding(
+            word_embeddings,
+            output_embedding_size=sentence_embedding_size,
+            context_vector_size=context_vector_size,
+            dropout_prob=dropout_prob),
+        document)
 
   with tf.variable_scope("sent2doc"):
     document_embedding = bidirectional_embeddings_to_embedding(
-        _restore_document_shape(sentence_embeddings, document),
+        sentence_embeddings,
         output_embedding_size=document_embedding_size,
         context_vector_size=context_vector_size,
         dropout_prob=dropout_prob)

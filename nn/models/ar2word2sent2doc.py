@@ -1,9 +1,8 @@
 import tensorflow as tf
 
-from ..embedding import bidirectional_embeddings_to_embedding, \
-                        bidirectional_id_sequence_to_embedding
+from ..embedding import bidirectional_id_sequence_to_embedding
 from ..util import static_shape, static_rank, funcname_scope
-from ..mlp import mlp
+from .rd2sent2doc import rd2sent2doc
 
 
 
@@ -12,14 +11,11 @@ def ar2word2sent2doc(document,
                      words,
                      char_embeddings,
                      word_embedding_size,
-                     sentence_embedding_size,
-                     document_embedding_size,
                      dropout_prob,
-                     hidden_layer_sizes,
-                     output_layer_size,
-                     context_vector_size):
+                     context_vector_size,
+                     **rd2sent2doc_hyper_params):
   """
-  char2word2sent2doc model lacking character embeddings
+  char2word2sent2doc model lacking character embeddings as parameters
   """
 
   assert static_rank(document) == 3
@@ -27,50 +23,28 @@ def ar2word2sent2doc(document,
   assert static_rank(char_embeddings) == 2
 
   with tf.variable_scope("char2word"):
-    word_embeddings = _restore_sentence_shape(
+    word_embeddings = _restore_document_shape(
         bidirectional_id_sequence_to_embedding(
-            tf.gather(words, _flatten_document_to_words(document)),
+            tf.gather(words, _flatten_document_into_word_ids(document)),
             char_embeddings,
             output_embedding_size=word_embedding_size,
             context_vector_size=context_vector_size,
             dropout_prob=dropout_prob),
         document)
 
-  with tf.variable_scope("word2sent"):
-    sentence_embeddings = _restore_document_shape(
-        bidirectional_embeddings_to_embedding(
-            word_embeddings,
-            output_embedding_size=sentence_embedding_size,
-            context_vector_size=context_vector_size,
-            dropout_prob=dropout_prob),
-        document)
-
-  with tf.variable_scope("sent2doc"):
-    document_embedding = bidirectional_embeddings_to_embedding(
-        sentence_embeddings,
-        output_embedding_size=document_embedding_size,
-        context_vector_size=context_vector_size,
-        dropout_prob=dropout_prob)
-
-  return mlp(document_embedding,
-             layer_sizes=list(hidden_layer_sizes)+[output_layer_size],
-             dropout_prob=dropout_prob)
+  return rd2sent2doc(word_embeddings,
+                     dropout_prob=dropout_prob,
+                     context_vector_size=context_vector_size,
+                     **rd2sent2doc_hyper_params)
 
 
 @funcname_scope
-def _restore_document_shape(sentences, document):
-  return tf.reshape(
-      sentences,
-      [-1, static_shape(document)[1]] + static_shape(sentences)[1:])
+def _flatten_document_into_word_ids(document):
+  return tf.reshape(document, [-1])
 
 
 @funcname_scope
-def _restore_sentence_shape(words, document):
+def _restore_document_shape(words, document):
   return tf.reshape(
       words,
-      [-1, static_shape(document)[2]] + static_shape(words)[1:])
-
-
-@funcname_scope
-def _flatten_document_to_words(document):
-  return tf.reshape(document, [-1])
+      [-1] + static_shape(document)[1:3] + static_shape(words)[1:])

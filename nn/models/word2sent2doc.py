@@ -17,8 +17,8 @@ def word2sent2doc(document,
   with tf.variable_scope("word_embeddings"):
     word_embeddings = tf.gather(
         embeddings(id_space_size=word_space_size,
-            embedding_size=word_embedding_size,
-            name="word_embeddings"),
+                   embedding_size=word_embedding_size,
+                   name="word_embeddings"),
         document)
 
   return rd2sent2doc(word_embeddings, **rd2sent2doc_hyper_params)

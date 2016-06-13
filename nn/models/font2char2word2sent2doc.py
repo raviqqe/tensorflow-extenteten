@@ -18,7 +18,6 @@ def font2char2word2sent2doc(document,
   assert static_rank(words) == 2
   assert static_rank(fonts) == 3
 
-
   return ar2word2sent2doc(
       document,
       words=words,

@@ -11,7 +11,7 @@ def word2sent2doc(document,
                   *,
                   word_space_size,
                   word_embedding_size,
-                  **rd2sent2doc_hyper_params):
+                  **rd2sent2doc_hyperparams):
   assert static_rank(document) == 3
 
   with tf.variable_scope("word_embeddings"):
@@ -21,4 +21,4 @@ def word2sent2doc(document,
                    name="word_embeddings"),
         document)
 
-  return rd2sent2doc(word_embeddings, **rd2sent2doc_hyper_params)
+  return rd2sent2doc(word_embeddings, **rd2sent2doc_hyperparams)

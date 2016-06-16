@@ -13,7 +13,7 @@ def ar2word2sent2doc(document,
                      word_embedding_size,
                      dropout_prob,
                      context_vector_size,
-                     **rd2sent2doc_hyper_params):
+                     **rd2sent2doc_hyperparams):
   """
   char2word2sent2doc model lacking character embeddings as parameters
   """
@@ -35,7 +35,7 @@ def ar2word2sent2doc(document,
   return rd2sent2doc(word_embeddings,
                      dropout_prob=dropout_prob,
                      context_vector_size=context_vector_size,
-                     **rd2sent2doc_hyper_params)
+                     **rd2sent2doc_hyperparams)
 
 
 @funcname_scope

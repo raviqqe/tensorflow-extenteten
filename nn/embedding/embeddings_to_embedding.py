@@ -10,8 +10,8 @@ from ..rnn import rnn
 def embeddings_to_embedding(child_embeddings,
                             *,
                             context_vector_size,
-                            **rnn_hyper_params):
+                            **rnn_hyperparams):
   assert static_rank(child_embeddings) == 3
 
-  return attention_please(rnn(child_embeddings, **rnn_hyper_params),
+  return attention_please(rnn(child_embeddings, **rnn_hyperparams),
                           context_vector_size)

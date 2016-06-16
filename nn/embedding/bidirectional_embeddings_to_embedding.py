@@ -13,12 +13,12 @@ def bidirectional_embeddings_to_embedding(child_embeddings,
                                           *,
                                           context_vector_size,
                                           output_embedding_size,
-                                          **rnn_hyper_params):
+                                          **rnn_hyperparams):
   assert output_embedding_size % 2 == 0
 
   rnn_ = functools.partial(rnn,
                            output_embedding_size=output_embedding_size // 2,
-                           **rnn_hyper_params)
+                           **rnn_hyperparams)
 
   with tf.variable_scope("forward"):
     forward_outputs = rnn_(child_embeddings)

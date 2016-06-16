@@ -12,7 +12,7 @@ def char2word2sent2doc(document,
                        words,
                        char_space_size,
                        char_embedding_size,
-                       **ar2word2sent2doc_hyper_params):
+                       **ar2word2sent2doc_hyperparams):
   """
   The argument `document` is in the shape of
   (batch size, #sentences / document, #words / sentence).
@@ -29,4 +29,4 @@ def char2word2sent2doc(document,
   return ar2word2sent2doc(document,
                           words=words,
                           char_embeddings=char_embeddings,
-                          **ar2word2sent2doc_hyper_params)
+                          **ar2word2sent2doc_hyperparams)

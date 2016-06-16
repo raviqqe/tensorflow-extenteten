@@ -13,7 +13,7 @@ def font2char2word2sent2doc(document,
                             fonts,
                             char_embedding_size,
                             dropout_prob,
-                            **ar2word2sent2doc_hyper_params):
+                            **ar2word2sent2doc_hyperparams):
   assert static_rank(document) == 3
   assert static_rank(words) == 2
   assert static_rank(fonts) == 3
@@ -25,4 +25,4 @@ def font2char2word2sent2doc(document,
                                 dropout_prob=dropout_prob,
                                 char_embedding_size=char_embedding_size),
       dropout_prob=dropout_prob,
-      **ar2word2sent2doc_hyper_params)
+      **ar2word2sent2doc_hyperparams)

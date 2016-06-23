@@ -2,6 +2,7 @@ from .ids_to_embeddings import ids_to_embeddings
 from .bidirectional_embeddings_to_embedding \
     import bidirectional_embeddings_to_embedding
 from ..util import static_rank, funcname_scope
+from ..dynamic_length import *
 
 
 
@@ -13,4 +14,5 @@ def bidirectional_id_sequence_to_embedding(child_id_sequence,
 
   return bidirectional_embeddings_to_embedding(
       ids_to_embeddings(child_id_sequence, child_embeddings),
+      sequence_length=id_sequence_to_length(child_id_sequence),
       **kwargs)

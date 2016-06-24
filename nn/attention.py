@@ -4,7 +4,7 @@ from .util import static_shape, funcname_scope
 from .layer import linear
 from .variable import variable
 from .summary import summarize
-from .dynamic_length import dynamic_softmax
+from .softmax import softmax
 
 
 
@@ -28,8 +28,7 @@ def _calculate_attention(xs : ("batch", "sequence", "embedding"),
                 context_vector),
       [-1, static_shape(xs)[1]])
 
-  return tf.nn.softmax(attention_logits) if sequence_length is None else \
-         dynamic_softmax(attention_logits, sequence_length)
+  return softmax(attention_logits, sequence_length)
 
 
 @funcname_scope

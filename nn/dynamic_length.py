@@ -1,6 +1,7 @@
 import tensorflow as tf
 
 from .util import static_shape, static_rank, dimension_indices
+from .control import unpack_to_array
 
 
 
@@ -21,11 +22,19 @@ def _not_equal(tensor, scalar):
 def dynamic_softmax(vector, sequence_length):
   assert static_rank(vector) == 2
 
+  vector_array = unpack_to_array(vector)
+  length_array = unpack_to_array(sequence_length)
+
   def body(batch_index, dist_array):
     return batch_index + 1, dist_array.write(
         batch_index,
-        _right_pad(tf.nn.softmax(tf.expand_dims(tf.gather(vector, batch_index), 0)),
-                   static_shape(vector)[1]))
+        _right_pad(
+            tf.nn.softmax(tf.expand_dims(
+                tf.slice(vector_array.read(batch_index),
+                         [0],
+                         [length_array.read(batch_index)]),
+                0)),
+            static_shape(vector)[1]))
 
   return tf.while_loop(
     lambda batch_index, _: batch_index < tf.shape(vector)[0],

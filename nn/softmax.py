@@ -1,15 +1,17 @@
 import tensorflow as tf
 
-from .util import static_shape, static_rank
+from .util import static_shape, static_rank, funcname_scope
 from .control import unpack_to_array
 
 
 
+@funcname_scope
 def softmax(vector, sequence_length=None):
   return tf.nn.softmax(vector) if sequence_length is None else \
          _dynamic_softmax(vector, sequence_length)
 
 
+@funcname_scope
 def _dynamic_softmax(vector, sequence_length):
   assert static_rank(vector) == 2
 
@@ -35,6 +37,7 @@ def _dynamic_softmax(vector, sequence_length):
   )[1].concat()
 
 
+@funcname_scope
 def _right_pad(tensor, length):
   assert static_rank(tensor) == 2
   result = tf.pad(tensor,

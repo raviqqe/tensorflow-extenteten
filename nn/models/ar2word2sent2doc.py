@@ -29,7 +29,8 @@ def ar2word2sent2doc(document,
             char_embeddings,
             output_embedding_size=word_embedding_size,
             context_vector_size=context_vector_size,
-            dropout_prob=dropout_prob),
+            dropout_prob=dropout_prob,
+            dynamic_length=True),
         document)
 
   return rd2sent2doc(word_embeddings,

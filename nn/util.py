@@ -1,4 +1,5 @@
 import functools
+import numpy
 import tensorflow as tf
 
 
@@ -21,3 +22,15 @@ def funcname_scope(func):
 
 def dimension_indices(tensor, start=0):
   return list(range(static_rank(tensor)))[start:]
+
+
+@funcname_scope
+def machine_epsilon(dtype):
+  if dtype in {tf.float32, tf.float64}:
+    return tf.constant(_numpy_epsilon(dtype.as_numpy_dtype))
+  else:
+    raise "Machine epsilon for {} is not defined.".format(dtype)
+
+
+def _numpy_epsilon(dtype):
+  return numpy.finfo(dtype).eps

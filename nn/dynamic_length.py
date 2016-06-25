@@ -5,9 +5,9 @@ from .util import static_rank, dimension_indices, funcname_scope
 
 
 @funcname_scope
-def id_tree_to_first_width(id_tree, null_id=0):
+def id_tree_to_root_width(id_tree, null_id=0):
   return id_sequence_to_length(tf.reduce_sum(_not_equal(id_tree, null_id),
-                                             dimension_indices(ids, 2)))
+                                             dimension_indices(id_tree, 2)))
 
 
 @funcname_scope

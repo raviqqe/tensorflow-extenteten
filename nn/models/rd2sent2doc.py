@@ -1,13 +1,16 @@
 import functools
 import tensorflow as tf
 
-from ..embedding import bidirectional_embeddings_to_embedding
+from ..embedding import bidirectional_id_sequence_to_embedding, \
+                        bidirectional_embeddings_to_embedding
 from ..util import static_shape, static_rank, funcname_scope
 from ..mlp import mlp
+from ..dynamic_length import id_tree_to_root_width
 
 
 
 def rd2sent2doc(document,
+                word_embeddings,
                 *,
                 sentence_embedding_size,
                 document_embedding_size,
@@ -19,7 +22,8 @@ def rd2sent2doc(document,
   word2sent2doc model lacking word embeddings as parameters
   """
 
-  assert static_rank(document) == 4
+  assert static_rank(document) == 3
+  assert static_rank(word_embeddings) == 2
 
   embeddings_to_embedding = functools.partial(
       bidirectional_embeddings_to_embedding,
@@ -28,14 +32,22 @@ def rd2sent2doc(document,
 
   with tf.variable_scope("word2sent"):
     sentence_embeddings = _restore_document_shape(
-        embeddings_to_embedding(_flatten_document_into_sentences(document),
-                                output_embedding_size=sentence_embedding_size),
+        bidirectional_id_sequence_to_embedding(
+            _flatten_document_into_sentences(document),
+            word_embeddings,
+            output_embedding_size=sentence_embedding_size,
+            context_vector_size=context_vector_size,
+            dropout_prob=dropout_prob,
+            dynamic_length=True),
         document)
 
   with tf.variable_scope("sent2doc"):
-    document_embedding = embeddings_to_embedding(
+    document_embedding = bidirectional_embeddings_to_embedding(
         sentence_embeddings,
-        output_embedding_size=document_embedding_size)
+        sequence_length=id_tree_to_root_width(document),
+        output_embedding_size=document_embedding_size,
+        context_vector_size=context_vector_size,
+        dropout_prob=dropout_prob)
 
   return mlp(document_embedding,
              layer_sizes=list(hidden_layer_sizes)+[output_layer_size],

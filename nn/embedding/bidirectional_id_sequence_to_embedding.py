@@ -9,10 +9,13 @@ from ..dynamic_length import *
 @funcname_scope
 def bidirectional_id_sequence_to_embedding(child_id_sequence,
                                            child_embeddings,
+                                           *,
+                                           dynamic_length=False,
                                            **kwargs):
   assert static_rank(child_id_sequence) == 2
 
   return bidirectional_embeddings_to_embedding(
       ids_to_embeddings(child_id_sequence, child_embeddings),
-      sequence_length=id_sequence_to_length(child_id_sequence),
+      sequence_length=id_sequence_to_length(child_id_sequence)
+                      if dynamic_length else None,
       **kwargs)

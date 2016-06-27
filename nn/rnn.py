@@ -1,4 +1,3 @@
-import functools
 import tensorflow as tf
 
 from .util import funcname_scope, dimension_indices
@@ -25,7 +24,7 @@ def bidirectional_rnn(input_embeddings,
                       dropout_prob,
                       sequence_length=None):
   assert output_embedding_size % 2 == 0
-  cell = functools.partial(gru_cell, output_embedding_size // 2, dropout_prob)
+  cell = lambda: gru_cell(output_embedding_size // 2, dropout_prob)
 
   return _only_outputs(tf.nn.bidirectional_rnn(
       cell(),

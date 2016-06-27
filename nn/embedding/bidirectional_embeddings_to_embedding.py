@@ -7,13 +7,13 @@ from ..attention import attention_please
 
 
 @funcname_scope
-def bidirectional_embeddings_to_embedding(child_embeddings,
+def bidirectional_embeddings_to_embedding(embeddings,
                                           *,
                                           context_vector_size,
                                           sequence_length=None,
                                           **rnn_hyperparams):
   return attention_please(
-      bidirectional_rnn(child_embeddings,
+      bidirectional_rnn(embeddings,
                         sequence_length=sequence_length,
                         **rnn_hyperparams),
       context_vector_size,

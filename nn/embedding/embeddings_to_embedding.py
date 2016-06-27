@@ -7,11 +7,14 @@ from ..rnn import rnn
 
 
 @funcname_scope
-def embeddings_to_embedding(child_embeddings,
+def embeddings_to_embedding(embeddings,
                             *,
                             context_vector_size,
+                            sequence_length=None,
                             **rnn_hyperparams):
-  assert static_rank(child_embeddings) == 3
+  assert static_rank(embeddings) == 3
 
-  return attention_please(rnn(child_embeddings, **rnn_hyperparams),
-                          context_vector_size)
+  return attention_please(
+      rnn(embeddings, sequence_length=sequence_length, **rnn_hyperparams),
+      context_vector_size=context_vector_size,
+      sequence_length=sequence_length)

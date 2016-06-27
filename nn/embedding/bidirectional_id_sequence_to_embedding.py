@@ -7,15 +7,15 @@ from ..dynamic_length import id_sequence_to_length
 
 
 @funcname_scope
-def bidirectional_id_sequence_to_embedding(child_id_sequence,
-                                           child_embeddings,
+def bidirectional_id_sequence_to_embedding(id_sequence,
+                                           embeddings,
                                            *,
                                            dynamic_length=False,
                                            **kwargs):
-  assert static_rank(child_id_sequence) == 2
+  assert static_rank(id_sequence) == 2
 
   return bidirectional_embeddings_to_embedding(
-      ids_to_embeddings(child_id_sequence, child_embeddings),
-      sequence_length=id_sequence_to_length(child_id_sequence)
+      ids_to_embeddings(id_sequence, embeddings),
+      sequence_length=id_sequence_to_length(id_sequence)
                       if dynamic_length else None,
       **kwargs)

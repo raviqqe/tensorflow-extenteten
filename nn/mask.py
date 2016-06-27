@@ -11,7 +11,12 @@ def mask(length, max_length):
 
   return tf.to_int32(tf.less(
       _range(max_length, batch_size=tf.shape(length)[0]),
-      tf.tile(tf.transpose(tf.expand_dims(length, 0)), [1, max_length])))
+      _tile_length(length, max_length)))
+
+
+@funcname_scope
+def _tile_length(length, max_length):
+  return tf.tile(tf.transpose(tf.expand_dims(length, 0)), [1, max_length])
 
 
 @funcname_scope

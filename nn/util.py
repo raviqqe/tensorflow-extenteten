@@ -34,3 +34,11 @@ def machine_epsilon(dtype):
 
 def _numpy_epsilon(dtype):
   return numpy.finfo(dtype).eps
+
+
+def is_int(num):
+  return isinstance(num, int) \
+         or isinstance(num, numpy.integer) \
+         or (isinstance(num, numpy.ndarray)
+             and num.ndim == 0
+             and issubclass(num.dtype.type, numpy.integer))

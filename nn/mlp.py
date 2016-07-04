@@ -1,7 +1,7 @@
 import functools
 import tensorflow as tf
 
-from .util import static_rank, funcname_scope
+from .util import static_rank, funcname_scope, is_int
 from .variable import variable
 from .layer import fully_connected
 
@@ -10,7 +10,7 @@ from .layer import fully_connected
 @funcname_scope
 def mlp(x, *, layer_sizes, dropout_prob, activate=tf.nn.elu):
   assert static_rank(x) == 2
-  assert all(isinstance(size, int) for size in layer_sizes)
+  assert all(is_int(size) for size in layer_sizes)
 
   def activated_fully_connected(x, output_layer_size):
     return fully_connected(

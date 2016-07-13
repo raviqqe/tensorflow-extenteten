@@ -3,7 +3,7 @@ import tensorflow as tf
 from .util import static_shape, funcname_scope
 from .layer import linear
 from .variable import variable
-from .summary import summarize
+from .summary import summarize, summarize_as_image
 from .softmax import softmax
 
 
@@ -28,7 +28,9 @@ def _calculate_attention(xs : ("batch", "sequence", "embedding"),
                 context_vector),
       [-1, static_shape(xs)[1]])
 
-  return softmax(attention_logits, sequence_length)
+  attention = softmax(attention_logits, sequence_length)
+  summarize_as_image(attention)
+  return attention
 
 
 @funcname_scope

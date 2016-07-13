@@ -11,7 +11,7 @@ def font2char(fonts, *, dropout_prob, char_embedding_size):
   assert static_rank(fonts) == 3
 
   images = tf.expand_dims(fonts, -1)
-  tf.image_summary("fonts", images, max_images=256)
+  tf.image_summary("fonts", images)
 
   return fully_connected(
       tf.reshape(lenet(images), [static_shape(fonts)[0], -1]),

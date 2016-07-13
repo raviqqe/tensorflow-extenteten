@@ -6,8 +6,9 @@ from .util import static_shape, static_rank, funcname_scope
 
 @funcname_scope
 def loss(output_layer, true_label):
-  return tf.nn.sparse_softmax_cross_entropy_with_logits(output_layer,
-                                                        true_label)
+  return tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(
+      output_layer,
+      true_label))
 
 
 @funcname_scope

@@ -44,9 +44,9 @@ def loss(output_layer, true_label):
   assert static_shape(output_layer) == static_shape(true_label)
   assert true_label.dtype == TRUE_LABEL_TYPE
 
-  return tf.nn.sigmoid_cross_entropy_with_logits(
+  return tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(
       output_layer,
-      tf.cast(true_label, output_layer.dtype))
+      tf.cast(true_label, output_layer.dtype)))
 
 
 @funcname_scope

@@ -29,7 +29,7 @@ def _calculate_attention(xs : ("batch", "sequence", "embedding"),
       [-1, static_shape(xs)[1]])
 
   attention = softmax(attention_logits, sequence_length)
-  summarize_as_image(attention)
+  summarize_as_image(tf.expand_dims(attention, 0))
   return attention
 
 

@@ -20,6 +20,16 @@ def funcname_scope(func):
   return wrapper
 
 
+def on_device(device_name):
+  def decorator(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+      with tf.device(device_name):
+        return func(*args, **kwargs)
+    return wrapper
+  return decorator
+
+
 def dimension_indices(tensor, start=0):
   return list(range(static_rank(tensor)))[start:]
 

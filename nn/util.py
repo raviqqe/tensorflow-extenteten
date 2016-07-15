@@ -52,3 +52,7 @@ def is_int(num):
          or (isinstance(num, numpy.ndarray)
              and num.ndim == 0
              and issubclass(num.dtype.type, numpy.integer))
+
+
+def flatten(x):
+  return tf.reshape(x, [-1])

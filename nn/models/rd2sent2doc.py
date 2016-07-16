@@ -31,12 +31,13 @@ def rd2sent2doc(document,
       context_vector_size=context_vector_size,
       dropout_prob=dropout_prob)
 
-  sentences = _flatten_document_into_sentences(document)
-
   with tf.variable_scope("word2sent"):
     # word_embeddings.shape == (#batch * #sent * #word, emb_size)
     #                          if save_memory else
     #                          (vocab_size, emb_size)
+
+    sentences = _flatten_document_into_sentences(document)
+
     sentence_embeddings = _restore_document_shape(
         embeddings_to_embedding(
             _restore_sentence_shape(word_embeddings, sentences)

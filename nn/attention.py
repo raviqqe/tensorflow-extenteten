@@ -3,16 +3,16 @@ import tensorflow as tf
 from .util import static_shape, funcname_scope
 from .layer import linear
 from .variable import variable
-from .summary import summarize, summarize_as_image
+from .summary import summarize
 from .softmax import softmax
 
 
 
 @funcname_scope
-def attention_please(xs, context_vector_size, sequence_length=None):
-  return _give_attention(
-      xs,
-      _calculate_attention(xs, context_vector_size, sequence_length))
+def attention_please(xs, context_vector_size, sequence_length=None, name=None):
+  attention = _calculate_attention(xs, context_vector_size, sequence_length)
+  tf.add_to_collection("attentions", attention)
+  return _give_attention(xs, attention)
 
 
 @funcname_scope
@@ -28,9 +28,7 @@ def _calculate_attention(xs : ("batch", "sequence", "embedding"),
                 context_vector),
       [-1, static_shape(xs)[1]])
 
-  attention = softmax(attention_logits, sequence_length)
-  summarize_as_image(tf.expand_dims(attention, 0))
-  return attention
+  return softmax(attention_logits, sequence_length)
 
 
 @funcname_scope

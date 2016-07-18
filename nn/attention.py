@@ -14,6 +14,7 @@ attention_collection_key = "attentions"
 @funcname_scope
 def attention_please(xs, context_vector_size, sequence_length=None, name=None):
   attention = _calculate_attention(xs, context_vector_size, sequence_length)
+  summarize(attention)
   tf.add_to_collection(attention_collection_key, attention)
   return _give_attention(xs, attention)
 

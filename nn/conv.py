@@ -3,7 +3,7 @@ import tensorflow as tf
 
 from .util import funcname_scope, static_rank, static_shape
 from .variable import variable
-from .assertion import is_natural_num, is_natural_num_list
+from .assertion import is_natural_num, is_natural_num_sequence
 
 
 
@@ -13,7 +13,7 @@ def multi_conv_and_pool(x,
                         nums_of_channels,
                         conv_kernel_shape,
                         pool_kernel_shape):
-  assert is_natural_num_list(nums_of_channels)
+  assert is_natural_num_sequence(nums_of_channels)
   assert _is_kernel_shape(conv_kernel_shape)
   assert _is_kernel_shape(pool_kernel_shape)
 
@@ -29,7 +29,7 @@ def multi_conv(x,
                *,
                nums_of_channels,
                kernel_shape):
-  assert is_natural_num_list(nums_of_channels)
+  assert is_natural_num_sequence(nums_of_channels)
   assert _is_kernel_shape(kernel_shape)
 
   def layer(x, num_of_channels):
@@ -61,4 +61,4 @@ def max_pool(x, kernel_shape):
 
 
 def _is_kernel_shape(shape):
-  return is_natural_num_list(shape, 2)
+  return is_natural_num_sequence(shape, 2)

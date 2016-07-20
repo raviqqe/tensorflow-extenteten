@@ -1,6 +1,7 @@
 import functools
 import tensorflow as tf
 
+from .config import num_of_summary_images
 from .util import funcname_scope, static_rank, static_shape
 from .variable import variable
 from .assertion import is_natural_num, is_natural_num_sequence
@@ -21,7 +22,7 @@ def multi_conv_and_pool(x,
   @funcname_scope
   def layer(x, num_of_channels):
     h = tf.tanh(conv2d(x, conv_kernel_shape, num_of_channels))
-    image_summary(tf.transpose(h[0, :, :, :8], [2, 0, 1]))
+    image_summary(tf.transpose(h[0, :, :, :num_of_summary_images], [2, 0, 1]))
     return h if pool_kernel_shape is None else \
            max_pool(h, pool_kernel_shape)
 
@@ -70,5 +71,5 @@ def _is_kernel_shape(shape):
 
 def _summarize_filter(filter_):
   image_summary(tf.transpose(
-      filter_[:, :, 0, :min(static_shape(filter_)[-1], 8)],
+      filter_[:, :, 0, :min(static_shape(filter_)[-1], num_of_summary_images)],
       [2, 0, 1]))

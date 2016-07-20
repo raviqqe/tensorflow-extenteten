@@ -1,5 +1,6 @@
 import tensorflow as tf
 
+from .config import num_of_summary_images
 from .conv import multi_conv
 from .layer import fully_connected
 from .random import sample_crop
@@ -13,7 +14,7 @@ def font2char(fonts, *, dropout_prob, char_embedding_size, **conv_hyperparams):
   assert static_rank(fonts) == 3
 
   images = tf.expand_dims(fonts, -1)
-  image_summary(sample_crop(images, 8))
+  image_summary(sample_crop(images, num_of_summary_images))
 
   return fully_connected(
       tf.reshape(multi_conv(images, **conv_hyperparams),

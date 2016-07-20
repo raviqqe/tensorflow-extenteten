@@ -8,10 +8,11 @@ from .assertion import check_natural_num
 
 
 @funcname_scope
-def lenet(x,
-          nums_of_channels=[20, 50],
-          conv_kernel_shape=[5, 5],
-          pool_kernel_shape=[2, 2]):
+def multi_conv_and_pool(x,
+                        *,
+                        nums_of_channels=[20, 50],
+                        conv_kernel_shape=[5, 5],
+                        pool_kernel_shape=[2, 2]):
   def layer(x, num_of_channels):
     c = tf.tanh(conv2d(x,
                        kernel_shape=conv_kernel_shape,

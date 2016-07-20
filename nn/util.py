@@ -5,11 +5,11 @@ import tensorflow as tf
 
 
 def static_shape(tensor):
-  return tensor.get_shape().as_list()
+  return tf.convert_to_tensor(tensor).get_shape().as_list()
 
 
 def static_rank(tensor):
-  return len(static_shape(tensor))
+  return len(static_shape(tf.convert_to_tensor(tensor)))
 
 
 def funcname_scope(func):

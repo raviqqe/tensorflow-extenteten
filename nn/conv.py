@@ -10,9 +10,9 @@ from .assertion import is_natural_num, is_natural_num_list
 @funcname_scope
 def multi_conv_and_pool(x,
                         *,
-                        nums_of_channels=[20, 50],
-                        conv_kernel_shape=[5, 5],
-                        pool_kernel_shape=[2, 2]):
+                        nums_of_channels,
+                        conv_kernel_shape,
+                        pool_kernel_shape):
   assert is_natural_num_list(nums_of_channels)
   assert _is_kernel_shape(conv_kernel_shape)
   assert _is_kernel_shape(pool_kernel_shape)

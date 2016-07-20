@@ -18,6 +18,7 @@ def multi_conv_and_pool(x,
   assert _is_kernel_shape(conv_kernel_shape)
   assert _is_kernel_shape(pool_kernel_shape)
 
+  @funcname_scope
   def layer(x, num_of_channels):
     return max_pool(tf.tanh(conv2d(x, conv_kernel_shape, num_of_channels)),
                     kernel_shape=pool_kernel_shape)
@@ -33,6 +34,7 @@ def multi_conv(x,
   assert is_natural_num_sequence(nums_of_channels)
   assert _is_kernel_shape(kernel_shape)
 
+  @funcname_scope
   def layer(x, num_of_channels):
     return tf.tanh(conv2d(x, kernel_shape, num_of_channels))
 

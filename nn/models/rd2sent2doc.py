@@ -53,7 +53,7 @@ def rd2sent2doc(document,
         output_embedding_size=document_embedding_size)
 
   return mlp(document_embedding,
-             layer_sizes=list(hidden_layer_sizes)+[output_layer_size],
+             layer_sizes=[*hidden_layer_sizes, output_layer_size],
              dropout_prob=dropout_prob)
 
 

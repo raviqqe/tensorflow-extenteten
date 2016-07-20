@@ -60,7 +60,7 @@ def conv2d(x, kernel_shape, num_of_channels):
 def max_pool(x, kernel_shape):
   assert _is_kernel_shape(kernel_shape)
 
-  strides = [1] + list(kernel_shape) + [1]
+  strides = [1, *kernel_shape, 1]
   return tf.nn.max_pool(x, ksize=strides, strides=strides, padding="SAME")
 
 

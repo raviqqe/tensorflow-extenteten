@@ -44,10 +44,13 @@ def conv2d(x, kernel_shape, num_of_channels):
   assert _is_kernel_shape(kernel_shape)
   assert is_natural_num(num_of_channels)
 
+  filter_ = variable([*kernel_shape, static_shape(x)[-1], num_of_channels],
+                     name="filter")
+  _summarize_filter(filter_)
+
   return tf.nn.conv2d(
       x,
-      variable(list(kernel_shape) + [static_shape(x)[-1], num_of_channels],
-               name="kernel"),
+      filter_,
       strides=[1, 1, 1, 1],
       padding="SAME")
 
@@ -62,3 +65,9 @@ def max_pool(x, kernel_shape):
 
 def _is_kernel_shape(shape):
   return is_natural_num_sequence(shape, 2)
+
+
+def _summarize_filter(filter_):
+  tf.image_summary(filter_.name, tf.reshape(
+      tf.transpose(filter_, [2, 3, 0, 1]),
+      [-1, *static_shape(filter_)[2:]]))

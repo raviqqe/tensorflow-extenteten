@@ -4,6 +4,7 @@ import tensorflow as tf
 from .util import funcname_scope, static_rank, static_shape
 from .variable import variable
 from .assertion import is_natural_num, is_natural_num_sequence
+from .summary import image_summary
 
 
 
@@ -68,10 +69,6 @@ def _is_kernel_shape(shape):
 
 
 def _summarize_filter(filter_):
-  tf.image_summary(
-      filter_.name,
-      tf.expand_dims(
-          tf.transpose(
-              filter_[:, :, 0, :min(static_shape(filter_)[-1], 8)],
-              [2, 0, 1]),
-          -1))
+  image_summary(tf.transpose(
+      filter_[:, :, 0, :min(static_shape(filter_)[-1], 8)],
+      [2, 0, 1]))

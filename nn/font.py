@@ -1,10 +1,9 @@
 import tensorflow as tf
 
-from .config import num_of_summary_images
 from .conv import multi_conv
 from .layer import fully_connected
 from .random import sample_crop
-from .summary import image_summary
+from .summary import image_summary, num_of_summary_images
 from .util import static_rank, static_shape, funcname_scope
 
 

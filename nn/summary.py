@@ -4,6 +4,9 @@ from .util import funcname_scope, static_rank
 
 
 
+num_of_summary_images = 8
+
+
 @funcname_scope
 def summarize(variable, name=None):
   summary_name = name or variable.name

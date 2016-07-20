@@ -1,11 +1,10 @@
 import functools
 import tensorflow as tf
 
-from .config import num_of_summary_images
 from .util import funcname_scope, static_rank, static_shape
 from .variable import variable
 from .assertion import is_natural_num, is_natural_num_sequence
-from .summary import image_summary
+from .summary import image_summary, num_of_summary_images
 
 
 

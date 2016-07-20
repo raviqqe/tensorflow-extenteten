@@ -68,6 +68,10 @@ def _is_kernel_shape(shape):
 
 
 def _summarize_filter(filter_):
-  tf.image_summary(filter_.name, tf.reshape(
-      tf.transpose(filter_, [2, 3, 0, 1]),
-      [-1, *static_shape(filter_)[2:]]))
+  tf.image_summary(
+      filter_.name,
+      tf.expand_dims(
+          tf.transpose(
+              filter_[:, :, 0, :min(static_shape(filter_)[-1], 8)],
+              [2, 0, 1]),
+          -1))

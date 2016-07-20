@@ -21,7 +21,7 @@ def summarize(variable, name=None):
 
 
 @funcname_scope
-def summarize_as_image(variable, name=None):
+def image_summary(variable, name=None):
   summary_name = name or variable.name
   rank = static_rank(variable)
 
@@ -29,4 +29,4 @@ def summarize_as_image(variable, name=None):
       summary_name,
       variable if rank == 4 else
       tf.expand_dims(variable, 3) if rank == 3 else
-      tf.expand_dims(tf.expand_dims(variable, 2), 3))
+      tf.expand_dims(tf.expand_dims(variable, 0), 3))

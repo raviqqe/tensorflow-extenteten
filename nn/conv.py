@@ -22,8 +22,9 @@ def multi_conv_and_pool(x,
   @funcname_scope
   def layer(x, num_of_channels):
     h = tf.tanh(conv2d(x, conv_kernel_shape, num_of_channels))
-    image_summary(tf.transpose(sample_crop(h, 1)[:, :, :num_of_summary_images],
-                               [2, 0, 1]))
+    image_summary(tf.transpose(
+        sample_crop(h, 1)[0, :, :, :num_of_summary_images],
+        [2, 0, 1]))
     return h if pool_kernel_shape is None else \
            max_pool(h, pool_kernel_shape)
 

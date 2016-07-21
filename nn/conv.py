@@ -4,6 +4,7 @@ import tensorflow as tf
 from .util import funcname_scope, static_rank, static_shape
 from .variable import variable
 from .assertion import is_natural_num, is_natural_num_sequence
+from .random import sample_crop
 from .summary import image_summary, num_of_summary_images
 
 
@@ -21,7 +22,8 @@ def multi_conv_and_pool(x,
   @funcname_scope
   def layer(x, num_of_channels):
     h = tf.tanh(conv2d(x, conv_kernel_shape, num_of_channels))
-    image_summary(tf.transpose(h[0, :, :, :num_of_summary_images], [2, 0, 1]))
+    image_summary(tf.transpose(sample_crop(h, 1)[:, :, :num_of_summary_images],
+                               [2, 0, 1]))
     return h if pool_kernel_shape is None else \
            max_pool(h, pool_kernel_shape)
 

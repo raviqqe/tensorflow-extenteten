@@ -35,11 +35,17 @@ def dimension_indices(tensor, start=0):
 
 
 @funcname_scope
-def machine_epsilon(dtype):
-  if dtype in {tf.float32, tf.float64}:
-    return tf.constant(_numpy_epsilon(dtype.as_numpy_dtype))
-  else:
-    raise "Machine epsilon for {} is not defined.".format(dtype)
+def dtype_min(dtype):
+  return tf.constant(_numpy_min(dtype.as_numpy_dtype))
+
+
+def _numpy_min(dtype):
+  return numpy.finfo(dtype).min
+
+
+@funcname_scope
+def dtype_epsilon(dtype):
+  return tf.constant(_numpy_epsilon(dtype.as_numpy_dtype))
 
 
 def _numpy_epsilon(dtype):

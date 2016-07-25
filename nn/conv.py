@@ -9,6 +9,9 @@ from .summary import image_summary, num_of_summary_images
 
 
 
+ACTIVATE = tf.nn.relu
+
+
 @funcname_scope
 def multi_conv_and_pool(x,
                         *,
@@ -21,7 +24,7 @@ def multi_conv_and_pool(x,
 
   @funcname_scope
   def layer(x, num_of_channels):
-    h = tf.tanh(conv2d(x, conv_kernel_shape, num_of_channels))
+    h = ACTIVATE(conv2d(x, conv_kernel_shape, num_of_channels))
     image_summary(tf.transpose(
         sample_crop(h, 1)[0, :, :, :num_of_summary_images],
         [2, 0, 1]))

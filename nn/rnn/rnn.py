@@ -1,6 +1,7 @@
 import tensorflow as tf
 
-from .util import funcname_scope, dimension_indices
+from .cell import gru_cell
+from ..util import funcname_scope, dimension_indices
 
 
 
@@ -32,16 +33,6 @@ def bidirectional_rnn(input_embeddings,
       _split_input_embeddings(input_embeddings),
       sequence_length=sequence_length,
       dtype=input_embeddings.dtype))
-
-
-@funcname_scope
-def gru_cell(output_embedding_size, dropout_prob):
-  return _dropout_cell(tf.nn.rnn_cell.GRUCell(output_embedding_size),
-                       dropout_prob)
-
-
-def _dropout_cell(cell, dropout_prob):
-  return tf.nn.rnn_cell.DropoutWrapper(cell, 1 - dropout_prob)
 
 
 def _only_outputs(rnn_return_values):

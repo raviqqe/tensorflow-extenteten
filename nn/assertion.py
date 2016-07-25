@@ -16,6 +16,10 @@ def is_natural_num(num):
 
 
 def is_natural_num_sequence(num_list, length=None):
-  return isinstance(num_list, collections.Sequence) and \
+  return is_sequence(num_list) and \
          all(is_natural_num(num) for num in num_list) and \
          (length == None or len(num_list) == length)
+
+
+def is_sequence(obj):
+  return isinstance(obj, collections.Sequence)

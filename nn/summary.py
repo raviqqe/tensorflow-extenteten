@@ -16,7 +16,7 @@ def summarize(variable, name=None):
   return tf.merge_summary([
     tf.scalar_summary("mean/" + summary_name, mean),
     tf.scalar_summary("stddev/" + summary_name,
-                      tf.sqrt(tf.reduce_sum(tf.square(variable - mean)))),
+                      tf.sqrt(tf.reduce_mean(tf.square(variable - mean)))),
     tf.scalar_summary("max/" + summary_name, tf.reduce_max(variable)),
     tf.scalar_summary("min/" + summary_name, tf.reduce_min(variable)),
     tf.histogram_summary(summary_name, variable),

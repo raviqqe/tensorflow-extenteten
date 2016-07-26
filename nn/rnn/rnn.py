@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-from .cell import gru_cell
+from .cell import ln_lstm_cell as _DEFAULT_CELL
 from ..util import funcname_scope, dimension_indices
 
 
@@ -12,7 +12,7 @@ def rnn(input_embeddings,
         dropout_prob,
         sequence_length=None):
   return _only_outputs(tf.nn.rnn(
-      gru_cell(output_embedding_size, dropout_prob),
+      _DEFAULT_CELL(output_embedding_size, dropout_prob),
       _split_input_embeddings(input_embeddings),
       sequence_length=sequence_length,
       dtype=input_embeddings.dtype))
@@ -25,7 +25,7 @@ def bidirectional_rnn(input_embeddings,
                       dropout_prob,
                       sequence_length=None):
   assert output_embedding_size % 2 == 0
-  cell = lambda: gru_cell(output_embedding_size // 2, dropout_prob)
+  cell = lambda: _DEFAULT_CELL(output_embedding_size // 2, dropout_prob)
 
   return _only_outputs(tf.nn.bidirectional_rnn(
       cell(),

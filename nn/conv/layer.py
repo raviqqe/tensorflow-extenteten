@@ -15,15 +15,24 @@ def conv2d(x, kernel_shape, num_of_channels):
   assert is_kernel_shape(kernel_shape)
   assert is_natural_num(num_of_channels)
 
-  filter_ = variable([*kernel_shape, static_shape(x)[-1], num_of_channels],
-                     name="filter")
-  _summarize_filter(filter_)
-
-  return tf.nn.conv2d(
+  return _conv2d_with_filter(
       x,
-      filter_,
-      strides=[1, 1, 1, 1],
-      padding="SAME")
+      _create_filter(kernel_shape, static_shape(x)[-1], num_of_channels))
+
+
+def _create_filter(kernel_shape,
+                   num_of_input_channels,
+                   num_of_output_channels):
+  filter_ = variable(
+      [*kernel_shape, num_of_input_channels, num_of_output_channels],
+      name="filter")
+  _summarize_filter(filter_)
+  return filter_
+
+
+@funcname_scope
+def _conv2d_with_filter(x, filter_):
+  return tf.nn.conv2d(x, filter_, strides=[1, 1, 1, 1], padding="SAME")
 
 
 @funcname_scope

@@ -1,10 +1,11 @@
 import tensorflow as tf
 
 from .assertion import is_natural_num
-from .util import static_shape
+from .util import funcname_scope, static_shape
 
 
 
+@funcname_scope
 def sample_crop(xs, n):
   assert is_natural_num(n)
   return tf.random_crop(

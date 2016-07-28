@@ -10,6 +10,7 @@ from .assertion import is_kernel_shape
 
 
 _DEFAULT_CONV_STRIDES = [1, 1, 1, 1]
+_DEFAULT_PADDING = "SAME"
 
 
 @funcname_scope
@@ -35,15 +36,15 @@ def _create_filter(kernel_shape,
 
 @funcname_scope
 def _conv2d_with_filter(x, filter_):
-  return tf.nn.conv2d(x, filter_, _DEFAULT_CONV_STRIDES, "SAME")
+  return tf.nn.conv2d(x, filter_, _DEFAULT_CONV_STRIDES, _DEFAULT_PADDING)
 
 
 @funcname_scope
 def max_pool(x, kernel_shape):
   assert is_kernel_shape(kernel_shape)
 
-  strides = [1, *kernel_shape, 1]
-  return tf.nn.max_pool(x, ksize=strides, strides=strides, padding="SAME")
+  kernel_shape = [1, *kernel_shape, 1]
+  return tf.nn.max_pool(x, kernel_shape, kernel_shape, _DEFAULT_PADDING)
 
 
 def _summarize_filter(filter_):
@@ -57,6 +58,10 @@ class Conv2d(InvertibleLayer):
                kernel_shape,
                num_of_input_channels,
                num_of_output_channels):
+    assert is_kernel_shape(kernel_shape)
+    assert all(is_natural_num(num)
+               for num in [num_of_input_channels, num_of_output_channels])
+
     self._filter =  _create_filter(kernel_shape,
                                    num_of_input_channels,
                                    num_of_output_channels)
@@ -75,10 +80,20 @@ class Conv2d(InvertibleLayer):
 
 class MaxPool(InvertibleLayer):
   def __init__(self, kernel_shape):
-    pass
+    assert is_kernel_shape(kernel_shape)
+    self._kernel_shape = [1, *kernel_shape, 1]
 
   def forward(self, x):
-    return x
+    h, self._max_indices = tf.nn.max_pool_with_argmax(x,
+                                                      self._kernel_shape,
+                                                      self._kernel_shape,
+                                                      _DEFAULT_PADDING)
+    return h
 
   def backward(self, x):
-    return x
+    return _max_unpool(x, self._max_indices, self._kernel_shape)
+
+
+@funcname_scope
+def _max_unpool(x, max_indices, kernel_shape):
+  return NotImplemented

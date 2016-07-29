@@ -53,10 +53,21 @@ def _summarize_filter(filter_):
       [2, 0, 1]))
 
 
+class InvertibleReLU(InvertibleLayer):
+  def __init__(self):
+    pass
+
+  def forward(self, x):
+    return tf.nn.relu(x)
+
+  def backward(self, x):
+    return tf.nn.relu(x)
+
+
 class InvertibleConv2d(InvertibleLayer):
-  def __init__(self, kernel_shape, num_of_output_channels):
-    assert is_kernel_shape(kernel_shape)
-    assert is_natural_num(num_of_output_channels)
+  def __init__(self, kernel_shape, num_of_channels):
+    assert is_kernel_shape(kernel_shape), kernel_shape
+    assert is_natural_num(num_of_channels), num_of_channels
     self._kernel_shape = kernel_shape
     self._num_of_channels = num_of_channels
 

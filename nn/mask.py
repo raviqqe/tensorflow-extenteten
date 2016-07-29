@@ -31,3 +31,12 @@ def max_mask(x, reduction_indices=None):
                             reduction_indices or dimension_indices(x, 1),
                             keep_dims=True)
   return x * tf.cast(tf.equal(x, max_value), x.dtype)
+
+
+@funcname_scope
+def mean_mask(x, reduction_indices=None):
+  assert static_rank(x) >= 2
+  mean_value = tf.reduce_mean(x,
+                              reduction_indices or dimension_indices(x, 1),
+                              keep_dims=True)
+  return x * tf.cast(tf.greater_equal(x, mean_value), x.dtype)

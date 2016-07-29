@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-from .util import static_rank, funcname_scope
+from .util import static_rank, funcname_scope, dimension_indices
 
 
 
@@ -22,3 +22,12 @@ def _tile_length(length, max_length):
 @funcname_scope
 def _range(limit, *, batch_size):
   return tf.tile(tf.expand_dims(tf.range(limit), 0), [batch_size, 1])
+
+
+@funcname_scope
+def max_mask(x, reduction_indices=None):
+  assert static_rank(x) >= 2
+  max_value = tf.reduce_max(x,
+                            reduction_indices or dimension_indices(x, 1),
+                            keep_dims=True)
+  return x * tf.cast(tf.equal(x, max_value), x.dtype)

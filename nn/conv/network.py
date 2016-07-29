@@ -8,6 +8,7 @@ from ..assertion import is_natural_num_sequence
 from .assertion import is_kernel_shape
 from .layer import conv2d, max_pool, InvertibleConv2d, InvertibleReLU
 from ..invertible import InvertibleNetwork
+from ..mask import max_mask
 
 
 
@@ -46,7 +47,11 @@ def multi_conv(x, *, nums_of_channels, kernel_shape):
 
 @funcname_scope
 def invertible_multi_conv(x, *, nums_of_channels, kernel_shape):
-  return InvertibleMultiConv(nums_of_channels, kernel_shape).forward(x)
+  multi_conv = InvertibleMultiConv(nums_of_channels, kernel_shape)
+  h = multi_conv.forward(x)
+  some_h = sample_crop(h, num_of_summary_images)
+  image_summary(multi_conv.backward(some_h * max_mask(some_h, [1, 2])))
+  return h
 
 
 class InvertibleMultiConv(InvertibleNetwork):

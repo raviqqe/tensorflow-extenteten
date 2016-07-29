@@ -53,21 +53,18 @@ def _summarize_filter(filter_):
       [2, 0, 1]))
 
 
-class Conv2d(InvertibleLayer):
-  def __init__(self,
-               kernel_shape,
-               num_of_input_channels,
-               num_of_output_channels):
+class InvertibleConv2d(InvertibleLayer):
+  def __init__(self, kernel_shape, num_of_output_channels):
     assert is_kernel_shape(kernel_shape)
-    assert all(is_natural_num(num)
-               for num in [num_of_input_channels, num_of_output_channels])
-
-    self._filter =  _create_filter(kernel_shape,
-                                   num_of_input_channels,
-                                   num_of_output_channels)
+    assert is_natural_num(num_of_output_channels)
+    self._kernel_shape = kernel_shape
+    self._num_of_channels = num_of_channels
 
   def forward(self, x):
     self._input_shape = tf.shape(x)
+    self._filter =  _create_filter(self._kernel_shape,
+                                   static_shape(x)[-1],
+                                   self._num_of_channels)
     return _conv2d_with_filter(x, self._filter)
 
   def backward(self, x):
@@ -78,7 +75,7 @@ class Conv2d(InvertibleLayer):
         strides=_DEFAULT_CONV_STRIDES)
 
 
-class MaxPool(InvertibleLayer):
+class InvertibleMaxPool(InvertibleLayer):
   def __init__(self, kernel_shape):
     assert is_kernel_shape(kernel_shape)
     self._kernel_shape = [1, *kernel_shape, 1]

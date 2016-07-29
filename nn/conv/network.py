@@ -6,7 +6,8 @@ from ..random import sample_crop
 from ..summary import image_summary, num_of_summary_images
 from ..assertion import is_natural_num_sequence
 from .assertion import is_kernel_shape
-from .layer import conv2d, max_pool
+from .layer import conv2d, max_pool, InvertibleConv2d
+from ..invertible import InvertibleNetwork
 
 
 
@@ -36,11 +37,24 @@ def multi_conv_and_pool(x,
 
 
 @funcname_scope
-def multi_conv(x,
-               *,
-               nums_of_channels,
-               kernel_shape):
+def multi_conv(x, *, nums_of_channels, kernel_shape):
   return multi_conv_and_pool(x,
                              nums_of_channels=nums_of_channels,
                              conv_kernel_shape=kernel_shape,
                              pool_kernel_shape=None)
+
+
+@funcname_scope
+def invertible_multi_conv(x, *, nums_of_channels, kernel_shape):
+  return InvertibleConv2d(nums_of_channels, kernel_shape).forward(x)
+
+
+class InvertibleMultiConv(InvertibleNetwork):
+  def __init__(self, nums_of_channels, kernel_shape):
+    assert is_kernel_shape(kernel_shape)
+    assert is_natural_num_sequence(nums_of_channels)
+
+    self._layers = sum(
+        [[InvertibleConv2d(kernel_shape, num_of_channels), ACTIVATE]
+         for num_of_channels in nums_of_channels],
+        [])

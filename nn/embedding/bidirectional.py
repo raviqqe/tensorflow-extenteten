@@ -35,3 +35,18 @@ def bidirectional_id_sequence_to_embedding(id_sequence,
       sequence_length=id_sequence_to_length(id_sequence)
                       if dynamic_length else None,
       **kwargs)
+
+
+@funcname_scope
+def bidirectional_id_sequence_to_embeddings(id_sequence,
+                                            embeddings,
+                                            *,
+                                            dynamic_length=False,
+                                            **kwargs):
+  assert static_rank(id_sequence) == 2
+
+  return bidirectional_rnn(
+      ids_to_embeddings(id_sequence, embeddings),
+      sequence_length=id_sequence_to_length(id_sequence)
+                      if dynamic_length else None,
+      **kwargs)

@@ -10,9 +10,9 @@ from ..util import static_rank, funcname_scope
 def attention_sum_reader(document,
                          query,
                          *,
-                         words,
-                         candidates,
-                         word_embedding_size):
+                         word_space_size,
+                         word_embedding_size,
+                         **bi_rnn_hp):
   assert static_rank(document) == 2
   assert static_rank(words) == 2
 
@@ -23,7 +23,8 @@ def attention_sum_reader(document,
 
   bi_rnn = partial(bidirectional_id_sequence_to_embeddings,
                    embeddings=word_embeddings,
-                   dynamic_length=True)
+                   dynamic_length=True,
+                   **bi_rnn_hp)
 
   with tf.variable_scope("query"):
     query_word_embs = bi_rnn(query)

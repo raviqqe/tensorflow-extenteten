@@ -3,11 +3,13 @@ import tensorflow as tf
 
 
 
-def file_pattern_to_names(pattern, *, num_epochs, batch_size):
+def file_pattern_to_names(pattern, *, num_epochs, capacity):
   return tf.train.string_input_producer(tf.train.match_filenames_once(pattern),
                                         num_epochs=num_epochs,
-                                        capacity=2*batch_size)
+                                        capacity=capacity)
 
+
+tf.app.flags.DEFINE_string("words-file", None, "Words file")
 
 class RcFileReader:
   def __init__(self):
@@ -39,7 +41,18 @@ class RcFileReader:
                     dtype=np.int32)
 
   def _read_words_file(self):
-    tf.app.flags.DEFINE_string("words-file", None, "Words file")
-
     with open(tf.app.flags.FLAGS.words_file) as file_:
       return sorted([line.strip() for line in file_.readlines()])
+
+
+def read_rc_data(pattern, *, num_epochs, batch_size):
+  tensors = RcFileReader().read(file_pattern_to_names(pattern,
+                                                      num_epochs=num_epochs,
+                                                      capacity=2*batch_size))
+  return tf.train.shuffle_batch(
+      tensors,
+      batch_size,
+      capacity=4*batch_size,
+      min_after_dequeue=2**8,
+      num_threads=2**4,
+      allow_smaller_final_batch=True)

@@ -51,7 +51,7 @@ def main(model):
         global_step = train.global_step()
 
         inputs = read_files(FLAGS.file_glob, FLAGS.file_format)
-        train_op = model(*inputs).train_op
+        train_op = model(*inputs[1:]).train_op
 
         saver = tf.train.Saver()
         summary_op = tf.summary.merge_all()

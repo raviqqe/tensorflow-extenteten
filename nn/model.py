@@ -9,7 +9,7 @@ class Model(metaclass=abc.ABCMeta):
     return NotImplemented
 
   @abc.astractmethod
-  def train(self, *input_tensors) -> tf.Tensor: # scalar loss
+  def train(self, *input_tensors) -> tf.Operation: # training operation
     return NotImplemented
 
   @abc.astractmethod

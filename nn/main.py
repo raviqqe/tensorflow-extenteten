@@ -2,6 +2,7 @@ import tensorflow as tf
 
 import .train
 from .flags import FLAGS
+from .model import Model
 
 
 
@@ -21,6 +22,8 @@ tf.app.flags.DEFINE_int("num-epochs", None, "Number of epochs")
 
 
 def main(model):
+  assert isinstance(model, Model)
+
   def run(_):
     cluster = tf.train.ClusterSpec({
       "ps": FLAGS.ps_hosts.split(","),
@@ -38,10 +41,7 @@ def main(model):
           worker_device="/job:worker/task:{}".format(FLAGS.task_index),
           cluster=cluster)):
         global_step = train.global_step()
-
-        train_op = tf.train.AdamOptimizer().minimize(
-            model(Queue(FLAGS.file_glob).dequeue()), # TODO: Calculate loss properly
-            global_step=global_step)
+        train_op = model.train()
 
         saver = tf.train.Saver()
         summary_op = tf.summary.merge_all()

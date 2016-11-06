@@ -59,5 +59,7 @@ def main(model):
           _, step = sess.run([train_op, global_step])
 
       sv.stop()
+    else:
+      raise ValueError("Invalid job_name: {}".format(FLAGS.job_name))
 
   tf.app.run(run)

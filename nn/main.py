@@ -1,6 +1,7 @@
 import tensorflow as tf
 
-from flags import FLAGS
+import .train
+from .flags import FLAGS
 
 
 
@@ -36,7 +37,7 @@ def main(model):
       with tf.device(tf.train.replica_device_setter(
           worker_device="/job:worker/task:{}".format(FLAGS.task_index),
           cluster=cluster)):
-        global_step = tf.Variable(0, trainable=False, name="global_step")
+        global_step = train.global_step()
 
         train_op = tf.train.AdamOptimizer().minimize(
             model(Queue(FLAGS.file_glob).dequeue()), # TODO: Calculate loss properly

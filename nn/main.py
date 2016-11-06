@@ -25,7 +25,7 @@ tf.app.flags.DEFINE_string("file-format", None, "Data format of files")
 
 ## Others
 
-tf.app.flags.DEFINE_int("num-epochs", None, "Number of epochs")
+tf.app.flags.DEFINE_integer("num-epochs", None, "Number of epochs")
 tf.app.flags.DEFINE_string(
     "log-dir", None, "Log directory containing checkpoint and event files")
 

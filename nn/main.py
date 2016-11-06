@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-import .train
+from . import train
 from .flags import FLAGS
 from .file import read_files
 

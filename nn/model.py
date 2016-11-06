@@ -1,17 +1,19 @@
-import abc
 import tensorflow as tf
 
 
 
-class Model(metaclass=abc.ABCMeta):
-  @abc.astractmethod
-  def __init__(self, **hyperparameters_and_initial_parameters):
-    return NotImplemented
+class Model:
+  def __init__(self, train_op, labels):
+    assert isinstance(train_op, tf.Operation)
+    assert isinstance(labels, tf.Tensor)
 
-  @abc.astractmethod
-  def train(self, *input_tensors) -> tf.Operation: # training operation
-    return NotImplemented
+    self._train_op = train_op
+    self._labels = labels
 
-  @abc.astractmethod
-  def test(self, *input_tensors) -> tf.Tensor: # labels
-    return NotImplemented
+  @property
+  def train_op(self):
+    return self._train_op
+
+  @property
+  def labels(self):
+    return self._labels

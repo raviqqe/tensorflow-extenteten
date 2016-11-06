@@ -15,7 +15,7 @@ tf.app.flags.DEFINE_int(
     "file-glob", None, "File path glob to search data files")
 tf.app.flags.DEFINE_string(
     "log-dir", None, "Log directory containing checkpoint and event files")
-tf.app.flags.DEFINE_int("n-epochs", None, "Number of epochs")
+tf.app.flags.DEFINE_int("num-epochs", None, "Number of epochs")
 
 
 
@@ -55,7 +55,7 @@ def main(model):
 
       with sv.managed_session(server.target) as sess, sess.as_default():
         step = global_step.eval()
-        while not sv.should_stop() and step < FLAGS.n_epochs: # TODO: n_epochs != n_steps
+        while not sv.should_stop() and step < FLAGS.num_epochs: # TODO: num_epochs != num_steps
           _, step = sess.run([train_op, global_step])
 
       sv.stop()

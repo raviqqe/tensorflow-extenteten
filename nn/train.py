@@ -68,7 +68,7 @@ class ModelWaiter:
 
 
 def global_step():
-  return tf.contrib.train.get_or_create_global_step()
+  return tf.contrib.framework.get_or_create_global_step()
 
 
 def _global_step_to_model_filename(global_step, checkpoint_dir):

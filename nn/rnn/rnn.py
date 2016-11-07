@@ -2,6 +2,7 @@ import tensorflow as tf
 
 from .cell import ln_lstm_cell as _DEFAULT_CELL
 from ..util import funcname_scope, dimension_indices
+from ..flags import FLAGS
 
 
 
@@ -22,7 +23,7 @@ def rnn(input_embeddings,
 def bidirectional_rnn(input_embeddings,
                       *,
                       output_embedding_size,
-                      dropout_prob,
+                      dropout_prob=FLAGS.dropout_prob,
                       sequence_length=None):
   assert output_embedding_size % 2 == 0
   cell = lambda: _DEFAULT_CELL(output_embedding_size // 2, dropout_prob)

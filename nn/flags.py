@@ -12,6 +12,7 @@ tf.app.flags.DEFINE_integer("num-threads-per-queue", 2, "")
 tf.app.flags.DEFINE_integer("queue-capacity", 2, "")
 tf.app.flags.DEFINE_string("length-boundaries", "", "")
 tf.app.flags.DEFINE_string("rnn-cell", "ln_lstm", "Default RNN cell")
+tf.app.flags.DEFINE_string("float32", "", "")
 
 
 @functools.lru_cache()
@@ -34,3 +35,7 @@ def word_space_size():
 def rnn_cell():
   from .rnn import cell
   return getattr(cell, FLAGS.rnn_cell)
+
+
+def float_type():
+  return getattr(tf, FLAGS.float_type)

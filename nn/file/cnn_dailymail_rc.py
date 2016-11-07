@@ -35,7 +35,7 @@ class _RcFileReader:
                     dtype=np.int32)
 
   def _read_words_file(self):
-    with open(tf.app.flags.FLAGS.words_file) as file_:
+    with open(tf.app.flags.FLAGS.word_file) as file_:
       return sorted([line.strip() for line in file_.readlines()])
 
 

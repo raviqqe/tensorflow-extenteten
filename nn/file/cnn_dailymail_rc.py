@@ -64,4 +64,4 @@ def read_files(filename_queue):
       num_threads=FLAGS.num_threads_per_queue,
       capacity=FLAGS.queue_capacity,
       dynamic_pad=True,
-      allow_smaller_final_batch=True)
+      allow_smaller_final_batch=True)[1]

@@ -16,4 +16,4 @@ def read_files(file_pattern, file_format):
 def _file_pattern_to_names(pattern):
   return tf.train.string_input_producer(tf.train.match_filenames_once(pattern),
                                         num_epochs=FLAGS.num_epochs,
-                                        capacity=NotImplemented)
+                                        capacity=8*FLAGS.batch_size) # TODO: check capacity value

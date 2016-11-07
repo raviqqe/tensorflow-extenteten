@@ -35,8 +35,6 @@ class _RcFileReader:
     context_length.set_shape([])
     question_length.set_shape([])
 
-    print(tf.reshape(context, [context_length]).get_shape())
-
     return (tf.reshape(context, [context_length]),
             tf.reshape(question, [question_length]),
             tf.reshape(answer, []))

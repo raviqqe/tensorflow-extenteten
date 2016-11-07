@@ -11,6 +11,7 @@ tf.app.flags.DEFINE_string("word-file", None, "")
 tf.app.flags.DEFINE_integer("num-threads-per-queue", 2, "")
 tf.app.flags.DEFINE_integer("queue-capacity", 2, "")
 tf.app.flags.DEFINE_string("length-boundaries", "", "")
+tf.app.flags.DEFINE_string("rnn-cell", "ln_lstm", "Default RNN cell")
 
 
 @functools.lru_cache()
@@ -23,3 +24,8 @@ def words():
 def word_indices():
   # 0 -> null, 1 -> unknown
   return { word: index + 2 for index, word in enumerate(flags.words()) }
+
+
+@functools.lru_cache()
+def word_space_size():
+  return len(words())

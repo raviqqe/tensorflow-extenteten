@@ -3,6 +3,8 @@ import tensorflow as tf
 
 from .. import flags, slmc, train
 from ..embedding import embeddings, bidirectional_id_sequence_to_embeddings
+from ..dynamic_length import id_sequence_to_length
+from ..softmax import softmax
 from ..flags import FLAGS
 from ..optimize import minimize
 from ..util import static_rank, funcname_scope
@@ -37,7 +39,7 @@ def attention_sum_reader(document: ("batch", "words"),
     query_word_embs = bi_rnn(query)
     query_embedding = tf.reshape(
         tf.concat(1, [query_word_embs[:, 0:1], query_word_embs[:, -2:-1]]),
-        [static_shape(query)[0], word_embedding_size * 2])
+        [tf.shape(query)[0], FLAGS.word_embedding_size * 2])
 
   with tf.variable_scope("document_to_attention"):
     # entity_mask = tf.cast(tf.logical_and(document > FLAGS.first_entity_index,

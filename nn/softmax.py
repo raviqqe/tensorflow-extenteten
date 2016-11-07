@@ -20,30 +20,20 @@ def softmax(vector, sequence_length=None):
 def _dynamic_softmax(vector, sequence_length):
   vector_length = tf.shape(vector)[1]
   mask_ = tf.cast(mask(sequence_length, vector_length), vector.dtype)
-  vector_filled_with_min = mask_ * vector \
-                           + (1 - mask_) * dtype_min(vector.dtype)
-  tile = functools.partial(_tile_column_vector, width=vector_length)
+  vector_with_min = mask_ * vector + (1 - mask_) * dtype_min(vector.dtype)
 
-  unnormal_dist = tf.exp(vector_filled_with_min
-                         - tile(_batchwise_max(vector_filled_with_min))) \
-                  * mask_
-  return _batchwise_vector_scalar_div(
+  unnormal_dist = tf.exp(vector_with_min - _batch_max(vector_with_min)) * mask_
+  return _batch_vector_scalar_div(
       unnormal_dist,
       tf.reduce_sum(unnormal_dist, [1]) + dtype_epsilon(unnormal_dist.dtype))
 
 
 @funcname_scope
-def _batchwise_vector_scalar_div(vector, scalar):
+def _batch_vector_scalar_div(vector, scalar):
   assert static_rank(vector) == 2 and static_rank(scalar) == 1
-  return vector / _tile_column_vector(scalar, static_shape(vector)[1])
+  return vector / tf.expand_dims(scalar, 1)
 
 
 @funcname_scope
-def _batchwise_max(x):
+def _batch_max(x):
   return tf.reduce_max(x, dimension_indices(x)[1:])
-
-
-@funcname_scope
-def _tile_column_vector(vector, width):
-  assert static_rank(vector) == 1
-  return tf.tile(tf.transpose(tf.expand_dims(vector, 0)), [1, width])

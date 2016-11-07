@@ -18,13 +18,28 @@ class _RcFileReader:
   def _read_record(self, string):
     def read_record(string):
       context, question, answer = string.split("\n\n")[1:4]
-      return (self._map_words_to_indices(context),
-              self._map_words_to_indices(question),
-              self._map_word_to_index(answer))
-    return tf.py_func(read_record,
-                      [string],
-                      [tf.int32, tf.int32, tf.int32],
-                      name="read_rc_data")
+      context = self._map_words_to_indices(context)
+      question = self._map_words_to_indices(question)
+      return (context,
+              question,
+              self._map_word_to_index(answer),
+              len(context),
+              len(question))
+
+    context, question, answer, context_length, question_length = tf.py_func(
+        read_record,
+        [string],
+        [tf.int32, tf.int32, tf.int32, tf.int32, tf.int32],
+        name="read_rc_data")
+
+    context_length.set_shape([])
+    question_length.set_shape([])
+
+    print(tf.reshape(context, [context_length]).get_shape())
+
+    return (tf.reshape(context, [context_length]),
+            tf.reshape(question, [question_length]),
+            tf.reshape(answer, []))
 
   def _map_word_to_index():
     return word_indices[word] if word in self._word_indices else 1 # unknown
@@ -40,10 +55,13 @@ class _RcFileReader:
 
 
 def read_files(filename_queue):
-  return tf.train.shuffle_batch(
-      _RcFileReader().read(filename_queue),
+  tensors = _RcFileReader().read(filename_queue)
+  return tf.contrib.training.bucket_by_sequence_length(
+      tf.shape(tensors[1])[0],
+      list(tensors),
       FLAGS.batch_size,
-      capacity=4*FLAGS.batch_size,
-      min_after_dequeue=2**8,
-      num_threads=2**4,
+      [int(num) for num in FLAGS.length_boundaries.split(",")],
+      num_threads=FLAGS.num_threads_per_queue,
+      capacity=FLAGS.queue_capacity,
+      dynamic_pad=True,
       allow_smaller_final_batch=True)

@@ -1,4 +1,7 @@
+import functools
 import tensorflow as tf
+
+
 
 FLAGS = tf.app.flags.FLAGS
 
@@ -8,3 +11,15 @@ tf.app.flags.DEFINE_string("word-file", None, "")
 tf.app.flags.DEFINE_integer("num-threads-per-queue", 2, "")
 tf.app.flags.DEFINE_integer("queue-capacity", 2, "")
 tf.app.flags.DEFINE_string("length-boundaries", "", "")
+
+
+@functools.lru_cache()
+def words():
+  with open(tf.app.flags.FLAGS.word_file) as file_:
+    return sorted([line.strip() for line in file_.readlines()])
+
+
+@functools.lru_cache()
+def word_indices():
+  # 0 -> null, 1 -> unknown
+  return { word: index + 2 for index, word in enumerate(flags.words()) }

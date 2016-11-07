@@ -1,6 +1,7 @@
 import functools
 import tensorflow as tf
 
+from .. import flags
 from ..flags import FLAGS
 
 
@@ -8,8 +9,7 @@ from ..flags import FLAGS
 class _RcFileReader:
   def __init__(self):
     # 0 -> null, 1 -> unknown
-    self._word_indices = { word: index + 2 for index, word
-                           in enumerate(self._read_word_file()) }
+    self._word_indices = flags.word_indices
 
   def read(self, filename_queue):
     key, value = tf.WholeFileReader().read(filename_queue)
@@ -48,10 +48,6 @@ class _RcFileReader:
     return np.array([self._map_word_to_index(word)
                      for word in document.split()],
                     dtype=np.int32)
-
-  def _read_word_file(self):
-    with open(tf.app.flags.FLAGS.word_file) as file_:
-      return sorted([line.strip() for line in file_.readlines()])
 
 
 def read_files(filename_queue):

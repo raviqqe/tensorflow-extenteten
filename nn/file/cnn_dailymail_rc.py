@@ -1,6 +1,8 @@
 import functools
 import tensorflow as tf
 
+from ..flags import FLAGS
+
 
 
 class _RcFileReader:
@@ -11,7 +13,7 @@ class _RcFileReader:
 
   def read(self, filename_queue):
     key, value = tf.WholeFileReader().read(filename_queue)
-    return key, *self._read_record(value)
+    return (key, *self._read_record(value))
 
   def _read_record(self, string):
     def read_record(string):

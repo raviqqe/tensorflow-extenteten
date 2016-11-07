@@ -28,11 +28,11 @@ def bidirectional_rnn(inputs,
                       sequence_length=None,
                       cell=flags.rnn_cell()):
   assert output_embedding_size % 2 == 0
-  cell = lambda: cell(output_embedding_size, dropout_prob)
+  create_cell = lambda: cell(output_embedding_size, dropout_prob)
 
   return tf.nn.bidirectional_dynamic_rnn(
-      cell(),
-      cell(),
+      create_cell(),
+      create_cell(),
       inputs,
       sequence_length=sequence_length,
       dtype=inputs.dtype)[0]

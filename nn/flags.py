@@ -29,3 +29,8 @@ def word_indices():
 @functools.lru_cache()
 def word_space_size():
   return len(words())
+
+
+def rnn_cell():
+  from .rnn import cell
+  return getattr(cell, FLAGS.rnn_cell)

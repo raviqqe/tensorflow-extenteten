@@ -13,6 +13,7 @@ tf.app.flags.DEFINE_integer("queue-capacity", 2, "")
 tf.app.flags.DEFINE_string("length-boundaries", "", "")
 tf.app.flags.DEFINE_string("rnn-cell", "ln_lstm", "Default RNN cell")
 tf.app.flags.DEFINE_string("float-type", "float32", "")
+tf.app.flags.DEFINE_string("int-type", "int32", "")
 
 
 @functools.lru_cache()
@@ -39,3 +40,7 @@ def rnn_cell():
 
 def float_type():
   return getattr(tf, FLAGS.float_type)
+
+
+def int_type():
+  return getattr(tf, FLAGS.int_type)

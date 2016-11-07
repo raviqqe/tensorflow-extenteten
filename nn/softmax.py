@@ -18,7 +18,7 @@ def softmax(vector, sequence_length=None):
 
 @funcname_scope
 def _dynamic_softmax(vector, sequence_length):
-  vector_length = static_shape(vector)[1]
+  vector_length = tf.shape(vector)[1]
   mask_ = tf.cast(mask(sequence_length, vector_length), vector.dtype)
   vector_filled_with_min = mask_ * vector \
                            + (1 - mask_) * dtype_min(vector.dtype)

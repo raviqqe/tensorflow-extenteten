@@ -51,10 +51,10 @@ def main(model):
         global_step = train.global_step()
 
         inputs = read_files(FLAGS.file_glob, FLAGS.file_format)
-        train_op = model(*inputs[1:]).train_op
+        train_op, _ = model(*inputs[1:])
 
         saver = tf.train.Saver()
-        summary_op = tf.summary.merge_all()
+        summary_op = tf.merge_all_summaries()
         init_op = tf.initialize_all_variables()
 
       sv = tf.train.Supervisor(is_chief=(FLAGS.task_index == 0),

@@ -17,11 +17,11 @@ def accuracy(output_layer: ("batch", "class"), true_label: ("batch",)):
   assert static_rank(true_label) == 1
   assert static_shape(output_layer)[0] == static_shape(true_label)[0]
 
-  return tf.reduce_mean(tf.to_float(tf.equal(predicted_label(output_layer),
+  return tf.reduce_mean(tf.to_float(tf.equal(label(output_layer),
                                              true_label)))
 
 
 @funcname_scope
-def predicted_label(output_layer):
+def label(output_layer):
   assert static_rank(output_layer) == 2
   return tf.argmax(output_layer, 1)

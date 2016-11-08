@@ -13,17 +13,17 @@ def classify_with_single_label_module(
   assert static_rank(output_layer) == 2
   assert static_rank(true_labels) == 2
 
-  losses, accuracies, predicted_labels = _transpose_2d_list([
+  losses, accuracies, labels = _transpose_2d_list([
     [single_label_module.loss(output_layer_per_label, true_label),
      single_label_module.accuracy(output_layer_per_label, true_label),
-     single_label_module.predicted_label(output_layer_per_label)]
+     single_label_module.label(output_layer_per_label)]
     for output_layer_per_label, true_label
     in _zip_by_labels(output_layer, true_labels)
   ])
 
   return tf.reduce_mean(tf.pack(losses)), \
          tf.reduce_mean(tf.pack(accuracies)), \
-         _concat_by_labels(predicted_labels)
+         _concat_by_labels(labels)
 
 
 def _transpose_2d_list(list_):

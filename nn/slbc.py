@@ -34,7 +34,7 @@ def classify(output_layer, true_label):
 
   return loss(output_layer, true_label), \
          accuracy(output_layer, true_label), \
-         predicted_label(output_layer)
+         label(output_layer)
 
 
 @funcname_scope
@@ -56,12 +56,12 @@ def accuracy(output_layer, true_label):
   assert static_shape(output_layer) == static_shape(true_label)
   assert true_label.dtype == TRUE_LABEL_TYPE
 
-  return tf.reduce_mean(tf.to_float(tf.equal(predicted_label(output_layer),
+  return tf.reduce_mean(tf.to_float(tf.equal(label(output_layer),
                                              true_label)))
 
 
 @funcname_scope
 @_squeeze_output_layer
-def predicted_label(output_layer):
+def label(output_layer):
   assert static_rank(output_layer) == 1
   return tf.cast(tf.sigmoid(output_layer) > 0.5, TRUE_LABEL_TYPE)

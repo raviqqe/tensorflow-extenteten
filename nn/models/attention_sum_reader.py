@@ -60,7 +60,9 @@ def _sum_attentions(attentions, document):
     assert static_rank(attentions) == 1 and static_rank(document) == 1
     return tf.unsorted_segment_sum(attentions, document, num_entities)
 
-  return tf.map_fn(_sum_attention, [attentions, document])
+  return tf.map_fn(_sum_attention,
+                   [attentions, document],
+                   dtype=FLAGS.float_type)
 
 
 @funcname_scope

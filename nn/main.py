@@ -1,3 +1,4 @@
+import logging
 import tensorflow as tf
 
 from . import train
@@ -67,6 +68,7 @@ def main(model):
       with sv.managed_session(server.target) as sess, sess.as_default():
         step = global_step.eval()
         while not sv.should_stop() and step < FLAGS.num_epochs: # TODO: num_epochs != num_steps
+          logging.info("#epochs = {}", step)
           _, step = sess.run([train_op, global_step])
 
       sv.stop()

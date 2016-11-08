@@ -1,7 +1,7 @@
 from functools import partial
 import tensorflow as tf
 
-from .. import flags, slmc, train
+from .. import flags, slmc, train, flags, batch
 from ..embedding import embeddings, bidirectional_id_sequence_to_embeddings
 from ..dynamic_length import id_sequence_to_length
 from ..softmax import softmax
@@ -42,28 +42,32 @@ def attention_sum_reader(document: ("batch", "words"),
         [tf.shape(query)[0], FLAGS.word_embedding_size * 2])
 
   with tf.variable_scope("document_to_attention"):
-    # entity_mask = tf.cast(tf.logical_and(document > FLAGS.first_entity_index,
-    #                                      document < FLAGS.last_entity_index),
-    #                       tf.int32)
-
-    # entity_embeddings = tf.dynamic_partition(bi_rnn(document), entity_mask, 2)[0]
-
-    prob = tf.unsorted_segment_sum(
-        _calculate_attention(bi_rnn(document),
-                             query_embedding,
-                             id_sequence_to_length(document)),
-        document,
-        tf.reduce_max(document) + 1)
+    attentions = _calculate_attention(
+        bi_rnn(document), query_embedding, id_sequence_to_length(document))
+    prob = _sum_attentions(attentions, document)
 
   return minimize(slmc.loss(tf.log(prob), answer)), slmc.label(prob)
 
 
 @funcname_scope
-def _calculate_attention(es: ("batch", "sequence", "embedding"),
-                         q: ("batch", "embedding"),
-                         sequence_length=None):
-  assert static_rank(es) == 3
-  assert static_rank(q) == 2
+def _sum_attentions(attentions, document):
+  assert static_rank(attentions) == 2 and static_rank(document) == 2
 
-  return softmax(tf.squeeze(tf.batch_matmul(es, tf.expand_dims(q, 2)), [2]),
-                 sequence_length)
+  num_entities = tf.reduce_max(document) + 1
+
+  def _sum_attention(args):
+    attentions, document = args
+    assert static_rank(attentions) == 1 and static_rank(document) == 1
+    return tf.unsorted_segment_sum(attentions, document, num_entities)
+
+  return tf.map_fn(_sum_attention, [attentions, document])
+
+
+@funcname_scope
+def _calculate_attention(document: ("batch", "sequence", "embedding"),
+                         query: ("batch", "embedding"),
+                         sequence_length):
+  assert static_rank(document) == 3
+  assert static_rank(query) == 2
+
+  return softmax(batch.mat_vec_mul(document, query), sequence_length)

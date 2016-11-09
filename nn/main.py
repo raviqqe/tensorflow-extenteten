@@ -9,26 +9,12 @@ from .file import read_files
 
 # Flags
 
-## Cluster
-
 list_of_hosts = "Comma-separated list of hostname:port pairs"
 tf.app.flags.DEFINE_string("ps-hosts", None, list_of_hosts)
 tf.app.flags.DEFINE_string("worker-hosts", None, list_of_hosts)
 
 tf.app.flags.DEFINE_string("job-name", None, "'ps' or 'worker'")
 tf.app.flags.DEFINE_integer("task-index", None, "Task index within the job")
-
-## Data files
-
-tf.app.flags.DEFINE_string(
-    "file-glob", None, "File path glob to search data files")
-tf.app.flags.DEFINE_string("file-format", None, "Data format of files")
-
-## Others
-
-tf.app.flags.DEFINE_integer("num-epochs", None, "Number of epochs")
-tf.app.flags.DEFINE_string(
-    "log-dir", None, "Log directory containing checkpoint and event files")
 
 
 

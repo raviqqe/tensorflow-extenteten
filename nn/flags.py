@@ -3,17 +3,44 @@ import tensorflow as tf
 
 
 
-FLAGS = tf.app.flags.FLAGS
+FLAGS = tf.flags.FLAGS
 
-tf.app.flags.DEFINE_string("batch-size", 64, "")
-tf.app.flags.DEFINE_float("dropout-prob", 0, "")
-tf.app.flags.DEFINE_string("word-file", None, "")
-tf.app.flags.DEFINE_integer("num-threads-per-queue", 2, "")
-tf.app.flags.DEFINE_integer("queue-capacity", 2, "")
-tf.app.flags.DEFINE_string("length-boundaries", "", "")
-tf.app.flags.DEFINE_string("rnn-cell", "ln_lstm", "Default RNN cell")
-tf.app.flags.DEFINE_string("float-type", "float32", "")
-tf.app.flags.DEFINE_string("int-type", "int32", "")
+
+# TODO: Use gflags and handle required option
+def define_int(name, default=None, *, desc="", required=False):
+  tf.flags.DEFINE_integer(name, default or 0, desc)
+
+def define_str(name, default=None, *, desc="", required=False):
+  tf.flags.DEFINE_string(name, default or "", desc)
+
+def define_float(name, default=None, *, desc="", required=False):
+  tf.flags.DEFINE_float(name, default or 0.0, desc)
+
+
+# Hyperparameters
+
+define_int("num-epochs", 64)
+define_str("batch-size", 64)
+define_float("dropout-prob", 0)
+define_str("word-file")
+define_int("num-threads-per-queue", 2)
+define_int("queue-capacity", 2)
+define_str("length-boundaries")
+define_str("rnn-cell", "ln_lstm", desc="Default RNN cell")
+
+# Data type
+
+define_str("float-type", "float32")
+define_str("int-type", "int32")
+
+# Data files
+
+define_str("file-glob", desc="File path glob to search data files")
+define_str("file-format", desc="Data format of files")
+
+# Others
+
+define_str("log-dir", desc="Directory containing checkpoint and event files")
 
 
 @functools.lru_cache()

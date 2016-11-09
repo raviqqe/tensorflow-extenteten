@@ -1,5 +1,7 @@
 import functools
 import logging
+import os
+
 import tensorflow as tf
 import gargparse
 from gargparse import ARGS
@@ -69,6 +71,7 @@ add_flag("log-level", default="info", type=_set_up_logger)
 add_flag("log-dir",
          default="log",
          help="Directory containing checkpoint and event files")
+add_flag("num-cpus", type=int, default=os.cpu_count())
 
 
 

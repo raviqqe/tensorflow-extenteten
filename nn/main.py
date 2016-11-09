@@ -43,7 +43,7 @@ def main(model):
       with sv.managed_session(server.target) as sess, sess.as_default():
         step = global_step.eval()
         while not sv.should_stop() and step < FLAGS.num_epochs: # TODO: num_epochs != num_steps
-          logging.info("#epochs = %d", step)
+          logging.info("#steps: %d", step)
           _, step = sess.run([train_op, global_step])
         sv.saver.save(sess, sv.save_path, step)
       sv.stop()

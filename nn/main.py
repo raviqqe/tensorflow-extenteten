@@ -24,8 +24,6 @@ def main(model):
       with tf.device(tf.train.replica_device_setter(
           worker_device="/job:worker/task:{}".format(FLAGS.task_index),
           cluster=cluster)):
-        global_step = train.global_step()
-
         inputs = read_files(FLAGS.file_glob, FLAGS.file_format)
         train_op, _ = model(*inputs[1:])
 
@@ -38,13 +36,14 @@ def main(model):
                                init_op=init_op,
                                summary_op=summary_op,
                                saver=saver,
-                               global_step=global_step)
+                               global_step=train.global_step())
 
       with sv.managed_session(server.target) as sess, sess.as_default():
-        step = global_step.eval()
+        step = train.global_step().eval()
+        logging.info("Initial global step: %d", step)
         while not sv.should_stop() and step < FLAGS.num_epochs: # TODO: num_epochs != num_steps
+          _, step = sess.run([train_op, train.global_step()])
           logging.info("#steps: %d", step)
-          _, step = sess.run([train_op, global_step])
         sv.saver.save(sess, sv.save_path, step)
       sv.stop()
     else:

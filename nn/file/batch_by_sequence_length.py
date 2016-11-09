@@ -1,6 +1,7 @@
 import tensorflow as tf
 
 from ..flags import FLAGS
+from ..util import funcname_scope
 
 
 

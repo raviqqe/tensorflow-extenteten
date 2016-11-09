@@ -47,6 +47,7 @@ def _sum_attentions(attentions, document):
 
   num_entities = tf.reduce_max(document) + 1
 
+  @funcname_scope
   def _sum_attention(args):
     attentions, document = args
     assert static_rank(attentions) == 1 and static_rank(document) == 1

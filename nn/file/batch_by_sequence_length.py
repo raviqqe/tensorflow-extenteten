@@ -13,5 +13,5 @@ def batch_by_sequence_length(tensors, length_fn=(lambda x: tf.shape(x[1])[0])):
       FLAGS.batch_size,
       [int(num) for num in FLAGS.length_boundaries],
       num_threads=FLAGS.num_threads_per_queue,
-      capacity=FLAGS.queue_capacity,
+      capacity=FLAGS.batch_queue_capacity,
       dynamic_pad=True)[1]

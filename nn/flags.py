@@ -70,7 +70,7 @@ add_flag("log-dir",
          help="Directory containing checkpoint and event files")
 add_flag("num-cpus", type=int, default=os.cpu_count())
 add_flag("num-threads-per-queue", type=int, default=2)
-add_flag("queue-capacity", type=int, default=2)
+add_flag("batch-queue-capacity", type=int, default=2)
 add_flag("length-boundaries", type=int_list)
 
 
@@ -109,6 +109,10 @@ class _Flags:
   def rnn_cell(self):
     from .rnn import cell
     return getattr(cell, ARGS._rnn_cell)
+
+  @property
+  def filename_queue_capacity(self):
+    return ARGS.batch_queue_capacity * ARGS.batch_size
 
 
 FLAGS = _Flags()

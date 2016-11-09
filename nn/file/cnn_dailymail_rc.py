@@ -42,9 +42,9 @@ class _RcFileReader:
     return self._word_indices[word] if word in self._word_indices else 1 # unknown
 
   def _map_document_to_indices(self, document):
-    return np.array([self._map_word_to_index(word)
-                     for word in document.split()],
-                    dtype=np.int32)
+    return np.array(
+        [self._map_word_to_index(word) for word in document.split()],
+        dtype=np.int32)
 
 
 def read_files(filename_queue):

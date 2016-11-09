@@ -1,4 +1,5 @@
 import logging
+import time
 import tensorflow as tf
 
 from . import train
@@ -49,8 +50,11 @@ def main(model):
         step = train.global_step().eval()
         logging.info("Initial global step: %d", step)
         while not sv.should_stop():
+          start_time = time.time()
           _, step = sess.run([train_op, train.global_step()])
-          logging.info("#steps: %d", step)
+          logging.info("#steps = %d, speed = %f examples/step",
+                       step,
+                       FLAGS.batch_size / (time.time() - start_time))
         sv.saver.save(sess, sv.save_path, step)
       sv.stop()
     else:

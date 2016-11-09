@@ -36,10 +36,8 @@ def attention_sum_reader(document: ("batch", "words"),
                    output_embedding_size=FLAGS.word_embedding_size)
 
   with tf.variable_scope("query"):
-    query_word_embs = bi_rnn(query)
-    query_embedding = tf.reshape(
-        tf.concat(1, [query_word_embs[:, 0:1], query_word_embs[:, -2:-1]]),
-        [tf.shape(query)[0], FLAGS.word_embedding_size * 2])
+    query_embedding = bi_rnn(query, output_state=True)
+    assert static_rank(query_embedding) == 2
 
   with tf.variable_scope("document_to_attention"):
     attentions = _calculate_attention(

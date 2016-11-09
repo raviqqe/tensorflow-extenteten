@@ -1,19 +1,13 @@
 from functools import partial
 import tensorflow as tf
 
-from .. import flags, slmc, train, flags, batch
+from .. import slmc, train, batch
 from ..embedding import embeddings, bidirectional_id_sequence_to_embeddings
 from ..dynamic_length import id_sequence_to_length
 from ..softmax import softmax
-from ..flags import FLAGS
+from ..flags import add_flag, FLAGS
 from ..optimize import minimize
 from ..util import static_rank, funcname_scope
-
-
-
-tf.app.flags.DEFINE_integer("word-embedding-size", 200, "")
-tf.app.flags.DEFINE_integer("first-entity-index", None, "")
-tf.app.flags.DEFINE_integer("last-entity-index", None, "")
 
 
 
@@ -26,7 +20,7 @@ def attention_sum_reader(document: ("batch", "words"),
   assert static_rank(answer) == 1
 
   with tf.variable_scope("word_embeddings"):
-    word_embeddings = embeddings(id_space_size=flags.word_space_size(),
+    word_embeddings = embeddings(id_space_size=FLAGS.word_space_size,
                                  embedding_size=FLAGS.word_embedding_size,
                                  name="word_embeddings")
 

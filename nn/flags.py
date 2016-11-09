@@ -1,74 +1,84 @@
 import functools
 import tensorflow as tf
+import gargparse
+from gargparse import ARGS
+
+from .rnn import cell
 
 
 
-FLAGS = tf.flags.FLAGS
+def add_flag(name, *args, **kwargs):
+  gargparse.add_argument("--" + name, *args, **kwargs)
 
 
-# TODO: Use gflags and handle required option
-def define_int(name, default=None, *, desc="", required=False):
-  tf.flags.DEFINE_integer(name, default or 0, desc)
-
-def define_str(name, default=None, *, desc="", required=False):
-  tf.flags.DEFINE_string(name, default or "", desc)
-
-def define_float(name, default=None, *, desc="", required=False):
-  tf.flags.DEFINE_float(name, default or 0.0, desc)
+def str_list(string):
+  return string.split(',')
 
 
 # Hyperparameters
 
-define_int("num-epochs", 64)
-define_str("batch-size", 64)
-define_float("dropout-prob", 0)
-define_str("word-file")
-define_int("num-threads-per-queue", 2)
-define_int("queue-capacity", 2)
-define_str("length-boundaries")
-define_str("rnn-cell", "ln_lstm", desc="Default RNN cell")
+add_flag("num-epochs", type=int, default=64)
+add_flag("batch-size", type=int, default=64)
+add_flag("dropout-prob", type=float, default=0)
 
-# Data type
+def _read_words(filename):
+  with open(filename) as file_:
+    return sorted([line.strip() for line in file_.readlines()])
 
-define_str("float-type", "float32")
-define_str("int-type", "int32")
+add_flag("word-file", metavar="words", type=_read_words)
+add_flag("num-threads-per-queue", type=int, default=2)
+add_flag("queue-capacity", type=int, default=2)
+add_flag("length-boundaries", type=str_list)
+add_flag("rnn-cell", type=(lambda name: getattr(cell, name)), default="ln_lstm")
+
+add_flag("word-embedding-size", type=int, default=200)
+add_flag("first-entity-index", type=int)
+add_flag("last-entity-index", type=int)
+
+# Data types
+
+add_flag("float-type", type=(lambda name: getattr(tf, name)), default="float32")
+add_flag("int-type", type=(lambda name: getattr(tf, name)), default="int32")
 
 # Data files
 
-define_str("file-glob", desc="File path glob to search data files")
-define_str("file-format", desc="Data format of files")
+add_flag("file-glob", required=True, help="File path glob to search data files")
+add_flag("file-format", required=True, help="Data format of files")
 
 # Others
 
-define_str("log-dir", desc="Directory containing checkpoint and event files")
+add_flag("log-dir",
+         default="log",
+         help="Directory containing checkpoint and event files")
 
 
-@functools.lru_cache()
-def _original_words():
-  with open(tf.app.flags.FLAGS.word_file) as file_:
-    return sorted([line.strip() for line in file_.readlines()])
+
+def _cached_property(func):
+  @property
+  @functools.wraps()
+  def wrapper(self):
+    attr = "_cached_" + func.__name__
+
+    if not hasattr(self, attr):
+      setattr(func(self), attr)
+    return getattr(self, attr)
+
+  return wrapper
 
 
-@functools.lru_cache()
-def word_indices():
-  indices = { word: index + 2 for index, word in enumerate(_original_words()) }
-  indices.update({ '<NULL>': 0, '<UNKNOWN>': 1 })
-  return indices
+class _Flags:
+  def __getattr__(self, name):
+    return getattr(ARGS, name)
+
+  @_cached_property
+  def word_indices(self):
+    indices = { word: index + 2 for index, word in enumerate(ARGS.words) }
+    indices.update({ '<NULL>': 0, '<UNKNOWN>': 1 })
+    return indices
+
+  @_cached_property
+  def word_space_size(self):
+    return len(self.word_indices)
 
 
-@functools.lru_cache()
-def word_space_size():
-  return len(word_indices())
-
-
-def rnn_cell():
-  from .rnn import cell
-  return getattr(cell, FLAGS.rnn_cell)
-
-
-def float_type():
-  return getattr(tf, FLAGS.float_type)
-
-
-def int_type():
-  return getattr(tf, FLAGS.int_type)
+FLAGS = _Flags()

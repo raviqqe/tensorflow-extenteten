@@ -56,7 +56,7 @@ def main(model):
         while not sv.should_stop() and step < FLAGS.num_epochs: # TODO: num_epochs != num_steps
           logging.info("#epochs = {}", step)
           _, step = sess.run([train_op, global_step])
-
+        sv.saver.save(sess, sv.save_path, step)
       sv.stop()
     else:
       raise ValueError("Invalid job_name: {}".format(FLAGS.job_name))

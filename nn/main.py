@@ -40,7 +40,7 @@ def main(model):
         inputs = read_files(FLAGS.file_glob, FLAGS.file_format)
         train_op, _ = model(*inputs[1:])
 
-        saver = tf.train.Saver()
+        saver = tf.train.Saver(max_to_keep=2**16)
         summary_op = tf.merge_all_summaries()
         init_op = tf.initialize_all_variables()
 

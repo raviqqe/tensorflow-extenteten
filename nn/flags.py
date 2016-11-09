@@ -39,9 +39,6 @@ def _read_words(filename):
     return sorted([line.strip() for line in file_.readlines()])
 
 add_flag("word-file", dest="words", type=_read_words)
-add_flag("num-threads-per-queue", type=int, default=2)
-add_flag("queue-capacity", type=int, default=2)
-add_flag("length-boundaries", type=int_list)
 add_flag("rnn-cell", dest="_rnn_cell", default="ln_lstm")
 add_flag("word-embedding-size", type=int, default=200)
 
@@ -72,6 +69,9 @@ add_flag("log-dir",
          default="log",
          help="Directory containing checkpoint and event files")
 add_flag("num-cpus", type=int, default=os.cpu_count())
+add_flag("num-threads-per-queue", type=int, default=2)
+add_flag("queue-capacity", type=int, default=2)
+add_flag("length-boundaries", type=int_list)
 
 
 

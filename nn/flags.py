@@ -3,8 +3,6 @@ import tensorflow as tf
 import gargparse
 from gargparse import ARGS
 
-from .rnn import cell
-
 
 
 def add_flag(name, *args, **kwargs):
@@ -14,6 +12,18 @@ def add_flag(name, *args, **kwargs):
 def str_list(string):
   return string.split(',')
 
+
+def int_list(string):
+  return [int(num) for num in string.split(',')]
+
+
+# Cluster (Distributed TensorFlow)
+
+_list_of_hosts = "Comma-separated list of hostname:port pairs"
+add_flag("ps-hosts", type=str_list, required=True, help=_list_of_hosts)
+add_flag("worker-hosts", type=str_list, required=True, help=_list_of_hosts)
+add_flag("job-name", required=True, help="'ps' or 'worker'")
+add_flag("task-index", type=int, required=True, help="Task index within a job")
 
 # Hyperparameters
 
@@ -25,13 +35,15 @@ def _read_words(filename):
   with open(filename) as file_:
     return sorted([line.strip() for line in file_.readlines()])
 
-add_flag("word-file", metavar="words", type=_read_words)
+add_flag("word-file", dest="words", type=_read_words)
 add_flag("num-threads-per-queue", type=int, default=2)
 add_flag("queue-capacity", type=int, default=2)
-add_flag("length-boundaries", type=str_list)
-add_flag("rnn-cell", type=(lambda name: getattr(cell, name)), default="ln_lstm")
-
+add_flag("length-boundaries", type=int_list)
+add_flag("rnn-cell", dest="_rnn_cell", default="ln_lstm")
 add_flag("word-embedding-size", type=int, default=200)
+
+# QA
+
 add_flag("first-entity-index", type=int)
 add_flag("last-entity-index", type=int)
 
@@ -55,12 +67,12 @@ add_flag("log-dir",
 
 def _cached_property(func):
   @property
-  @functools.wraps()
+  @functools.wraps(func)
   def wrapper(self):
     attr = "_cached_" + func.__name__
 
     if not hasattr(self, attr):
-      setattr(func(self), attr)
+      setattr(self, attr, func(self))
     return getattr(self, attr)
 
   return wrapper
@@ -68,7 +80,10 @@ def _cached_property(func):
 
 class _Flags:
   def __getattr__(self, name):
-    return getattr(ARGS, name)
+    try:
+      return getattr(ARGS, name)
+    except AttributeError:
+      return object.__getattribute__(self, name)
 
   @_cached_property
   def word_indices(self):
@@ -79,6 +94,11 @@ class _Flags:
   @_cached_property
   def word_space_size(self):
     return len(self.word_indices)
+
+  @property
+  def rnn_cell(self):
+    from .rnn import cell
+    return getattr(cell, ARGS._rnn_cell)
 
 
 FLAGS = _Flags()

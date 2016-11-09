@@ -7,22 +7,11 @@ from .file import read_files
 
 
 
-# Flags
-
-list_of_hosts = "Comma-separated list of hostname:port pairs"
-tf.app.flags.DEFINE_string("ps-hosts", None, list_of_hosts)
-tf.app.flags.DEFINE_string("worker-hosts", None, list_of_hosts)
-
-tf.app.flags.DEFINE_string("job-name", None, "'ps' or 'worker'")
-tf.app.flags.DEFINE_integer("task-index", None, "Task index within the job")
-
-
-
 def main(model):
   def run(_):
     cluster = tf.train.ClusterSpec({
-      "ps": FLAGS.ps_hosts.split(","),
-      "worker": FLAGS.worker_hosts.split(","),
+      "ps": FLAGS.ps_hosts,
+      "worker": FLAGS.worker_hosts,
     })
 
     server = tf.train.Server(cluster,

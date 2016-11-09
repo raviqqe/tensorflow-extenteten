@@ -25,7 +25,7 @@ def words():
 @functools.lru_cache()
 def word_indices():
   # 0 -> null, 1 -> unknown
-  return { word: index + 2 for index, word in enumerate(flags.words()) }
+  return { word: index + 2 for index, word in enumerate(words()) }
 
 
 @functools.lru_cache()

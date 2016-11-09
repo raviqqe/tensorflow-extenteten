@@ -48,7 +48,7 @@ def main(model):
            sess.as_default():
         step = train.global_step().eval()
         logging.info("Initial global step: %d", step)
-        while not sv.should_stop() and step < FLAGS.num_epochs: # TODO: num_epochs != num_steps
+        while not sv.should_stop():
           _, step = sess.run([train_op, train.global_step()])
           logging.info("#steps: %d", step)
         sv.saver.save(sess, sv.save_path, step)

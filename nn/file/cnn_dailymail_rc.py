@@ -1,9 +1,8 @@
-import functools
 import numpy as np
 import tensorflow as tf
 
 from .. import flags
-from ..flags import FLAGS
+from .batch_by_sequence_length import batch_by_sequence_length
 
 
 
@@ -50,13 +49,4 @@ class _RcFileReader:
 
 
 def read_files(filename_queue):
-  tensors = _RcFileReader().read(filename_queue)
-  return tf.contrib.training.bucket_by_sequence_length(
-      tf.shape(tensors[1])[0],
-      list(tensors),
-      FLAGS.batch_size,
-      [int(num) for num in FLAGS.length_boundaries.split(",")],
-      num_threads=FLAGS.num_threads_per_queue,
-      capacity=FLAGS.queue_capacity,
-      dynamic_pad=True,
-      allow_smaller_final_batch=True)[1]
+  return batch_by_sequence_length(_RcFileReader().read(filename_queue))

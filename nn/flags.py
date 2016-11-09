@@ -17,20 +17,21 @@ tf.app.flags.DEFINE_string("int-type", "int32", "")
 
 
 @functools.lru_cache()
-def words():
+def _original_words():
   with open(tf.app.flags.FLAGS.word_file) as file_:
     return sorted([line.strip() for line in file_.readlines()])
 
 
 @functools.lru_cache()
 def word_indices():
-  # 0 -> null, 1 -> unknown
-  return { word: index + 2 for index, word in enumerate(words()) }
+  indices = { word: index + 2 for index, word in enumerate(_original_words()) }
+  indices.update({ '<NULL>': 0, '<UNKNOWN>': 1 })
+  return indices
 
 
 @functools.lru_cache()
 def word_space_size():
-  return len(words())
+  return len(word_indices())
 
 
 def rnn_cell():

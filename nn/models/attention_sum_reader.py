@@ -38,7 +38,8 @@ def attention_sum_reader(document: ("batch", "words"),
         bi_rnn(document), query_embedding, id_sequence_to_length(document))
     prob = _sum_attentions(attentions, document)
 
-  return minimize(slmc.loss(tf.log(prob), answer)), slmc.label(prob)
+  return minimize(slmc.loss_with_summaries(tf.log(prob), answer)), \
+         slmc.label(prob)
 
 
 @funcname_scope

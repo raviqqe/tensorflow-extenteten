@@ -1,11 +1,11 @@
 from functools import partial
 import tensorflow as tf
 
-from .. import slmc, train, batch
+from .. import slmc, batch
 from ..embedding import embeddings, bidirectional_id_sequence_to_embeddings
 from ..dynamic_length import id_sequence_to_length
 from ..softmax import softmax
-from ..flags import add_flag, FLAGS
+from ..flags import FLAGS
 from ..optimize import minimize
 from ..util import static_rank, funcname_scope
 from ..model import Model

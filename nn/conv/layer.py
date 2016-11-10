@@ -1,7 +1,7 @@
 import tensorflow as tf
 
 from ..invertible import InvertibleLayer
-from ..util import funcname_scope, static_rank, static_shape
+from ..util import func_scope, static_rank, static_shape
 from ..variable import variable
 from ..summary import image_summary, num_of_summary_images
 from ..assertion import is_natural_num
@@ -13,7 +13,7 @@ _DEFAULT_CONV_STRIDES = [1, 1, 1, 1]
 _DEFAULT_PADDING = "SAME"
 
 
-@funcname_scope
+@func_scope
 def conv2d(x, kernel_shape, num_of_channels):
   assert static_rank(x) == 4
   assert is_kernel_shape(kernel_shape)
@@ -34,12 +34,12 @@ def _create_filter(kernel_shape,
   return filter_
 
 
-@funcname_scope
+@func_scope
 def _conv2d_with_filter(x, filter_):
   return tf.nn.conv2d(x, filter_, _DEFAULT_CONV_STRIDES, _DEFAULT_PADDING)
 
 
-@funcname_scope
+@func_scope
 def max_pool(x, kernel_shape):
   assert is_kernel_shape(kernel_shape)
 
@@ -102,6 +102,6 @@ class InvertibleMaxPool(InvertibleLayer):
     return _max_unpool(x, self._max_indices, self._kernel_shape)
 
 
-@funcname_scope
+@func_scope
 def _max_unpool(x, max_indices, kernel_shape):
   return NotImplemented

@@ -1,16 +1,16 @@
 import tensorflow as tf
 
-from .util import static_rank, funcname_scope, dimension_indices
+from .util import static_rank, func_scope, dimension_indices
 
 
 
-@funcname_scope
+@func_scope
 def mask(length, max_length, dtype=tf.bool):
   assert static_rank(length) == 1
   return tf.sequence_mask(length, max_length, dtype)
 
 
-@funcname_scope
+@func_scope
 def max_mask(x, reduction_indices=None):
   assert static_rank(x) >= 2
   max = tf.reduce_max(x,
@@ -19,7 +19,7 @@ def max_mask(x, reduction_indices=None):
   return tf.cast(tf.equal(x, max), x.dtype)
 
 
-@funcname_scope
+@func_scope
 def mean_mask(x, reduction_indices=None):
   assert static_rank(x) >= 2
   mean = tf.reduce_mean(x,

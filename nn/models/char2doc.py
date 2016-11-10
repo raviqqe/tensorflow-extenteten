@@ -3,11 +3,11 @@ import tensorflow as tf
 from ..embedding import id_sequence_to_embedding, embeddings
 from ..layer import linear
 from ..dropout import dropout
-from ..util import funcname_scope
+from ..util import func_scope
 
 
 
-@funcname_scope
+@func_scope
 def char2doc(document,
              *,
              char_space_size,

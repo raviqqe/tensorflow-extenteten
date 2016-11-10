@@ -1,10 +1,10 @@
 import tensorflow as tf
 
-from .util import static_shape, static_rank, funcname_scope, dimension_indices
+from .util import static_shape, static_rank, func_scope, dimension_indices
 
 
 
-@funcname_scope
+@func_scope
 def classify_with_single_label_module(
     output_layer: ("batch", "label * class"),
     true_labels: ("batch", "label"),

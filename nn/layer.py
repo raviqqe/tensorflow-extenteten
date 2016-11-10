@@ -1,13 +1,13 @@
 import functools
 import tensorflow as tf
 
-from .util import static_shape, funcname_scope
+from .util import static_shape, func_scope
 from .variable import variable
 from .dropout import dropout
 
 
 
-@funcname_scope
+@func_scope
 def linear(x, output_layer_size):
   weight = variable([static_shape(x)[1], output_layer_size], name="weight")
   bias = variable([output_layer_size], name="bias")
@@ -16,7 +16,7 @@ def linear(x, output_layer_size):
   return tf.matmul(x, weight) + bias
 
 
-@funcname_scope
+@func_scope
 def fully_connected(x,
                     *,
                     output_layer_size,

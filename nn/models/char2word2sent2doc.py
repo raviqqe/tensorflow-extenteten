@@ -1,12 +1,12 @@
 import tensorflow as tf
 
 from ..embedding import embeddings
-from ..util import static_rank, funcname_scope
+from ..util import static_rank, func_scope
 from .ar2word2sent2doc import ar2word2sent2doc
 
 
 
-@funcname_scope
+@func_scope
 def char2word2sent2doc(document,
                        *,
                        words,

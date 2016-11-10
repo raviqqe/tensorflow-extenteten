@@ -1,11 +1,11 @@
 import tensorflow as tf
 
 from ..flags import FLAGS
-from ..util import funcname_scope
+from ..util import func_scope
 
 
 
-@funcname_scope
+@func_scope
 def batch_by_sequence_length(tensors, length_fn=(lambda x: tf.shape(x[1])[0])):
   return tf.contrib.training.bucket_by_sequence_length(
       length_fn(tensors), # first tensor is key

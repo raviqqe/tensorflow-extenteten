@@ -12,11 +12,11 @@ def static_rank(tensor):
   return len(static_shape(tf.convert_to_tensor(tensor)))
 
 
-def funcname_scope(func_or_name):
+def func_scope(func_or_name):
   if isinstance(func_or_name, str):
     def wrapper(func):
       func.__name__ = func_or_name
-      return funcname_scope(func)
+      return func_scope(func)
     return wrapper
 
   func = func_or_name
@@ -42,7 +42,7 @@ def dimension_indices(tensor, start=0):
   return list(range(static_rank(tensor)))[start:]
 
 
-@funcname_scope
+@func_scope
 def dtype_min(dtype):
   return tf.constant(_numpy_min(dtype.as_numpy_dtype))
 
@@ -51,7 +51,7 @@ def _numpy_min(dtype):
   return numpy.finfo(dtype).min
 
 
-@funcname_scope
+@func_scope
 def dtype_epsilon(dtype):
   return tf.constant(_numpy_epsilon(dtype.as_numpy_dtype))
 

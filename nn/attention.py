@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-from .util import static_shape, funcname_scope
+from .util import static_shape, func_scope
 from .layer import linear
 from .variable import variable
 from .random import sample_crop
@@ -12,7 +12,7 @@ from .softmax import softmax
 attention_collection_key = "attentions"
 
 
-@funcname_scope
+@func_scope
 def attention_please(xs, context_vector_size, sequence_length=None, name=None):
   attention = _calculate_attention(xs, context_vector_size, sequence_length)
   summarize(attention)
@@ -23,7 +23,7 @@ def attention_please(xs, context_vector_size, sequence_length=None, name=None):
   return _give_attention(xs, attention)
 
 
-@funcname_scope
+@func_scope
 def _calculate_attention(xs : ("batch", "sequence", "embedding"),
                          context_vector_size,
                          sequence_length=None):
@@ -39,7 +39,7 @@ def _calculate_attention(xs : ("batch", "sequence", "embedding"),
   return softmax(attention_logits, sequence_length)
 
 
-@funcname_scope
+@func_scope
 def _give_attention(xs, attention):
   return tf.squeeze(tf.batch_matmul(tf.transpose(xs, [0, 2, 1]),
                                     tf.expand_dims(attention, 2)), [2])

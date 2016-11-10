@@ -2,13 +2,13 @@ import functools
 import tensorflow as tf
 
 from .assertion import is_natural_num_sequence
-from .util import static_rank, funcname_scope
+from .util import static_rank, func_scope
 from .variable import variable
 from .layer import fully_connected
 
 
 
-@funcname_scope
+@func_scope
 def mlp(x, *, layer_sizes, dropout_prob, activate=tf.nn.elu):
   assert static_rank(x) == 2
   assert is_natural_num_sequence(layer_sizes)

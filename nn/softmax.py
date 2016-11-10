@@ -1,12 +1,12 @@
 import tensorflow as tf
 
 from . import batch
-from .util import static_rank, funcname_scope, dtype_min, dtype_epsilon
+from .util import static_rank, func_scope, dtype_min, dtype_epsilon
 from .mask import mask
 
 
 
-@funcname_scope
+@func_scope
 def softmax(vector, sequence_length=None):
   assert static_rank(vector) == 2
 
@@ -14,7 +14,7 @@ def softmax(vector, sequence_length=None):
          _dynamic_softmax(vector, sequence_length)
 
 
-@funcname_scope
+@func_scope
 def _dynamic_softmax(vector, sequence_length):
   mask_ = tf.cast(mask(sequence_length, tf.shape(vector)[1]), vector.dtype)
   vector_with_min = mask_ * vector + (1 - mask_) * dtype_min(vector.dtype)

@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-from ..util import static_rank, funcname_scope
+from ..util import static_rank, func_scope
 from ..rnn import bidirectional_rnn
 from ..attention import attention_please
 from ..dynamic_length import id_sequence_to_length
@@ -8,7 +8,7 @@ from .ids_to_embeddings import ids_to_embeddings
 
 
 
-@funcname_scope
+@func_scope
 def bidirectional_embeddings_to_embedding(embeddings,
                                           *,
                                           context_vector_size,
@@ -22,7 +22,7 @@ def bidirectional_embeddings_to_embedding(embeddings,
       sequence_length=sequence_length)
 
 
-@funcname_scope
+@func_scope
 def bidirectional_id_sequence_to_embedding(id_sequence,
                                            embeddings,
                                            *,
@@ -37,7 +37,7 @@ def bidirectional_id_sequence_to_embedding(id_sequence,
       **kwargs)
 
 
-@funcname_scope
+@func_scope
 def bidirectional_id_sequence_to_embeddings(id_sequence,
                                             embeddings,
                                             *,

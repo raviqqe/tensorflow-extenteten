@@ -3,7 +3,7 @@ import tensorflow as tf
 
 from ..embedding import bidirectional_id_sequence_to_embedding, \
                         bidirectional_embeddings_to_embedding
-from ..util import static_shape, static_rank, funcname_scope
+from ..util import static_shape, static_rank, func_scope
 from ..mlp import mlp
 from ..dynamic_length import id_tree_to_root_width, id_sequence_to_length
 
@@ -57,19 +57,19 @@ def rd2sent2doc(document,
              dropout_prob=dropout_prob)
 
 
-@funcname_scope
+@func_scope
 def _flatten_document_into_sentences(document):
   return tf.reshape(document, [-1] + static_shape(document)[2:])
 
 
-@funcname_scope
+@func_scope
 def _restore_document_shape(sentences, document):
   return tf.reshape(
       sentences,
       [-1, static_shape(document)[1]] + static_shape(sentences)[1:])
 
 
-@funcname_scope
+@func_scope
 def _restore_sentence_shape(words, sentences):
   return tf.reshape(
       words,

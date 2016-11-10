@@ -1,12 +1,12 @@
 import tensorflow as tf
 
 from ..embedding import embeddings
-from ..util import static_rank, funcname_scope, flatten
+from ..util import static_rank, func_scope, flatten
 from .rd2sent2doc import rd2sent2doc
 
 
 
-@funcname_scope
+@func_scope
 def word2sent2doc(document,
                   *,
                   word_space_size,

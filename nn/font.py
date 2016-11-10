@@ -4,11 +4,11 @@ from .conv import invertible_multi_conv
 from .layer import fully_connected
 from .random import sample_crop
 from .summary import image_summary, num_of_summary_images
-from .util import static_rank, static_shape, funcname_scope
+from .util import static_rank, static_shape, func_scope
 
 
 
-@funcname_scope
+@func_scope
 def font2char(fonts, *, dropout_prob, char_embedding_size, **conv_hyperparams):
   assert static_rank(fonts) == 3
 

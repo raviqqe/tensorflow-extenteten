@@ -7,14 +7,14 @@ from ..dynamic_length import id_sequence_to_length
 from ..softmax import softmax
 from ..flags import FLAGS
 from ..optimize import minimize
-from ..util import static_rank, funcname_scope
+from ..util import static_rank, func_scope
 from ..model import Model
 from ..math import softmax_inverse
 
 
 
 class AttentionSumReader(Model):
-  @funcname_scope("attention_sum_reader")
+  @func_scope("attention_sum_reader")
   def __init__(self,
                document: ("batch", "words"),
                query: ("batch", "words"),
@@ -61,7 +61,7 @@ class AttentionSumReader(Model):
     return self._metrics
 
 
-@funcname_scope
+@func_scope
 def _sum_attentions(attentions, document):
   # TODO: Ignore null and unknown words
 
@@ -69,7 +69,7 @@ def _sum_attentions(attentions, document):
 
   num_entities = tf.reduce_max(document) + 1
 
-  @funcname_scope
+  @func_scope
   def _sum_attention(args):
     attentions, document = args
     assert static_rank(attentions) == 1 and static_rank(document) == 1
@@ -80,7 +80,7 @@ def _sum_attentions(attentions, document):
                    dtype=FLAGS.float_type)
 
 
-@funcname_scope
+@func_scope
 def _calculate_attention(document: ("batch", "sequence", "embedding"),
                          query: ("batch", "embedding"),
                          sequence_length):

@@ -54,7 +54,7 @@ def main(model):
           start_time = time.time()
           _, step, bsize \
               = sess.run([train_op, train.global_step(), batch_size])
-          logging.info("#steps = %d, speed = %f examples/step, batch size = %d",
+          logging.info("#steps = %d, speed = %f examples/sec, batch size = %d",
                        step,
                        bsize / (time.time() - start_time),
                        bsize)

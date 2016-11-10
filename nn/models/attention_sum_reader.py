@@ -63,6 +63,8 @@ class AttentionSumReader(Model):
 
 @funcname_scope
 def _sum_attentions(attentions, document):
+  # TODO: Ignore null and unknown words
+
   assert static_rank(attentions) == 2 and static_rank(document) == 2
 
   num_entities = tf.reduce_max(document) + 1

@@ -39,7 +39,7 @@ def on_device(device_name):
 
 
 def dimension_indices(tensor, start=0):
-  return list(range(static_rank(tensor)))[start:]
+  return [*range(static_rank(tensor))][start:]
 
 
 @func_scope

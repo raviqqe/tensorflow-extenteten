@@ -19,11 +19,12 @@ class _RcFileReader:
       context, question, answer = string.decode().split("\n\n")[1:4]
       context = self._map_document_to_indices(context)
       question = self._map_document_to_indices(question)
-      return (context, question) \
-             + tuple(map(lambda x: np.array(x, dtype=np.int32),
-                     [self._map_word_to_index(answer),
-                      len(context),
-                      len(question)]))
+      return (context,
+              question,
+              *map(lambda x: np.array(x, dtype=np.int32),
+                   [self._map_word_to_index(answer),
+                    len(context),
+                    len(question)]))
 
     context, question, answer, context_length, question_length = tf.py_func(
         read_record,

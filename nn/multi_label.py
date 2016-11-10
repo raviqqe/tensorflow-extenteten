@@ -27,7 +27,7 @@ def classify_with_single_label_module(
 
 
 def _transpose_2d_list(list_):
-  return [list(tuple_) for tuple_ in zip(*list_)]
+  return [[*tuple_] for tuple_ in zip(*list_)]
 
 
 def _zip_by_labels(output_layer, true_labels):

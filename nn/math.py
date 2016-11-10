@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-from .util import funcname_scope, static_rank
+from .util import funcname_scope, static_rank, dtype_epsilon
 
 
 
@@ -14,3 +14,8 @@ def scalar_to_vec(scalar):
 def vec_to_mat(vec):
   assert static_rank(vec) == 2
   return tf.expand_dims(vec, [2])
+
+
+@funcname_scope
+def softmax_inverse(x):
+  return tf.log(x + dtype_epsilon(x.dtype))

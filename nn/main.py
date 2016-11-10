@@ -5,10 +5,13 @@ import tensorflow as tf
 from . import train
 from .flags import FLAGS
 from .file import read_files
+from .model import Model
 
 
 
-def main(model):
+def main(model_class):
+  assert issubclass(model_class, Model)
+
   cluster = tf.train.ClusterSpec({
     "ps": FLAGS.ps_hosts,
     "worker": FLAGS.worker_hosts,
@@ -26,7 +29,7 @@ def main(model):
         cluster=cluster)):
       inputs = read_files(FLAGS.file_glob, FLAGS.file_format)
       batch_size = tf.shape(inputs[0])[0]
-      train_op, _ = model(*inputs[1:])
+      model = model_class(*inputs[1:])
 
       saver = tf.train.Saver(max_to_keep=2**16)
       summary_op = tf.merge_all_summaries()
@@ -52,7 +55,7 @@ def main(model):
       while not sv.should_stop():
         start_time = time.time()
         _, step, bsize \
-            = sess.run([train_op, train.global_step(), batch_size])
+            = sess.run([model.train_op, train.global_step(), batch_size])
         logging.info("#steps = %d, speed = %f examples/sec, batch size = %d",
                      step,
                      bsize / (time.time() - start_time),

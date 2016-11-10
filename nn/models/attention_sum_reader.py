@@ -9,6 +9,7 @@ from ..flags import FLAGS
 from ..optimize import minimize
 from ..util import static_rank, funcname_scope
 from ..model import Model
+from ..math import softmax_inverse
 
 
 
@@ -39,7 +40,7 @@ class AttentionSumReader(Model):
     with tf.variable_scope("document_to_attention"):
       attentions = _calculate_attention(
           bi_rnn(document), query_embedding, id_sequence_to_length(document))
-      logits = tf.log(_sum_attentions(attentions, document))
+      logits = softmax_inverse(_sum_attentions(attentions, document))
 
     loss = slmc.loss(logits, answer)
 

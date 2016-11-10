@@ -12,7 +12,15 @@ def static_rank(tensor):
   return len(static_shape(tf.convert_to_tensor(tensor)))
 
 
-def funcname_scope(func):
+def funcname_scope(func_or_name):
+  if isinstance(func_or_name, str):
+    def wrapper(func):
+      func.__name__ = func_or_name
+      return funcname_scope(func)
+    return wrapper
+
+  func = func_or_name
+
   @functools.wraps(func)
   def wrapper(*args, **kwargs):
     with tf.variable_scope(func.__name__):

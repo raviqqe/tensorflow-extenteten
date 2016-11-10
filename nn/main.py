@@ -54,13 +54,22 @@ def main(model_class):
       logging.info("Initial global step: %d", step)
       while not sv.should_stop():
         start_time = time.time()
-        _, step, bsize \
-            = sess.run([model.train_op, train.global_step(), batch_size])
-        logging.info("#steps = %d, speed = %f examples/sec, batch size = %d",
-                     step,
-                     bsize / (time.time() - start_time),
-                     bsize)
-      sv.saver.save(sess, sv.save_path, step)
+        results = sess.run([model.train_op, train.global_step(), batch_size,
+                            *model.metrics.values()])
+
+        step, bsize = results[1:3]
+        logging.info(_metrics_to_log(
+            ["step", "speed", "batch size", *model.metrics.keys()],
+            [step,
+             "{} examples/sec".format(bsize / (time.time() - start_time)),
+             bsize] + results[3:]))
+      sv.saver.save(sess, sv.save_path, train.global_step().eval())
     sv.stop()
   else:
     raise ValueError("Invalid job_name: {}".format(FLAGS.job_name))
+
+
+def _metrics_to_log(names, values):
+  assert len(names) == len(values)
+  return ", ".join(["{} = {}".format(name, value)
+                    for name, value in zip(names, values)])

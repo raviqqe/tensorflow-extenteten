@@ -26,6 +26,7 @@ def main(model):
           worker_device="/job:worker/task:{}".format(FLAGS.task_index),
           cluster=cluster)):
         inputs = read_files(FLAGS.file_glob, FLAGS.file_format)
+        batch_size = tf.shape(inputs[0])[0]
         train_op, _ = model(*inputs[1:])
 
         saver = tf.train.Saver(max_to_keep=2**16)
@@ -51,10 +52,12 @@ def main(model):
         logging.info("Initial global step: %d", step)
         while not sv.should_stop():
           start_time = time.time()
-          _, step = sess.run([train_op, train.global_step()])
-          logging.info("#steps = %d, speed = %f examples/step",
+          _, step, bsize \
+              = sess.run([train_op, train.global_step(), batch_size])
+          logging.info("#steps = %d, speed = %f examples/step, batch size = %d",
                        step,
-                       FLAGS.batch_size / (time.time() - start_time))
+                       bsize / (time.time() - start_time),
+                       bsize)
         sv.saver.save(sess, sv.save_path, step)
       sv.stop()
     else:

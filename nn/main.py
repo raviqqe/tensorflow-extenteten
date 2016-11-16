@@ -48,8 +48,7 @@ def main(model_class):
         allow_soft_placement=True,
         gpu_options=tf.GPUOptions(allow_growth=True))
 
-    with sv.managed_session(server.target, config) as sess, \
-          sess.as_default():
+    with sv.managed_session(server.target, config) as sess, sess.as_default():
       step = train.global_step().eval()
       logging.info("Initial global step: %d", step)
       while not sv.should_stop():

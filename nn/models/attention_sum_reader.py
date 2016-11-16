@@ -42,11 +42,23 @@ class AttentionSumReader(Model):
           bi_rnn(document), query_embedding, id_sequence_to_length(document))
       logits = softmax_inverse(_sum_attentions(attentions, document))
 
+    answer -= FLAGS.first_entity_index
     loss = slmc.loss(logits, answer)
 
     self._train_op = minimize(loss)
     self._labels = slmc.label(logits)
-    self._metrics = { "loss": loss, "accuracy": slmc.accuracy(logits, answer) }
+    self._metrics = {
+      "loss": loss,
+      "accuracy": slmc.accuracy(logits, answer),
+    }
+
+    with tf.variable_scope("debug_values"):
+      self._debug_values = {
+        "document": tf.reduce_any(tf.is_nan(bi_rnn(document))),
+        "query": tf.reduce_any(tf.is_nan(query_embedding)),
+        "true_label": answer,
+        "predicted_label": self._labels,
+      }
 
   @property
   def train_op(self):
@@ -60,11 +72,13 @@ class AttentionSumReader(Model):
   def metrics(self):
     return self._metrics
 
+  @property
+  def debug_values(self):
+    return self._debug_values
+
 
 @func_scope
 def _sum_attentions(attentions, document):
-  # TODO: Ignore null and unknown words
-
   assert static_rank(attentions) == 2 and static_rank(document) == 2
 
   num_entities = tf.reduce_max(document) + 1
@@ -75,9 +89,11 @@ def _sum_attentions(attentions, document):
     assert static_rank(attentions) == 1 and static_rank(document) == 1
     return tf.unsorted_segment_sum(attentions, document, num_entities)
 
-  return tf.map_fn(_sum_attention,
-                   [attentions, document],
-                   dtype=FLAGS.float_type)
+  attentions = tf.map_fn(_sum_attention,
+                         [attentions, document],
+                         dtype=FLAGS.float_type)
+
+  return attentions[:, FLAGS.first_entity_index:FLAGS.last_entity_index+1]
 
 
 @func_scope

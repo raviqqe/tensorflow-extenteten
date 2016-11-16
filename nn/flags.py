@@ -39,7 +39,7 @@ def _read_words(filename):
     return sorted([line.strip() for line in file_.readlines()])
 
 add_flag("word-file", dest="words", type=_read_words)
-add_flag("rnn-cell", dest="_rnn_cell", default="ln_lstm")
+add_flag("rnn-cell", dest="_rnn_cell", default="gru")
 add_flag("word-embedding-size", type=int, default=200)
 
 # QA

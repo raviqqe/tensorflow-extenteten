@@ -56,7 +56,7 @@ def main(model_class):
           values = sess.run([*model.debug_values.values()])
 
           for name, value in zip(model.debug_values.keys(), values):
-            print("DEBUG_VALUE: {}:".format(name), value)
+            print("DEBUG_VALUE: {} =".format(name), value)
 
         start_time = time.time()
         results = sess.run([model.train_op, train.global_step(), batch_size,

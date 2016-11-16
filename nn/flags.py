@@ -68,6 +68,7 @@ add_flag("log-level", default="info", type=_set_up_logger)
 add_flag("log-dir",
          default="log",
          help="Directory containing checkpoint and event files")
+add_flag("debug", action="store_true")
 add_flag("num-cpus", type=int, default=os.cpu_count())
 add_flag("num-threads-per-queue", type=int, default=2)
 add_flag("batch-queue-capacity", type=int, default=2)

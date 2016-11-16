@@ -8,6 +8,10 @@ from gargparse import ARGS
 
 
 
+_DEFAULT_WORDS = ["<NULL>", "<UNKNOWN>"]
+
+
+
 def add_flag(name, *args, **kwargs):
   gargparse.add_argument("--" + name, *args, **kwargs)
 
@@ -36,7 +40,8 @@ add_flag("dropout-prob", type=float, default=0)
 
 def _read_words(filename):
   with open(filename) as file_:
-    return sorted([line.strip() for line in file_.readlines()])
+    return _DEFAULT_WORDS \
+           + sorted([line.strip() for line in file_.readlines()])
 
 add_flag("word-file", dest="words", type=_read_words)
 add_flag("rnn-cell", dest="_rnn_cell", default="gru")
@@ -45,7 +50,7 @@ add_flag("word-embedding-size", type=int, default=200)
 # QA
 
 def entity_index(num):
-  return int(num) + 2 # for null and unknown words
+  return int(num) + len(_DEFAULT_WORDS)
 
 add_flag("first-entity-index", type=entity_index)
 add_flag("last-entity-index", type=entity_index)
@@ -101,13 +106,11 @@ class _Flags:
 
   @_cached_property
   def word_indices(self):
-    indices = { word: index + 2 for index, word in enumerate(ARGS.words) }
-    indices.update({ '<NULL>': 0, '<UNKNOWN>': 1 })
-    return indices
+    return { word: index for index, word in enumerate(ARGS.words) }
 
   @_cached_property
   def word_space_size(self):
-    return len(self.word_indices)
+    return len(ARGS.words)
 
   @property
   def rnn_cell(self):

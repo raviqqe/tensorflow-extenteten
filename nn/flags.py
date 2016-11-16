@@ -49,11 +49,8 @@ add_flag("word-embedding-size", type=int, default=200)
 
 # QA
 
-def entity_index(num):
-  return int(num) + len(_DEFAULT_WORDS)
-
-add_flag("first-entity-index", type=entity_index)
-add_flag("last-entity-index", type=entity_index)
+add_flag("first-entity")
+add_flag("last-entity")
 
 # Data types
 
@@ -120,6 +117,14 @@ class _Flags:
   @property
   def filename_queue_capacity(self):
     return ARGS.batch_queue_capacity * ARGS.batch_size
+
+  @property
+  def first_entity_index(self):
+    return ARGS.words.index(ARGS.first_entity)
+
+  @property
+  def last_entity_index(self):
+    return ARGS.words.index(ARGS.last_entity)
 
 
 FLAGS = _Flags()

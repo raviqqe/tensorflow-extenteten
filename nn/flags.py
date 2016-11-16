@@ -44,8 +44,11 @@ add_flag("word-embedding-size", type=int, default=200)
 
 # QA
 
-add_flag("first-entity-index", type=int)
-add_flag("last-entity-index", type=int)
+def entity_index(num):
+  return int(num) + 2 # for null and unknown words
+
+add_flag("first-entity-index", type=entity_index)
+add_flag("last-entity-index", type=entity_index)
 
 # Data types
 

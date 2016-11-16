@@ -52,8 +52,8 @@ class AttentionSumReader(Model):
       "accuracy": slmc.accuracy(logits, answer),
     }
 
-    with tf.variable_scope("debug_values"):
-      self._debug_values = {
+    with tf.variable_scope("debug_metrics"):
+      self._debug_metrics = {
         "document": tf.reduce_any(tf.is_nan(bi_rnn(document))),
         "query": tf.reduce_any(tf.is_nan(query_embedding)),
         "true_label": answer,
@@ -73,8 +73,8 @@ class AttentionSumReader(Model):
     return self._metrics
 
   @property
-  def debug_values(self):
-    return self._debug_values
+  def debug_metrics(self):
+    return self._debug_metrics
 
 
 @func_scope

@@ -53,9 +53,9 @@ def main(model_class):
       logging.info("Initial global step: %d", step)
       while not sv.should_stop():
         if FLAGS.debug:
-          values = sess.run([*model.debug_values.values()])
+          values = sess.run([*model.debug_metrics.values()])
 
-          for name, value in zip(model.debug_values.keys(), values):
+          for name, value in zip(model.debug_metrics.keys(), values):
             print("DEBUG_VALUE: {} =".format(name), value)
 
         start_time = time.time()

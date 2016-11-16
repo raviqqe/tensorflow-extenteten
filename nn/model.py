@@ -16,5 +16,5 @@ class Model(metaclass=abc.ABCMeta):
     return {}
 
   @property
-  def debug_values(self):
+  def debug_metrics(self):
     return {}

@@ -52,6 +52,12 @@ def main(model_class):
       step = train.global_step().eval()
       logging.info("Initial global step: %d", step)
       while not sv.should_stop():
+        if FLAGS.debug:
+          values = sess.run([*model.debug_values.values()])
+
+          for name, value in zip(model.debug_values.keys(), values):
+            print("DEBUG_VALUE: {}:".format(name), value)
+
         start_time = time.time()
         results = sess.run([model.train_op, train.global_step(), batch_size,
                             *model.metrics.values()])

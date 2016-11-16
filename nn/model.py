@@ -14,3 +14,7 @@ class Model(metaclass=abc.ABCMeta):
   @property
   def metrics(self):
     return {}
+
+  @property
+  def debug_values(self):
+    return {}

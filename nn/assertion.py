@@ -1,5 +1,8 @@
 import collections
 import numpy
+import tensorflow as tf
+
+from .util import func_scope
 
 
 
@@ -23,3 +26,8 @@ def is_natural_num_sequence(num_list, length=None):
 
 def is_sequence(obj):
   return isinstance(obj, collections.Sequence)
+
+
+@func_scope
+def assert_no_nan(tensor):
+  return tf.assert_equal(tf.reduce_any(tf.is_nan(tensor)), False)

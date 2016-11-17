@@ -62,3 +62,7 @@ def _numpy_epsilon(dtype):
 
 def flatten(x):
   return tf.reshape(x, [-1])
+
+
+def rename(name, x):
+  return tf.identity(x, name)

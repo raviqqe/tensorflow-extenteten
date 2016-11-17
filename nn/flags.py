@@ -1,10 +1,11 @@
 import functools
-import logging
 import os
 
 import tensorflow as tf
 import gargparse
 from gargparse import ARGS
+
+from . import log
 
 
 
@@ -64,12 +65,7 @@ add_flag("file-format", required=True, help="Data format of files")
 
 # Others
 
-def _set_up_logger(level):
-  logging.getLogger().setLevel(getattr(logging, level.upper()))
-  logging.basicConfig(format="[%(asctime)s]PID-%(process)d:"
-                             "%(module)s.%(funcName)s(): %(message)s")
-
-add_flag("log-level", default="info", type=_set_up_logger)
+add_flag("log-level", default="info", type=log.init_logger)
 add_flag("log-dir",
          default="log",
          help="Directory containing checkpoint and event files")

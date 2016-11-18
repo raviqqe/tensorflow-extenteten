@@ -1,8 +1,9 @@
 import logging
+import re
 import time
 import tensorflow as tf
 
-from . import train
+from . import train, collections
 from .flags import FLAGS
 from .file import read_files
 from .model import Model
@@ -52,22 +53,20 @@ def main(model_class):
       step = train.global_step().eval()
       logging.info("Initial global step: %d", step)
       while not sv.should_stop():
-        if FLAGS.debug:
-          values = sess.run([*model.debug_metrics.values()])
-
-          for name, value in zip(model.debug_metrics.keys(), values):
-            print("DEBUG_METRIC: {} =".format(name), value)
-
         start_time = time.time()
-        results = sess.run([model.train_op, train.global_step(), batch_size,
-                            *model.metrics.values()])
+        _, step, bsize, *metrics = sess.run([
+            model.train_op,
+            train.global_step(),
+            batch_size,
+            *collections.get_metrics()])
 
-        step, bsize = results[1:3]
         logging.info(_metrics_to_log(
-            ["step", "speed", "batch size", *model.metrics.keys()],
+            ["step", "speed", "batch size",
+             *[_metric_to_name(m) for m in collections.get_metrics()]],
             [step,
              "{} examples/sec".format(bsize / (time.time() - start_time)),
-             bsize] + results[3:]))
+             bsize,
+             *metrics]))
       sv.saver.save(sess, sv.save_path, train.global_step().eval())
     sv.stop()
   else:
@@ -78,3 +77,7 @@ def _metrics_to_log(names, values):
   assert len(names) == len(values)
   return ", ".join(["{} = {}".format(name, value)
                     for name, value in zip(names, values)])
+
+
+def _metric_to_name(metric):
+  return re.search(r"(^|/)([^/]+):[0-9]+", metric.name).group(2)

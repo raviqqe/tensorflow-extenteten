@@ -1,7 +1,7 @@
 from functools import partial
 import tensorflow as tf
 
-from .. import slmc, batch
+from .. import slmc, batch, collections
 from ..embedding import embeddings, bidirectional_id_sequence_to_embeddings
 from ..dynamic_length import id_sequence_to_length
 from ..softmax import softmax
@@ -47,10 +47,8 @@ class AttentionSumReader(Model):
 
     self._train_op = minimize(loss)
     self._labels = slmc.label(logits)
-    self._metrics = {
-      "loss": loss,
-      "accuracy": slmc.accuracy(logits, answer),
-    }
+    collections.add_metric(loss, "loss")
+    collections.add_metric(slmc.accuracy(logits, answer), "accuracy")
 
     with tf.variable_scope("debug_metrics"):
       self._debug_metrics = {
@@ -67,14 +65,6 @@ class AttentionSumReader(Model):
   @property
   def labels(self):
     return self._labels
-
-  @property
-  def metrics(self):
-    return self._metrics
-
-  @property
-  def debug_metrics(self):
-    return self._debug_metrics
 
 
 @func_scope

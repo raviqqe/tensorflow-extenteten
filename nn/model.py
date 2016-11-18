@@ -10,11 +10,3 @@ class Model(metaclass=abc.ABCMeta):
   @abc.abstractproperty
   def labels(self):
     return NotImplemented
-
-  @property
-  def metrics(self):
-    return {}
-
-  @property
-  def debug_metrics(self):
-    return {}

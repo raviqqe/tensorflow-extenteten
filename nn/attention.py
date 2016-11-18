@@ -1,12 +1,12 @@
 import tensorflow as tf
 
+from . import collections
 from .util import static_shape, func_scope
 from .layer import linear
 from .variable import variable
 from .random import sample_crop
 from .summary import summarize, image_summary
 from .softmax import softmax
-from . import keys
 
 
 
@@ -17,7 +17,7 @@ def attention_please(xs, context_vector_size, sequence_length=None, name=None):
   image_summary(tf.expand_dims(
       sample_crop(attention, static_shape(attention)[1]),
       0))
-  tf.add_to_collection(keys.ATTENTIONS, attention)
+  collections.add_attention(attention)
   return _give_attention(xs, attention)
 
 

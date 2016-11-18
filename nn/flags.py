@@ -70,7 +70,7 @@ add_flag("log-dir",
          default="log",
          help="Directory containing checkpoint and event files")
 add_flag("debug", action="store_true")
-add_flag("num-cpus", type=int, default=os.cpu_count())
+add_flag("num-cpus", type=int)
 add_flag("num-threads-per-queue", type=int, default=2)
 add_flag("batch-queue-capacity", type=int, default=2)
 add_flag("length-boundaries", type=int_list)

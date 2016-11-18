@@ -19,7 +19,7 @@ def get_attentions():
 def add_metric(tensor, name=None):
   return tf.add_to_collection(
       METRICS,
-      tensor if name is None else util.rename(name, tensor))
+      tensor if name is None else util.rename(tensor, name))
 
 def get_metrics():
   return tf.get_collection(METRICS)

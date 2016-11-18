@@ -64,5 +64,5 @@ def flatten(x):
   return tf.reshape(x, [-1])
 
 
-def rename(name, x):
+def rename(x, name):
   return tf.identity(x, name)

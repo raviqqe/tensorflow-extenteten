@@ -80,4 +80,5 @@ def _metrics_to_log(names, values):
 
 
 def _metric_to_name(metric):
-  return re.search(r"(^|/)([^/]+):[0-9]+", metric.name).group(2)
+  return re.sub(r"_[0-9]+$", r"",
+                re.search(r"(^|/)([^/]+):[0-9]+", metric.name).group(2))

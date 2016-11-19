@@ -45,6 +45,7 @@ def main(model_class):
 
     config = tf.ConfigProto(
         allow_soft_placement=True,
+        log_device_placement=True,
         gpu_options=tf.GPUOptions(allow_growth=True),
         **({} if FLAGS.num_cpus is None else
            {"inter_op_parallelism_threads": FLAGS.num_cpus,

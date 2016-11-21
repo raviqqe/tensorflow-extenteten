@@ -2,6 +2,7 @@ import tensorflow as tf
 
 from ..flags import FLAGS
 from ..util import func_scope
+from ..initializers import identity_initializer
 
 
 
@@ -12,7 +13,7 @@ def ln_lstm(output_size, dropout_prob=FLAGS.dropout_prob):
       dropout_keep_prob=1-dropout_prob)
 
 
-@func_scope()
+@func_scope(initializer=identity_initializer)
 def gru(output_size, dropout_prob=FLAGS.dropout_prob):
   return _dropout_cell(tf.nn.rnn_cell.GRUCell(output_size), dropout_prob)
 

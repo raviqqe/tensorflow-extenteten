@@ -41,7 +41,7 @@ def bidirectional_rnn(inputs,
       dtype=inputs.dtype)
 
   return (tf.concat(1, [_unpack_state_tuple(state) for state in states])
-          if output_state else \
+          if output_state else
           tf.concat(2, outputs))
 
 

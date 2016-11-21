@@ -28,6 +28,6 @@ def is_sequence(obj):
   return isinstance(obj, collections.Sequence)
 
 
-@func_scope
+@func_scope()
 def assert_no_nan(tensor):
   return tf.assert_equal(tf.reduce_any(tf.is_nan(tensor)), False)

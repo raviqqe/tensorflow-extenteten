@@ -4,7 +4,7 @@ from .util import static_shape, static_rank, func_scope, dimension_indices
 
 
 
-@func_scope
+@func_scope()
 def classify_with_single_label_module(
     output_layer: ("batch", "label * class"),
     true_labels: ("batch", "label"),

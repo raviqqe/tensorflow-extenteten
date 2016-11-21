@@ -8,7 +8,7 @@ from .layer import fully_connected
 
 
 
-@func_scope
+@func_scope()
 def mlp(x, *, layer_sizes, dropout_prob, activate=tf.nn.elu):
   assert static_rank(x) == 2
   assert is_natural_num_sequence(layer_sizes)

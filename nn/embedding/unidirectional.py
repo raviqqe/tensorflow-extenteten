@@ -8,7 +8,7 @@ from .ids_to_embeddings import ids_to_embeddings
 
 
 
-@func_scope
+@func_scope()
 def embeddings_to_embedding(embeddings,
                             *,
                             context_vector_size,
@@ -22,7 +22,7 @@ def embeddings_to_embedding(embeddings,
       sequence_length=sequence_length)
 
 
-@func_scope
+@func_scope()
 def id_sequence_to_embedding(id_sequence,
                              embeddings,
                              *,

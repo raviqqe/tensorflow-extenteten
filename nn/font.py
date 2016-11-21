@@ -8,7 +8,7 @@ from .util import static_rank, static_shape, func_scope
 
 
 
-@func_scope
+@func_scope()
 def font2char(fonts, *, dropout_prob, char_embedding_size, **conv_hyperparams):
   assert static_rank(fonts) == 3
 

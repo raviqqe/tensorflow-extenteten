@@ -7,7 +7,7 @@ from .dropout import dropout
 
 
 
-@func_scope
+@func_scope()
 def linear(x, output_layer_size):
   weight = variable([static_shape(x)[1], output_layer_size], name="weight")
   bias = variable([output_layer_size], name="bias")
@@ -16,7 +16,7 @@ def linear(x, output_layer_size):
   return tf.matmul(x, weight) + bias
 
 
-@func_scope
+@func_scope()
 def fully_connected(x,
                     *,
                     output_layer_size,

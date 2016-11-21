@@ -11,7 +11,7 @@ _BIAS = "bias"
 _EPSILON = 1e-5 # refer to the implementation of batch norm' in Chainer
 
 
-@func_scope
+@func_scope()
 def layer_normalization(x: ("batch", ...),
                         add_bias=True,
                         share_variables=False):
@@ -38,17 +38,17 @@ def _bias(shape, share_variables):
           variable(tf.zeros(shape), _BIAS))
 
 
-@func_scope
+@func_scope()
 def _batchwise_mean(x):
   return tf.reduce_mean(x, dimension_indices(x, 1), keep_dims=True)
 
 
-@func_scope
+@func_scope()
 def _inverted_stddev(x):
   return tf.rsqrt(_variance(x) + _EPSILON)
 
 
-@func_scope
+@func_scope()
 def _variance(x):
   return tf.reduce_mean(tf.square(x - _batchwise_mean(x)),
                         dimension_indices(x, 1),

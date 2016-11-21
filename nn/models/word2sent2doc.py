@@ -6,7 +6,7 @@ from .rd2sent2doc import rd2sent2doc
 
 
 
-@func_scope
+@func_scope()
 def word2sent2doc(document,
                   *,
                   word_space_size,

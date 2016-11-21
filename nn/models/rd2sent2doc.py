@@ -57,19 +57,19 @@ def rd2sent2doc(document,
              dropout_prob=dropout_prob)
 
 
-@func_scope
+@func_scope()
 def _flatten_document_into_sentences(document):
   return tf.reshape(document, [-1] + static_shape(document)[2:])
 
 
-@func_scope
+@func_scope()
 def _restore_document_shape(sentences, document):
   return tf.reshape(
       sentences,
       [-1, static_shape(document)[1]] + static_shape(sentences)[1:])
 
 
-@func_scope
+@func_scope()
 def _restore_sentence_shape(words, sentences):
   return tf.reshape(
       words,

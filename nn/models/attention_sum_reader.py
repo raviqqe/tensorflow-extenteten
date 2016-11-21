@@ -67,13 +67,13 @@ class AttentionSumReader(Model):
     return self._labels
 
 
-@func_scope
+@func_scope()
 def _sum_attentions(attentions, document):
   assert static_rank(attentions) == 2 and static_rank(document) == 2
 
   num_entities = tf.reduce_max(document) + 1
 
-  @func_scope
+  @func_scope()
   def _sum_attention(args):
     attentions, document = args
     assert static_rank(attentions) == 1 and static_rank(document) == 1
@@ -86,7 +86,7 @@ def _sum_attentions(attentions, document):
   return attentions[:, FLAGS.first_entity_index:FLAGS.last_entity_index+1]
 
 
-@func_scope
+@func_scope()
 def _calculate_attention(document: ("batch", "sequence", "embedding"),
                          query: ("batch", "embedding"),
                          sequence_length):

@@ -15,7 +15,7 @@ from ..mask import max_mask
 ACTIVATE = tf.nn.relu
 
 
-@func_scope
+@func_scope()
 def multi_conv_and_pool(x,
                         *,
                         nums_of_channels,
@@ -25,7 +25,7 @@ def multi_conv_and_pool(x,
   assert is_kernel_shape(conv_kernel_shape)
   assert pool_kernel_shape is None or is_kernel_shape(pool_kernel_shape)
 
-  @func_scope
+  @func_scope()
   def layer(x, num_of_channels):
     h = ACTIVATE(conv2d(x, conv_kernel_shape, num_of_channels))
     image_summary(tf.transpose(
@@ -37,7 +37,7 @@ def multi_conv_and_pool(x,
   return functools.reduce(layer, nums_of_channels, x)
 
 
-@func_scope
+@func_scope()
 def multi_conv(x, *, nums_of_channels, kernel_shape):
   return multi_conv_and_pool(x,
                              nums_of_channels=nums_of_channels,
@@ -45,7 +45,7 @@ def multi_conv(x, *, nums_of_channels, kernel_shape):
                              pool_kernel_shape=None)
 
 
-@func_scope
+@func_scope()
 def invertible_multi_conv(x, *, nums_of_channels, kernel_shape):
   multi_conv = InvertibleMultiConv(nums_of_channels, kernel_shape)
   h = multi_conv.forward(x)

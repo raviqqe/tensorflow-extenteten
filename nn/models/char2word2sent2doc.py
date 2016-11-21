@@ -6,7 +6,7 @@ from .ar2word2sent2doc import ar2word2sent2doc
 
 
 
-@func_scope
+@func_scope()
 def char2word2sent2doc(document,
                        *,
                        words,

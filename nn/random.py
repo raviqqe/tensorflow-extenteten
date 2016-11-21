@@ -5,7 +5,7 @@ from .util import func_scope, static_shape
 
 
 
-@func_scope
+@func_scope()
 def sample_crop(xs, n):
   assert is_natural_num(n)
   return tf.random_crop(

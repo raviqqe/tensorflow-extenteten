@@ -5,7 +5,7 @@ from ..flags import FLAGS
 
 
 
-@func_scope
+@func_scope()
 def rnn(inputs,
         *,
         output_embedding_size,
@@ -22,7 +22,7 @@ def rnn(inputs,
   return _unpack_state_tuple(state) if output_state else outputs
 
 
-@func_scope
+@func_scope()
 def bidirectional_rnn(inputs,
                       *,
                       output_embedding_size,
@@ -45,6 +45,6 @@ def bidirectional_rnn(inputs,
           tf.concat(2, outputs))
 
 
-@func_scope
+@func_scope()
 def _unpack_state_tuple(state):
   return state.h if isinstance(state, tf.nn.rnn_cell.LSTMStateTuple) else state

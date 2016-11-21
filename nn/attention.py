@@ -10,7 +10,7 @@ from .softmax import softmax
 
 
 
-@func_scope
+@func_scope()
 def attention_please(xs, context_vector_size, sequence_length=None, name=None):
   attention = _calculate_attention(xs, context_vector_size, sequence_length)
   summarize(attention)
@@ -21,7 +21,7 @@ def attention_please(xs, context_vector_size, sequence_length=None, name=None):
   return _give_attention(xs, attention)
 
 
-@func_scope
+@func_scope()
 def _calculate_attention(xs : ("batch", "sequence", "embedding"),
                          context_vector_size,
                          sequence_length=None):
@@ -37,7 +37,7 @@ def _calculate_attention(xs : ("batch", "sequence", "embedding"),
   return softmax(attention_logits, sequence_length)
 
 
-@func_scope
+@func_scope()
 def _give_attention(xs, attention):
   return tf.squeeze(tf.batch_matmul(tf.transpose(xs, [0, 2, 1]),
                                     tf.expand_dims(attention, 2)), [2])

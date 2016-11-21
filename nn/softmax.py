@@ -6,7 +6,7 @@ from .mask import mask
 
 
 
-@func_scope
+@func_scope()
 def softmax(vector, sequence_length=None):
   assert static_rank(vector) == 2
 
@@ -14,7 +14,7 @@ def softmax(vector, sequence_length=None):
          _dynamic_softmax(vector, sequence_length)
 
 
-@func_scope
+@func_scope()
 def _dynamic_softmax(vector, sequence_length):
   mask_ = tf.cast(mask(sequence_length, tf.shape(vector)[1]), vector.dtype)
   vector_with_min = mask_ * vector + (1 - mask_) * dtype_min(vector.dtype)

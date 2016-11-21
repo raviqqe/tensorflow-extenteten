@@ -25,7 +25,7 @@ def _squeeze_output_layer(func):
   return wrapper
 
 
-@func_scope
+@func_scope()
 @_squeeze_output_layer
 def classify(output_layer, true_label):
   assert static_rank(output_layer) == static_rank(true_label) == 1
@@ -37,7 +37,7 @@ def classify(output_layer, true_label):
          label(output_layer)
 
 
-@func_scope
+@func_scope()
 @_squeeze_output_layer
 def loss(output_layer, true_label):
   assert static_rank(output_layer) == static_rank(true_label) == 1
@@ -49,7 +49,7 @@ def loss(output_layer, true_label):
       tf.cast(true_label, output_layer.dtype)))
 
 
-@func_scope
+@func_scope()
 @_squeeze_output_layer
 def accuracy(output_layer, true_label):
   assert static_rank(output_layer) == static_rank(true_label) == 1
@@ -60,7 +60,7 @@ def accuracy(output_layer, true_label):
                                              true_label)))
 
 
-@func_scope
+@func_scope()
 @_squeeze_output_layer
 def label(output_layer):
   assert static_rank(output_layer) == 1

@@ -13,7 +13,7 @@ _DEFAULT_CONV_STRIDES = [1, 1, 1, 1]
 _DEFAULT_PADDING = "SAME"
 
 
-@func_scope
+@func_scope()
 def conv2d(x, kernel_shape, num_of_channels):
   assert static_rank(x) == 4
   assert is_kernel_shape(kernel_shape)
@@ -34,12 +34,12 @@ def _create_filter(kernel_shape,
   return filter_
 
 
-@func_scope
+@func_scope()
 def _conv2d_with_filter(x, filter_):
   return tf.nn.conv2d(x, filter_, _DEFAULT_CONV_STRIDES, _DEFAULT_PADDING)
 
 
-@func_scope
+@func_scope()
 def max_pool(x, kernel_shape):
   assert is_kernel_shape(kernel_shape)
 
@@ -102,6 +102,6 @@ class InvertibleMaxPool(InvertibleLayer):
     return _max_unpool(x, self._max_indices, self._kernel_shape)
 
 
-@func_scope
+@func_scope()
 def _max_unpool(x, max_indices, kernel_shape):
   return NotImplemented

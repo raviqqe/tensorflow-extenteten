@@ -7,7 +7,7 @@ from ..util import func_scope
 
 
 
-@func_scope
+@func_scope()
 def char2doc(document,
              *,
              char_space_size,

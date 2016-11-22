@@ -3,6 +3,7 @@ import tensorflow as tf
 
 from ..flags import FLAGS
 from .batch_by_sequence_length import batch_by_sequence_length
+from .sort import sorted_batch
 
 
 
@@ -49,4 +50,4 @@ class _RcFileReader:
 
 
 def read_files(filename_queue):
-  return batch_by_sequence_length(_RcFileReader().read(filename_queue))
+  return sorted_batch(*_RcFileReader().read(filename_queue))

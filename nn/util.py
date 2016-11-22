@@ -8,6 +8,10 @@ def static_shape(tensor):
   return tf.convert_to_tensor(tensor).get_shape().as_list()
 
 
+def static_shapes(*tensors):
+  return [static_shape(tensor) for tensor in tensors]
+
+
 def static_rank(tensor):
   return len(static_shape(tf.convert_to_tensor(tensor)))
 

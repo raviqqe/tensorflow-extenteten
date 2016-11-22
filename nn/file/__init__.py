@@ -4,7 +4,8 @@ import tensorflow as tf
 from . import cnn_dailymail_rc
 from .. import collections
 from ..flags import FLAGS
-from ..util import func_scope
+from ..util import func_scope, dtypes
+from .util import batch_queue, add_queue_runner
 
 
 
@@ -26,12 +27,10 @@ def _file_pattern_to_names(pattern):
 
 @func_scope()
 def monitored_batch_queue(*tensors):
-  queue = tf.FIFOQueue(FLAGS.batch_queue_capacity,
-                       [tensor.dtype for tensor in tensors])
+  queue = batch_queue(dtypes(*tensors))
   collections.add_metric(queue.size(), "batches_in_queue")
 
-  tf.train.add_queue_runner(
-      tf.train.QueueRunner(queue, [queue.enqueue(tensors)]))
+  add_queue_runner(queue, [queue.enqueue(tensors)])
 
   results = queue.dequeue()
   for tensor, result in zip(tensors, results):

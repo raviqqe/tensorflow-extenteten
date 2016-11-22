@@ -16,6 +16,10 @@ def static_rank(tensor):
   return len(static_shape(tf.convert_to_tensor(tensor)))
 
 
+def dtypes(*tensors):
+  return [tensor.dtype for tensor in tensors]
+
+
 def func_scope(name=None, initializer=None):
   def decorator(func):
     @functools.wraps(func)

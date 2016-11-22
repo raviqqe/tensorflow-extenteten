@@ -63,7 +63,7 @@ def main(model_class):
             *collections.get_metrics()])
 
         logging.info(_metrics_to_log(
-            ["step", "speed", "batch size",
+            ["step", "speed", "batch_size",
              *[_metric_to_name(m) for m in collections.get_metrics()]],
             [step,
              "{} examples/sec".format(bsize / (time.time() - start_time)),

@@ -1,3 +1,4 @@
+import functools
 import tensorflow as tf
 
 from .util import func_scope
@@ -17,3 +18,8 @@ def with_dependencies(dependencies, tensor):
   """
   with tf.control_dependencies(dependencies):
     return tensor
+
+
+@func_scope()
+def sequential(*ops):
+  return functools.reduce(lambda x, y: with_dependencies([x], y), ops)

@@ -6,10 +6,6 @@ from ..util import func_scope, dtypes, static_shapes
 
 
 @func_scope()
-def batch_queue(dtypes):
-  return tf.FIFOQueue(FLAGS.batch_queue_capacity, dtypes)
-
-
 @func_scope()
 def requeue(*tensors, capacity=2):
   queue = tf.PaddingFIFOQueue(capacity,

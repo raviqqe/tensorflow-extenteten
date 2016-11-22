@@ -26,9 +26,9 @@ def _file_pattern_to_names(pattern):
 
 
 @func_scope()
-def monitored_batch_queue(*tensors):
+def monitored_batch_queue(*tensors, metric_name="batches_in_queue"):
   queue = batch_queue(dtypes(*tensors))
-  collections.add_metric(queue.size(), "batches_in_queue")
+  collections.add_metric(queue.size(), metric_name)
 
   add_queue_runner(queue, [queue.enqueue(tensors)])
 

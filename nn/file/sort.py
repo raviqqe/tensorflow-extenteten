@@ -2,7 +2,7 @@ import functools
 import operator
 import tensorflow as tf
 
-from .. import control
+from .. import control, collections
 from ..flags import FLAGS
 from ..util import func_scope, dtypes, static_shapes
 from .util import requeue, add_queue_runner
@@ -24,6 +24,7 @@ def sorted_batch(*tensors):
 @func_scope()
 def prefetch_and_sort(*tensors):
   queue = requeue(*tensors)
+  collections.add_metric(queue.size(), "unsorted_samples_in_queue")
 
   return _gather_into_queue(*_sort_by_length(
       *[queue.dequeue() for _ in range(_num_prefetched_samples())]))
@@ -36,6 +37,7 @@ def _gather_into_queue(*tensor_lists):
   queue = tf.PaddingFIFOQueue(_num_prefetched_samples(),
                               dtypes(*tensor_list),
                               static_shapes(*tensor_list))
+  collections.add_metric(queue.size(), "sorted_samples_in_queue")
 
   add_queue_runner(queue,
                    [control.sequential(*[queue.enqueue(tensor_list)

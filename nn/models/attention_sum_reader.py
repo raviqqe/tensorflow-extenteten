@@ -23,7 +23,9 @@ class AttentionSumReader(Model):
     assert static_rank(query) == 2
     assert static_rank(answer) == 1
 
-    collections.add_metric(tf.shape(document)[1], "max_document_length")
+    collections.add_metric(tf.shape(document)[1], "document_2nd_dim")
+    collections.add_metric(tf.reduce_max(id_sequence_to_length(document)),
+                           "max_document_length")
     collections.add_metric(tf.reduce_min(id_sequence_to_length(document)),
                            "min_document_length")
 

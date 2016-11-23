@@ -8,8 +8,13 @@ from .util import func_scope, static_rank, static_shape
 def batch(*tensor_lists_or_dicts):
   type_ = type(tensor_lists_or_dicts[0])
 
-  assert type_ in [list, dict]
+  assert type_ in [list, tuple, dict]
   assert all(type_ == type(obj) for obj in tensor_lists_or_dicts)
+
+  if type_ == tuple:
+    type_ = list
+    tensor_lists_or_dicts = [list(tuple_) for tuple_ in tensor_lists_or_dicts]
+
   assert type_ != dict or all(tensor_lists_or_dicts[0].keys() == dict_.keys()
                               for dict_ in tensor_lists_or_dicts)
 

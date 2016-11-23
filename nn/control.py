@@ -17,7 +17,11 @@ def with_dependencies(dependencies, tensor):
   But, it cannot be found in a library.
   """
   with tf.control_dependencies(dependencies):
-    return tensor
+    if isinstance(tensor, tf.Tensor):
+      return tf.identity(tensor)
+    elif isinstance(tensor, tf.Operation):
+      return tf.group(tensor)
+    raise ValueError("{} must be tf.Tensor or tf.Operation.".format(tensor))
 
 
 @func_scope()

@@ -24,6 +24,8 @@ class AttentionSumReader(Model):
     assert static_rank(answer) == 1
 
     collections.add_metric(tf.shape(document)[1], "max_document_length")
+    collections.add_metric(tf.reduce_min(id_sequence_to_length(document)),
+                           "min_document_length")
 
     with tf.variable_scope("word_embeddings"):
       word_embeddings = embeddings(id_space_size=FLAGS.word_space_size,

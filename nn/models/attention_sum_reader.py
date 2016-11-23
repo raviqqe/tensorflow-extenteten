@@ -23,6 +23,8 @@ class AttentionSumReader(Model):
     assert static_rank(query) == 2
     assert static_rank(answer) == 1
 
+    collections.add_metric(tf.shape(document)[1], "max_document_length")
+
     with tf.variable_scope("word_embeddings"):
       word_embeddings = embeddings(id_space_size=FLAGS.word_space_size,
                                    embedding_size=FLAGS.word_embedding_size,
@@ -49,14 +51,6 @@ class AttentionSumReader(Model):
     self._labels = slmc.label(logits)
     collections.add_metric(loss, "loss")
     collections.add_metric(slmc.accuracy(logits, answer), "accuracy")
-
-    with tf.variable_scope("debug_metrics"):
-      self._debug_metrics = {
-        "document": tf.reduce_any(tf.is_nan(bi_rnn(document))),
-        "query": tf.reduce_any(tf.is_nan(query_embedding)),
-        "true_label": answer,
-        "predicted_label": self._labels,
-      }
 
   @property
   def train_op(self):

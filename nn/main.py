@@ -44,12 +44,11 @@ def main(model_class):
                              global_step=train.global_step())
 
     config = tf.ConfigProto(
+        inter_op_parallelism_threads=FLAGS.num_cpus,
+        intra_op_parallelism_threads=FLAGS.num_cpus,
         allow_soft_placement=True,
         log_device_placement=True,
-        gpu_options=tf.GPUOptions(allow_growth=True),
-        **({} if FLAGS.num_cpus is None else
-           {"inter_op_parallelism_threads": FLAGS.num_cpus,
-            "intra_op_parallelism_threads": FLAGS.num_cpus}))
+        gpu_options=tf.GPUOptions(allow_growth=True))
 
     with sv.managed_session(server.target, config) as sess, sess.as_default():
       step = train.global_step().eval()

@@ -15,10 +15,7 @@ def _num_prefetched_samples():
 
 @func_scope()
 def sorted_batch(*tensors):
-  return tf.train.batch(prefetch_and_sort(*tensors),
-                        FLAGS.batch_size,
-                        capacity=FLAGS.batch_queue_capacity,
-                        dynamic_pad=True)
+  return prefetch_and_sort(*tensors).dequeue_many(FLAGS.batch_size)
 
 
 @func_scope()
@@ -43,7 +40,7 @@ def _gather_into_queue(*tensor_lists):
                    [control.sequential(*[queue.enqueue(tensor_list)
                                          for tensor_list in tensor_lists])])
 
-  return queue.dequeue()
+  return queue
 
 
 @func_scope()

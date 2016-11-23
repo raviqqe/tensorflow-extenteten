@@ -2,9 +2,9 @@ import functools
 import operator
 import tensorflow as tf
 
-from .. import control, collections
+from .. import control, collections, transform
 from ..flags import FLAGS
-from ..util import func_scope, dtypes, static_shapes
+from ..util import func_scope, dtypes, static_shapes, static_shape
 from .util import requeue, add_queue_runner
 
 
@@ -15,11 +15,6 @@ def _num_prefetched_samples():
 
 @func_scope()
 def sorted_batch(*tensors):
-  return prefetch_and_sort(*tensors).dequeue_many(FLAGS.batch_size)
-
-
-@func_scope()
-def prefetch_and_sort(*tensors):
   queue = requeue(*tensors)
   collections.add_metric(queue.size(), "unsorted_samples_in_queue")
 
@@ -29,18 +24,25 @@ def prefetch_and_sort(*tensors):
 
 @func_scope()
 def _gather_into_queue(*tensor_lists):
-  tensor_list = tensor_lists[0]
+  assert len(tensor_lists) % FLAGS.batch_size == 0
 
-  queue = tf.PaddingFIFOQueue(_num_prefetched_samples(),
-                              dtypes(*tensor_list),
-                              static_shapes(*tensor_list))
-  collections.add_metric(queue.size(), "sorted_samples_in_queue")
+  queue = tf.RandomShuffleQueue(FLAGS.batch_queue_capacity,
+                                FLAGS.batch_queue_capacity // 2,
+                                dtypes(*tensor_lists[0]))
+  collections.add_metric(queue.size(), "sorted_batches_in_queue")
 
-  add_queue_runner(queue,
-                   [control.sequential(*[queue.enqueue(tensor_list)
-                                         for tensor_list in tensor_lists])])
+  add_queue_runner(
+      queue,
+      [tf.group(*[
+          queue.enqueue(transform.batch(*tensor_lists[i:i+FLAGS.batch_size]))
+          for i in range(0, len(tensor_lists), FLAGS.batch_size)])])
 
-  return queue
+  results = queue.dequeue()
+
+  for result, tensor in zip(results, tensor_lists[0]):
+    result.set_shape([None, *static_shape(tensor)])
+
+  return results
 
 
 @func_scope()

@@ -5,6 +5,28 @@ from .util import func_scope, static_rank, static_shape
 
 
 @func_scope()
+def batch(*tensor_lists_or_dicts):
+  type_ = type(tensor_lists_or_dicts[0])
+
+  assert type_ in [list, dict]
+  assert all(type_ == type(obj) for obj in tensor_lists_or_dicts)
+  assert type_ != dict or all(tensor_lists_or_dicts[0].keys() == dict_.keys()
+                              for dict_ in tensor_lists_or_dicts)
+
+  tensor_lists = (tensor_lists_or_dicts if type_ == list else
+                  [dict_.values() for dict_ in tensor_lists_or_dicts])
+
+  tensor_list = [dynamic_pack(*tensor_list)
+                 for tensor_list in zip(*tensor_lists)]
+
+  if type_ == list:
+    return tensor_list
+
+  return { key: tensor for key, tensor
+           in zip(tensor_lists_or_dicts[0].keys(), tensor_list) }
+
+
+@func_scope()
 def dynamic_pack(*tensors):
   if tensors[0].dtype == tf.string:
     return tf.pack(tensors)

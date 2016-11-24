@@ -9,10 +9,6 @@ from . import log
 
 
 
-_DEFAULT_WORDS = ["<NULL>", "<UNKNOWN>"]
-
-
-
 def add_flag(name, *args, **kwargs):
   gargparse.add_argument("--" + name, *args, **kwargs)
 
@@ -39,16 +35,16 @@ add_flag("num-epochs", type=int, default=64)
 add_flag("batch-size", type=int, default=64)
 add_flag("dropout-prob", type=float, default=0)
 
-def _read_words(filename):
-  with open(filename) as file_:
-    return _DEFAULT_WORDS \
-           + sorted([line.strip() for line in file_.readlines()])
-
-add_flag("word-file", dest="words", type=_read_words)
+add_flag("word-file")
 add_flag("rnn-cell", dest="_rnn_cell", default="gru")
 add_flag("word-embedding-size", type=int, default=200)
 
-# QA
+# NLP
+
+add_flag("null-word", default="<NULL>")
+add_flag("unknown-word", default="<UNKNOWN>")
+
+## QA
 
 add_flag("first-entity")
 add_flag("last-entity")
@@ -97,13 +93,23 @@ class _Flags:
     except AttributeError:
       return object.__getattribute__(self, name)
 
+  @property
+  def default_words(self):
+    return [ARGS.null_word, ARGS.unknown_word]
+
+  @_cached_property
+  def words(self):
+    with open(ARGS.word_file) as file_:
+      return [*self.default_words,
+              *[line.strip() for line in file_.readlines()]]
+
   @_cached_property
   def word_indices(self):
-    return { word: index for index, word in enumerate(ARGS.words) }
+    return { word: index for index, word in enumerate(self.words) }
 
   @_cached_property
   def word_space_size(self):
-    return len(ARGS.words)
+    return len(self.words)
 
   @property
   def rnn_cell(self):
@@ -116,11 +122,11 @@ class _Flags:
 
   @property
   def first_entity_index(self):
-    return ARGS.words.index(ARGS.first_entity)
+    return self.words.index(ARGS.first_entity)
 
   @property
   def last_entity_index(self):
-    return ARGS.words.index(ARGS.last_entity)
+    return self.words.index(ARGS.last_entity)
 
 
 FLAGS = _Flags()

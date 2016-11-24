@@ -7,12 +7,13 @@ from ..util import func_scope, dtypes, static_shapes
 
 @func_scope()
 @func_scope()
-def requeue(*tensors, capacity=2):
+def requeue(*tensors,
+            capacity=FLAGS.num_threads_per_queue,
+            num_threads=FLAGS.num_threads_per_queue):
   queue = tf.PaddingFIFOQueue(capacity,
                               dtypes(*tensors),
                               static_shapes(*tensors))
-  add_queue_runner(queue,
-                   [queue.enqueue(tensors)] * FLAGS.num_threads_per_queue)
+  add_queue_runner(queue, [queue.enqueue(tensors)] * num_threads)
   return queue
 
 

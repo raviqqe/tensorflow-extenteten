@@ -15,7 +15,7 @@ def _num_prefetched_samples():
 
 @func_scope()
 def sorted_batch(*tensors):
-  queue = requeue(*tensors)
+  queue = requeue(*tensors, capacity=2*_num_prefetched_samples())
   collections.add_metric(queue.size(), "unsorted_samples_in_queue")
 
   return _gather_into_queue(*_sort_by_length(

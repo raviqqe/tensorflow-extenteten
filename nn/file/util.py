@@ -11,7 +11,8 @@ def requeue(*tensors, capacity=2):
   queue = tf.PaddingFIFOQueue(capacity,
                               dtypes(*tensors),
                               static_shapes(*tensors))
-  add_queue_runner(queue, [queue.enqueue(tensors)])
+  add_queue_runner(queue,
+                   [queue.enqueue(tensors)] * FLAGS.num_threads_per_queue)
   return queue
 
 

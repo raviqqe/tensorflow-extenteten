@@ -2,7 +2,8 @@ from functools import partial
 import tensorflow as tf
 
 from .. import slmc, batch, collections
-from ..embedding import embeddings, bidirectional_id_sequence_to_embeddings
+from ..embedding import bidirectional_id_sequence_to_embeddings
+from ..embedding.embeddings import word_embeddings as _word_embeddings
 from ..dynamic_length import id_sequence_to_length
 from ..softmax import softmax
 from ..flags import FLAGS
@@ -29,10 +30,7 @@ class AttentionSumReader(Model):
     collections.add_metric(tf.reduce_min(id_sequence_to_length(document)),
                            "min_document_length")
 
-    with tf.variable_scope("word_embeddings"):
-      word_embeddings = embeddings(id_space_size=FLAGS.word_space_size,
-                                   embedding_size=FLAGS.word_embedding_size,
-                                   name="word_embeddings")
+    word_embeddings = _word_embeddings()
 
     bi_rnn = partial(bidirectional_id_sequence_to_embeddings,
                      embeddings=word_embeddings,

@@ -1,6 +1,8 @@
 import functools
+import logging
 import os
 
+import numpy
 import tensorflow as tf
 import gargparse
 from gargparse import ARGS
@@ -36,8 +38,9 @@ add_flag("batch-size", type=int, default=64)
 add_flag("dropout-prob", type=float, default=0)
 
 add_flag("word-file")
+add_flag("word-embedding-file")
 add_flag("rnn-cell", dest="_rnn_cell", default="gru")
-add_flag("word-embedding-size", type=int, default=200)
+add_flag("word-embedding-size", dest="_word_embedding_size", type=int)
 
 # NLP
 
@@ -72,6 +75,10 @@ add_flag("batch-queue-capacity", type=int, default=2)
 add_flag("length-boundaries", type=int_list)
 
 
+def _read_lines(filename):
+  with open(filename) as file_:
+    return [line.strip() for line in file_.readlines()]
+
 
 def _cached_property(func):
   @property
@@ -93,15 +100,39 @@ class _Flags:
     except AttributeError:
       return object.__getattribute__(self, name)
 
-  @property
-  def default_words(self):
-    return [ARGS.null_word, ARGS.unknown_word]
+  @_cached_property
+  def _raw_words(self):
+    return _read_lines(ARGS.word_file)
 
   @_cached_property
   def words(self):
-    with open(ARGS.word_file) as file_:
-      return [*self.default_words,
-              *[line.strip() for line in file_.readlines()]]
+    words = self._raw_words
+
+    for word in [ARGS.unknown_word, ARGS.null_word]:
+      if word in words:
+        words.remove(word)
+      else:
+        logging.info('"{}" is added to a word vocabulary.'.format(word))
+      words.insert(0, word)
+
+    return words
+
+  @_cached_property
+  def word_embeddings(self):
+    if ARGS.word_embedding_file is None:
+      return None
+
+    embeddings = numpy.array([
+        [float(num) for num in line.split(",")]
+        for line in _read_lines(ARGS.word_embedding_file)])
+    assert len(embeddings) != 0
+
+    word_to_vector = dict(zip(self._raw_words, embeddings))
+
+    return numpy.array([
+        (word_to_vector[word] if word in word_to_vector else
+         numpy.random.uniform(high=0.1, size=embeddings.shape[1]))
+        for word in self.words])
 
   @_cached_property
   def word_indices(self):
@@ -127,6 +158,13 @@ class _Flags:
   @property
   def last_entity_index(self):
     return self.words.index(ARGS.last_entity)
+
+  @property
+  def word_embedding_size(self):
+    assert (self.word_embedding_file is None or
+            self._word_embedding_size is None)
+
+    return self._word_embedding_size or self.word_embeddings.shape[1]
 
 
 FLAGS = _Flags()

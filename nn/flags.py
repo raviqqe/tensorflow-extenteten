@@ -125,7 +125,7 @@ class _Flags:
     embeddings = numpy.array([
         [float(num) for num in line.split(",")]
         for line in _read_lines(ARGS.word_embedding_file)])
-    assert len(embeddings) != 0
+    assert len(embeddings) == len(self._raw_words)
 
     word_to_vector = dict(zip(self._raw_words, embeddings))
 

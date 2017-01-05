@@ -1,8 +1,13 @@
 import tensorflow as tf
 
-from . import util
-from .. import train
-from ..util import static_shape, static_rank, func_scope
+from . import train
+from .util import static_shape, static_rank, func_scope
+
+
+def num_labels(labels):
+    assert static_rank(labels) in {1, 2}
+
+    return 1 if static_rank(labels) == 1 else static_shape(labels)[1]
 
 
 @func_scope()
@@ -11,7 +16,7 @@ def classify(output_layer, label, binary=True):
     assert static_rank(label) in {1, 2}
 
     predictions, loss = (
-        (_classify_label if util.num_labels(label) == 1 else _classify_labels)
+        (_classify_label if num_labels(label) == 1 else _classify_labels)
         (output_layer, label, binary=binary))
 
     return (predictions,
@@ -65,7 +70,7 @@ def _classify_labels(output_layer, labels, binary):
     predictions, losses = map(list, zip(*[
         _classify_label(output_layer_per_label, label, binary)
         for output_layer_per_label, label
-        in zip(tf.split(1, util.num_labels(labels), output_layer),
+        in zip(tf.split(1, num_labels(labels), output_layer),
                tf.unstack(tf.transpose(labels)))
     ]))
 

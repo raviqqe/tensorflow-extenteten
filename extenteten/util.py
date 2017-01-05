@@ -8,11 +8,19 @@ def static_shape(tensor):
 
 
 def static_shapes(*tensors):
-    return [static_shape(tensor) for tensor in tensors]
+    return _map_to_list(static_shape, tensors)
 
 
 def static_rank(tensor):
     return len(static_shape(tf.convert_to_tensor(tensor)))
+
+
+def static_ranks(*tensors):
+    return _map_to_list(static_rank, tensors)
+
+
+def _map_to_list(func, xs):
+    return list(map(func, xs))
 
 
 def dtypes(*tensors):

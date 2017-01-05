@@ -39,4 +39,5 @@ def _calculate_attention(xs: ("batch", "sequence", "embedding"),
 @func_scope()
 def _give_attention(xs, attention):
     return tf.squeeze(tf.batch_matmul(tf.transpose(xs, [0, 2, 1]),
-                                      tf.expand_dims(attention, 2)), [2])
+                                      tf.expand_dims(attention, 2)),
+                      [2])

@@ -1,7 +1,6 @@
 import tensorflow as tf
 
 from .util import static_rank, func_scope, dimension_indices
-from .flags import FLAGS
 
 
 @func_scope()
@@ -29,7 +28,5 @@ def mean_mask(x, reduction_indices=None):
 
 
 @func_scope()
-def entity_index_mask(x, dtype=tf.bool):
-    return tf.cast(tf.logical_and(x >= FLAGS.first_entity_index,
-                                  x <= FLAGS.last_entity_index),
-                   dtype)
+def range_mask(x, first, last, dtype=tf.bool):
+    return tf.cast(tf.logical_and(x >= first, x <= last), dtype)

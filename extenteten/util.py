@@ -46,7 +46,9 @@ def on_device(device_name):
         def wrapper(*args, **kwargs):
             with tf.device(device_name):
                 return func(*args, **kwargs)
+
         return wrapper
+
     return decorator
 
 

@@ -10,7 +10,7 @@ def ar2word2sent2doc(document,
                      words,
                      char_embeddings,
                      word_embedding_size,
-                     dropout_prob,
+                     dropout_keep_prob,
                      context_vector_size,
                      save_memory=True,
                      **rd2sent2doc_hyperparams):
@@ -28,12 +28,12 @@ def ar2word2sent2doc(document,
             char_embeddings,
             output_embedding_size=word_embedding_size,
             context_vector_size=context_vector_size,
-            dropout_prob=dropout_prob,
+            dropout_keep_prob=dropout_keep_prob,
             dynamic_length=True)
 
     return rd2sent2doc(document,
                        word_embeddings,
-                       dropout_prob=dropout_prob,
+                       dropout_keep_prob=dropout_keep_prob,
                        context_vector_size=context_vector_size,
                        save_memory=save_memory,
                        **rd2sent2doc_hyperparams)

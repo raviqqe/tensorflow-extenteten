@@ -12,7 +12,7 @@ def char2doc(document,
              char_space_size,
              char_embedding_size,
              document_embedding_size,
-             dropout_prob,
+             dropout_keep_prob,
              hidden_layer_size,
              output_layer_size,
              context_vector_size):
@@ -28,7 +28,7 @@ def char2doc(document,
 
     hidden_layer = dropout(_activate(linear(_activate(document_embedding),
                                             hidden_layer_size)),
-                           dropout_prob)
+                           dropout_keep_prob)
     return linear(hidden_layer, output_layer_size)
 
 

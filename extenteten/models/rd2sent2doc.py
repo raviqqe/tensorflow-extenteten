@@ -13,7 +13,7 @@ def rd2sent2doc(document,
                 *,
                 sentence_embedding_size,
                 document_embedding_size,
-                dropout_prob,
+                dropout_keep_prob,
                 hidden_layer_sizes,
                 output_layer_size,
                 context_vector_size,
@@ -28,7 +28,7 @@ def rd2sent2doc(document,
     embeddings_to_embedding = functools.partial(
         bidirectional_embeddings_to_embedding,
         context_vector_size=context_vector_size,
-        dropout_prob=dropout_prob)
+        dropout_keep_prob=dropout_keep_prob)
 
     with tf.variable_scope("word2sent"):
         # word_embeddings.shape == (#batch * #sent * #word, emb_size)
@@ -53,7 +53,7 @@ def rd2sent2doc(document,
 
     return mlp(document_embedding,
                layer_sizes=[*hidden_layer_sizes, output_layer_size],
-               dropout_prob=dropout_prob)
+               dropout_keep_prob=dropout_keep_prob)
 
 
 @func_scope()

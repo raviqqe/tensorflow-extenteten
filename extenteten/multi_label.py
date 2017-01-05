@@ -20,9 +20,9 @@ def classify_with_single_label_module(
         in _zip_by_labels(output_layer, true_labels)
     ])
 
-    return tf.reduce_mean(tf.pack(losses)), \
-        tf.reduce_mean(tf.pack(accuracies)), \
-        _concat_by_labels(labels)
+    return (tf.reduce_mean(tf.pack(losses)),
+            tf.reduce_mean(tf.pack(accuracies)),
+            _concat_by_labels(labels))
 
 
 def _transpose_2d_list(list_):

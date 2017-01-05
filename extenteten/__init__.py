@@ -1,4 +1,5 @@
 from .classification import *
+from .embedding import *
 from .regularization import *
 from .util import *
 

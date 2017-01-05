@@ -1,3 +1,4 @@
+from .classification import *
 from .regularization import *
 from .util import *
 

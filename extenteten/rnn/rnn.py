@@ -1,19 +1,21 @@
 import tensorflow as tf
 
-from ..util import func_scope, dimension_indices
-from ..flags import FLAGS
+from . import cell
+from ..util import func_scope
+
+
+_DEFAULT_CELL = cell.gru
 
 
 @func_scope()
 def rnn(inputs,
-        *,
         output_embedding_size,
-        dropout_prob=FLAGS.dropout_prob,
+        *,
         sequence_length=None,
-        cell=FLAGS.rnn_cell,
+        cell=_DEFAULT_CELL,
         output_state=False):
     outputs, state = tf.nn.dynamic_rnn(
-        cell(output_embedding_size, dropout_prob),
+        cell(output_embedding_size),
         inputs,
         sequence_length=sequence_length,
         dtype=inputs.dtype)
@@ -23,14 +25,12 @@ def rnn(inputs,
 
 @func_scope()
 def bidirectional_rnn(inputs,
-                      *,
                       output_embedding_size,
-                      dropout_prob=FLAGS.dropout_prob,
+                      *,
                       sequence_length=None,
-                      cell=FLAGS.rnn_cell,
+                      cell=_DEFAULT_CELL,
                       output_state=False):
-    assert output_embedding_size % 2 == 0
-    create_cell = lambda: cell(output_embedding_size, dropout_prob)
+    create_cell = lambda: cell(output_embedding_size)
 
     outputs, states = tf.nn.bidirectional_dynamic_rnn(
         create_cell(),

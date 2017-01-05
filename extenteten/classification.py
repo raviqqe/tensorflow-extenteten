@@ -11,13 +11,13 @@ def num_labels(labels):
 
 
 @func_scope()
-def classify(output_layer, label, binary=True):
-    assert static_rank(output_layer) == 2
+def classify(logits, label, binary=True):
+    assert static_rank(logits) == 2
     assert static_rank(label) in {1, 2}
 
     predictions, loss = (
         (_classify_label if num_labels(label) == 1 else _classify_labels)
-        (output_layer, label, binary=binary))
+        (logits, label, binary=binary))
 
     return (predictions,
             loss,
@@ -39,38 +39,38 @@ def _evaluate(predictions, label):
 
 
 @func_scope()
-def _classify_label(output_layer, label, binary):
+def _classify_label(logits, label, binary):
     assert static_rank(labels) == 1
 
-    return (_classify_binary_label(output_layer, label)
+    return (_classify_binary_label(logits, label)
             if binary else
-            _classify_multi_class_label(output_layer, label))
+            _classify_multi_class_label(logits, label))
 
 
 @func_scope()
-def _classify_binary_label(output_layer, label):
-    return (tf.cast(tf.sigmoid(output_layer) > 0.5, label.dtype),
+def _classify_binary_label(logits, label):
+    return (tf.cast(tf.sigmoid(logits) > 0.5, label.dtype),
             tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(
-                output_layer,
-                tf.cast(label, output_layer.dtype))))
+                logits,
+                tf.cast(label, logits.dtype))))
 
 
 @func_scope()
-def _classify_multi_class_label(output_layer, label):
-    return (tf.argmax(output_layer, 1),
+def _classify_multi_class_label(logits, label):
+    return (tf.argmax(logits, 1),
             tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(
-                output_layer,
+                logits,
                 label)))
 
 
 @func_scope()
-def _classify_labels(output_layer, labels, binary):
+def _classify_labels(logits, labels, binary):
     assert static_rank(labels) == 2
 
     predictions, losses = map(list, zip(*[
-        _classify_label(output_layer_per_label, label, binary)
-        for output_layer_per_label, label
-        in zip(tf.split(1, num_labels(labels), output_layer),
+        _classify_label(logits_per_label, label, binary)
+        for logits_per_label, label
+        in zip(tf.split(1, num_labels(labels), logits),
                tf.unstack(tf.transpose(labels)))
     ]))
 

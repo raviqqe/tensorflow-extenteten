@@ -53,6 +53,11 @@ def on_device(device_name):
 
 
 def dimension_indices(tensor, start=0):
+    """Calculate dimension indices of a Tensor
+
+    >>> dimension_indices(tf.constant([[[[0]]]]))
+    [0, 1, 2, 3]
+    """
     return [*range(static_rank(tensor))][start:]
 
 

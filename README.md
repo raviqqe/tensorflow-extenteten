@@ -1,3 +1,3 @@
-# nn
+# tensorflow-extenteten
 
-some models and utils on tensorflow
+TensorFlow extension library

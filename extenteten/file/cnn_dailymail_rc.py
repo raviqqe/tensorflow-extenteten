@@ -1,15 +1,14 @@
 import numpy as np
 import tensorflow as tf
 
-from ..flags import FLAGS
 from .batch_by_sequence_length import batch_by_sequence_length
 from .sort import sorted_batch
 
 
 class _RcFileReader:
 
-    def __init__(self):
-        self._word_indices = FLAGS.word_indices
+    def __init__(self, word_indices):
+        self._word_indices = word_indices
 
     def read(self, filename_queue):
         key, value = tf.WholeFileReader().read(filename_queue)

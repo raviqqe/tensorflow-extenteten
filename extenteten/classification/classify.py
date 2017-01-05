@@ -1,55 +1,73 @@
 import tensorflow as tf
 
-from .util import static_shape, static_rank, func_scope, dimension_indices
+from . import util
+from .. import train
+from ..util import static_shape, static_rank, func_scope
 
 
 @func_scope()
-def classify_with_single_label_module(
-        output_layer: ("batch", "label * class"),
-        true_labels: ("batch", "label"),
-        *,
-        single_label_module):
+def classify(output_layer, label, binary=True):
     assert static_rank(output_layer) == 2
-    assert static_rank(true_labels) == 2
+    assert static_rank(label) in {1, 2}
 
-    losses, accuracies, labels = _transpose_2d_list([
-        [single_label_module.loss(output_layer_per_label, true_label),
-         single_label_module.accuracy(output_layer_per_label, true_label),
-         single_label_module.label(output_layer_per_label)]
-        for output_layer_per_label, true_label
-        in _zip_by_labels(output_layer, true_labels)
-    ])
+    predictions, loss = (
+        (_classify_label if util.num_labels(label) == 1 else _classify_labels)
+        (output_layer, label, binary=binary))
 
-    return (tf.reduce_mean(tf.pack(losses)),
-            tf.reduce_mean(tf.pack(accuracies)),
-            _concat_by_labels(labels))
+    return (predictions,
+            loss,
+            train.minimize(loss),
+            _evaluate(predictions, label))
 
 
-def _transpose_2d_list(list_):
-    return [[*tuple_] for tuple_ in zip(*list_)]
+@func_scope()
+def _evaluate(predictions, label):
+    recall = tf.contrib.metrics.streaming_recall(predictions, label)
+    precision = tf.contrib.metrics.streaming_precision(predictions, label)
+
+    return {
+        "accuracy": tf.contrib.metrics.streaming_accuracy(predictions, label),
+        "recall": recall,
+        "precision": precision,
+        "F1": 2 * recall * precision / (recall + precision),
+    }
 
 
-def _zip_by_labels(output_layer, true_labels):
-    assert static_rank(output_layer) == 2
-    assert static_rank(true_labels) == 2
+@func_scope()
+def _classify_label(output_layer, label, binary):
+    assert static_rank(labels) == 1
 
-    num_of_labels = static_shape(true_labels)[1]
-    assert static_shape(output_layer)[1] % num_of_labels == 0
-    return zip(_split_output_layer_by_labels(output_layer, num_of_labels),
-               _split_labels(true_labels))
-
-
-def _split_labels(tensor):
-    return tf.unpack(tf.transpose(tensor))
+    return (_classify_binary_label(output_layer, label)
+            if binary else
+            _classify_multi_class_label(output_layer, label))
 
 
-def _split_output_layer_by_labels(tensor, num_of_labels):
-    assert static_rank(tensor) >= 2
-    assert static_shape(tensor)[1] % num_of_labels == 0
-    return tf.split(1, num_of_labels, tensor)
+@func_scope()
+def _classify_binary_label(output_layer, label):
+    return (tf.cast(tf.sigmoid(output_layer) > 0.5, label.dtype),
+            tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(
+                output_layer,
+                tf.cast(label, output_layer.dtype))))
 
 
-def _concat_by_labels(tensors: [("batch", ...)]):
-    packed_tensor = tf.pack(tensors)  # (label, batch, ...)
-    return tf.transpose(packed_tensor,
-                        [1, 0] + dimension_indices(packed_tensor, start=2))
+@func_scope()
+def _classify_multi_class_label(output_layer, label):
+    return (tf.argmax(output_layer, 1),
+            tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(
+                output_layer,
+                label)))
+
+
+@func_scope()
+def _classify_labels(output_layer, labels, binary):
+    assert static_rank(labels) == 2
+
+    predictions, losses = map(list, zip(*[
+        _classify_label(output_layer_per_label, label, binary)
+        for output_layer_per_label, label
+        in zip(tf.split(1, util.num_labels(labels), output_layer),
+               tf.unstack(tf.transpose(labels)))
+    ]))
+
+    return (tf.transpose(tf.stack(predictions)),
+            tf.reduce_mean(tf.stack(losses)))

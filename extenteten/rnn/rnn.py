@@ -4,7 +4,6 @@ from ..util import func_scope, dimension_indices
 from ..flags import FLAGS
 
 
-
 @func_scope()
 def rnn(inputs,
         *,
@@ -13,13 +12,13 @@ def rnn(inputs,
         sequence_length=None,
         cell=FLAGS.rnn_cell,
         output_state=False):
-  outputs, state = tf.nn.dynamic_rnn(
-      cell(output_embedding_size, dropout_prob),
-      inputs,
-      sequence_length=sequence_length,
-      dtype=inputs.dtype)
+    outputs, state = tf.nn.dynamic_rnn(
+        cell(output_embedding_size, dropout_prob),
+        inputs,
+        sequence_length=sequence_length,
+        dtype=inputs.dtype)
 
-  return _unpack_state_tuple(state) if output_state else outputs
+    return _unpack_state_tuple(state) if output_state else outputs
 
 
 @func_scope()
@@ -30,21 +29,21 @@ def bidirectional_rnn(inputs,
                       sequence_length=None,
                       cell=FLAGS.rnn_cell,
                       output_state=False):
-  assert output_embedding_size % 2 == 0
-  create_cell = lambda: cell(output_embedding_size, dropout_prob)
+    assert output_embedding_size % 2 == 0
+    create_cell = lambda: cell(output_embedding_size, dropout_prob)
 
-  outputs, states = tf.nn.bidirectional_dynamic_rnn(
-      create_cell(),
-      create_cell(),
-      inputs,
-      sequence_length=sequence_length,
-      dtype=inputs.dtype)
+    outputs, states = tf.nn.bidirectional_dynamic_rnn(
+        create_cell(),
+        create_cell(),
+        inputs,
+        sequence_length=sequence_length,
+        dtype=inputs.dtype)
 
-  return (tf.concat(1, [_unpack_state_tuple(state) for state in states])
-          if output_state else
-          tf.concat(2, outputs))
+    return (tf.concat(1, [_unpack_state_tuple(state) for state in states])
+            if output_state else
+            tf.concat(2, outputs))
 
 
 @func_scope()
 def _unpack_state_tuple(state):
-  return state.h if isinstance(state, tf.nn.rnn_cell.LSTMStateTuple) else state
+    return state.h if isinstance(state, tf.nn.rnn_cell.LSTMStateTuple) else state

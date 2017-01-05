@@ -7,19 +7,18 @@ from ..util import static_rank, func_scope
 from .ids_to_embeddings import ids_to_embeddings
 
 
-
 @func_scope()
 def embeddings_to_embedding(embeddings,
                             *,
                             context_vector_size,
                             sequence_length=None,
                             **rnn_hyperparams):
-  assert static_rank(embeddings) == 3
+    assert static_rank(embeddings) == 3
 
-  return attention_please(
-      rnn(embeddings, sequence_length=sequence_length, **rnn_hyperparams),
-      context_vector_size=context_vector_size,
-      sequence_length=sequence_length)
+    return attention_please(
+        rnn(embeddings, sequence_length=sequence_length, **rnn_hyperparams),
+        context_vector_size=context_vector_size,
+        sequence_length=sequence_length)
 
 
 @func_scope()
@@ -28,10 +27,10 @@ def id_sequence_to_embedding(id_sequence,
                              *,
                              dynamic_length=False,
                              **kwargs):
-  assert static_rank(id_sequence) == 2
+    assert static_rank(id_sequence) == 2
 
-  return embeddings_to_embedding(
-      ids_to_embeddings(id_sequence, embeddings),
-      sequence_length=id_sequence_to_length(id_sequence)
-                      if dynamic_length else None,
-      **kwargs)
+    return embeddings_to_embedding(
+        ids_to_embeddings(id_sequence, embeddings),
+        sequence_length=id_sequence_to_length(id_sequence)
+        if dynamic_length else None,
+        **kwargs)

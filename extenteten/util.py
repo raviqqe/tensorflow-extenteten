@@ -33,6 +33,7 @@ def func_scope(name=None, initializer=None):
         def wrapper(*args, **kwargs):
             with tf.variable_scope(name or func.__name__, initializer=initializer):
                 return func(*args, **kwargs)
+
         return wrapper
 
     return decorator

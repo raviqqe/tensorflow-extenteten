@@ -30,6 +30,7 @@ def id_sequence_to_embedding(id_sequence,
 
     return embeddings_to_embedding(
         tf.nn.embedding_lookup(embeddings, id_sequence),
-        sequence_length=id_sequence_to_length(id_sequence)
-        if dynamic_length else None,
+        sequence_length=(id_sequence_to_length(id_sequence)
+                         if dynamic_length else
+                         None),
         **kwargs)

@@ -1,5 +1,7 @@
 # tensorflow-extenteten
 
+[![PyPI version](https://badge.fury.io/py/tensorflow-extenteten.svg)](https://badge.fury.io/py/tensorflow-extenteten)
+[![Python versions](https://img.shields.io/pypi/pyversions/tensorflow-extenteten.svg)](setup.py)
 [![Build Status](https://travis-ci.org/raviqqe/tensorflow-extenteten.svg?branch=master)](https://travis-ci.org/raviqqe/tensorflow-extenteten)
 [![License](https://img.shields.io/badge/license-unlicense-lightgray.svg)](https://unlicense.org)
 

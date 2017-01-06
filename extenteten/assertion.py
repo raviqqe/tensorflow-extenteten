@@ -5,6 +5,15 @@ import tensorflow as tf
 from .util import func_scope
 
 
+__all__ = [
+    'is_int',
+    'is_natural_num',
+    'is_natural_num_sequence',
+    'is_sequence',
+    'assert_no_nan',
+]
+
+
 def is_int(num):
     return (isinstance(num, int)
             or isinstance(num, numpy.integer)

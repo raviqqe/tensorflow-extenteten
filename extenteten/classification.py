@@ -47,7 +47,7 @@ def _evaluate(predictions, label):
 
 @func_scope()
 def _classify_label(logits, label, binary):
-    assert static_rank(labels) == 1
+    assert static_rank(label) == 1
 
     return (_classify_binary_label(logits, label)
             if binary else

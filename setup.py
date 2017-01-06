@@ -17,7 +17,12 @@ setuptools.setup(
     author="Yota Toyama",
     author_email="raviqqe@gmail.com",
     url="https://github.com/raviqqe/tensorflow-extenteten/",
-    packages=["extenteten"],
+    packages=[
+        "extenteten",
+        "extenteten.cnn",
+        "extenteten.embedding",
+        "extenteten.rnn",
+    ],
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",

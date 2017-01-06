@@ -1,7 +1,7 @@
 import tensorflow as tf
 
 from ..attention import attention_please
-from ..dynamic_length import id_sequence_to_length
+from ..dynamic_length import id_vector_to_length
 from ..rnn import rnn
 from ..util import static_rank, func_scope
 
@@ -21,16 +21,16 @@ def embeddings_to_embedding(embeddings,
 
 
 @func_scope()
-def id_sequence_to_embedding(id_sequence,
-                             embeddings,
-                             *,
-                             dynamic_length=False,
-                             **kwargs):
-    assert static_rank(id_sequence) == 2
+def id_vector_to_embedding(id_vector,
+                           embeddings,
+                           *,
+                           dynamic_length=False,
+                           **kwargs):
+    assert static_rank(id_vector) == 2
 
     return embeddings_to_embedding(
-        tf.nn.embedding_lookup(embeddings, id_sequence),
-        sequence_length=(id_sequence_to_length(id_sequence)
+        tf.nn.embedding_lookup(embeddings, id_vector),
+        sequence_length=(id_vector_to_length(id_vector)
                          if dynamic_length else
                          None),
         **kwargs)

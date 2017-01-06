@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-from ..embedding import id_sequence_to_embedding, embeddings
+from ..embedding import id_vector_to_embedding, embeddings
 from ..layer import linear
 from ..dropout import dropout
 from ..util import func_scope
@@ -20,7 +20,7 @@ def char2doc(document,
                                  embedding_size=char_embedding_size,
                                  name="char_embeddings")
 
-    document_embedding = id_sequence_to_embedding(
+    document_embedding = id_vector_to_embedding(
         document,
         char_embeddings,
         output_size=document_embedding_size,

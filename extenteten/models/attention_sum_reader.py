@@ -2,9 +2,9 @@ from functools import partial
 import tensorflow as tf
 
 from .. import slmc, batch, collections
-from ..embedding import bidirectional_id_sequence_to_embeddings
+from ..embedding import bidirectional_id_vector_to_embeddings
 from ..embedding.embeddings import word_embeddings as _word_embeddings
-from ..dynamic_length import id_sequence_to_length
+from ..dynamic_length import id_vector_to_length
 from ..softmax import softmax
 from ..flags import FLAGS
 from ..optimize import minimize
@@ -25,14 +25,14 @@ class AttentionSumReader(Model):
         assert static_rank(answer) == 1
 
         collections.add_metric(tf.shape(document)[1], "document_2nd_dim")
-        collections.add_metric(tf.reduce_max(id_sequence_to_length(document)),
+        collections.add_metric(tf.reduce_max(id_vector_to_length(document)),
                                "max_document_length")
-        collections.add_metric(tf.reduce_min(id_sequence_to_length(document)),
+        collections.add_metric(tf.reduce_min(id_vector_to_length(document)),
                                "min_document_length")
 
         word_embeddings = _word_embeddings()
 
-        bi_rnn = partial(bidirectional_id_sequence_to_embeddings,
+        bi_rnn = partial(bidirectional_id_vector_to_embeddings,
                          embeddings=word_embeddings,
                          dynamic_length=True,
                          output_size=FLAGS.word_embedding_size)
@@ -43,7 +43,7 @@ class AttentionSumReader(Model):
 
         with tf.variable_scope("document_to_attention"):
             attentions = _calculate_attention(
-                bi_rnn(document), query_embedding, id_sequence_to_length(document))
+                bi_rnn(document), query_embedding, id_vector_to_length(document))
             logits = softmax_inverse(_sum_attentions(attentions, document))
 
         answer -= FLAGS.first_entity_index

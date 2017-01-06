@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-from ..embedding import bidirectional_id_sequence_to_embedding
+from ..embedding import bidirectional_id_vector_to_embedding
 from ..util import static_shape, static_rank, func_scope, flatten
 from .rd2sent2doc import rd2sent2doc
 
@@ -23,7 +23,7 @@ def ar2word2sent2doc(document,
     assert static_rank(char_embeddings) == 2
 
     with tf.variable_scope("char2word"):
-        word_embeddings = bidirectional_id_sequence_to_embedding(
+        word_embeddings = bidirectional_id_vector_to_embedding(
             tf.gather(words, flatten(document)) if save_memory else words,
             char_embeddings,
             output_size=word_embedding_size,

@@ -20,8 +20,9 @@ def with_dependencies(dependencies, tensor):
             return tf.identity(tensor)
         elif isinstance(tensor, tf.Operation):
             return tf.group(tensor)
-        raise ValueError(
-            "{} must be tf.Tensor or tf.Operation.".format(tensor))
+
+        raise ValueError("{} must be tf.Tensor or tf.Operation."
+                         .format(tensor))
 
 
 @func_scope()

@@ -2,11 +2,14 @@ import abc
 import functools
 
 
+__all__ = ['Invertible', 'InvertibleLayer']
+
+
 _FORWARD = "forward"
 _BACKWARD = "backward"
 
 
-class InvertibleLayer(abc.ABC):
+class Invertible(abc.ABC):
 
     @abc.abstractmethod
     def forward(self, x):
@@ -17,10 +20,10 @@ class InvertibleLayer(abc.ABC):
         return NotImplemented
 
 
-class InvertibleNetwork(InvertibleLayer):
+class InvertibleLayer(Invertible):
 
     def __init__(self, *layers):
-        assert all(isinstance(layer, InvertibleLayer) for layer in layers)
+        assert all(isinstance(layer, Invertible) for layer in layers)
 
         self._layers = layers
 
@@ -31,8 +34,6 @@ class InvertibleNetwork(InvertibleLayer):
         return self._reduce_layers(_BACKWARD, x)
 
     def _reduce_layers(self, method, x):
-        assert method in {_FORWARD, _BACKWARD}
-
         return functools.reduce(
             lambda x, layer: getattr(layer, method)(x),
             self._layers if method == _FORWARD else reversed(self._layers),

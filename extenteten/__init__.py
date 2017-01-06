@@ -17,5 +17,6 @@ from .softmax import *
 from .train import *
 from .transform import *
 from .util import *
+from .variable import *
 
 __version__ = "0.0.1"

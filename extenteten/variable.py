@@ -4,6 +4,9 @@ import tensorflow as tf
 from .assertion import is_natural_num_sequence
 
 
+__all__ = ['variable']
+
+
 def variable(shape_or_initial, name=None):
     create_variable = functools.partial(tf.Variable, name=name)
 

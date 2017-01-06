@@ -3,3 +3,6 @@ include TFRake
 
 
 define_tasks('extenteten')
+
+
+task :test => :pytest

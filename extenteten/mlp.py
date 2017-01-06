@@ -6,6 +6,9 @@ from .util import func_scope
 from . import layer
 
 
+__all__ = ['mlp']
+
+
 @func_scope()
 def mlp(x, *, layer_sizes, dropout_keep_prob=1, activate=tf.nn.elu):
     assert is_natural_num_sequence(layer_sizes)

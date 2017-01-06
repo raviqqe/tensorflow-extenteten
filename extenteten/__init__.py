@@ -1,6 +1,7 @@
 from .classification import *
 from .dynamic_length import *
 from .embedding import *
+from .mlp import *
 from .regularization import *
 from .util import *
 

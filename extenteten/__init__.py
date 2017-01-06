@@ -21,4 +21,4 @@ from .transform import *
 from .util import *
 from .variable import *
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"

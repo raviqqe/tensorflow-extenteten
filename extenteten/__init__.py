@@ -14,6 +14,7 @@ from .random import *
 from .regularization import *
 from .rnn import *
 from .softmax import *
+from .train import *
 from .transform import *
 from .util import *
 

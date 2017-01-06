@@ -10,23 +10,23 @@ def mask(length, max_length, dtype=tf.bool):
 
 
 @func_scope()
-def max_mask(x, reduction_indices=None):
+def max_mask(x, reduction_indices=None, dtype=None):
     assert static_rank(x) >= 2
     max = tf.reduce_max(x,
                         reduction_indices or dimension_indices(x, 1),
                         keep_dims=True)
-    return tf.cast(tf.equal(x, max), x.dtype)
+    return tf.cast(tf.equal(x, max), dtype or x.dtype)
 
 
 @func_scope()
-def mean_mask(x, reduction_indices=None):
+def mean_mask(x, reduction_indices=None, dtype=None):
     assert static_rank(x) >= 2
     mean = tf.reduce_mean(x,
                           reduction_indices or dimension_indices(x, 1),
                           keep_dims=True)
-    return tf.cast(tf.greater_equal(x, mean), x.dtype)
+    return tf.cast(x >= mean, dtype or x.dtype)
 
 
 @func_scope()
-def range_mask(x, first, last, dtype=tf.bool):
-    return tf.cast(tf.logical_and(x >= first, x <= last), dtype)
+def range_mask(x, first, last, dtype=None):
+    return tf.cast((first <= x) & (x <= last), dtype or x.dtype)

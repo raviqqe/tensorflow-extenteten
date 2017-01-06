@@ -11,7 +11,7 @@ from ..invertible import InvertibleNetwork
 from ..mask import max_mask
 
 
-ACTIVATE = tf.nn.relu
+__all__ = ['multi_conv_and_pool', 'multi_conv', 'invertible_multi_conv']
 
 
 @func_scope()
@@ -26,7 +26,7 @@ def multi_conv_and_pool(x,
 
     @func_scope()
     def layer(x, num_of_channels):
-        h = ACTIVATE(conv2d(x, conv_kernel_shape, num_of_channels))
+        h = tf.nn.relu(conv2d(x, conv_kernel_shape, num_of_channels))
         image_summary(tf.transpose(
             sample_crop(h, 1)[0, :, :, :num_of_summary_images],
             [2, 0, 1]))

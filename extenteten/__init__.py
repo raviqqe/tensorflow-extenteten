@@ -6,6 +6,7 @@ from .control import *
 from .dynamic_length import *
 from .embedding import *
 from .initializers import *
+from .layer import *
 from .mask import *
 from .mlp import *
 from .regularization import *

@@ -4,6 +4,9 @@ from .util import static_shape, func_scope
 from .variable import variable
 
 
+__all__ = ['linear', 'fully_connected']
+
+
 @func_scope()
 def linear(x, output_layer_size):
     weight = variable([static_shape(x)[1], output_layer_size], name="weight")

@@ -34,11 +34,12 @@ def classify(logits, label, binary=True):
 
 @func_scope()
 def _evaluate(predictions, label):
-    recall = tf.contrib.metrics.streaming_recall(predictions, label)
-    precision = tf.contrib.metrics.streaming_precision(predictions, label)
+    recall = tf.contrib.metrics.streaming_recall(predictions, label)[1]
+    precision = tf.contrib.metrics.streaming_precision(predictions, label)[1]
 
     return {
-        "accuracy": tf.contrib.metrics.streaming_accuracy(predictions, label),
+        "accuracy": tf.contrib.metrics.streaming_accuracy(predictions,
+                                                          label)[1],
         "recall": recall,
         "precision": precision,
         "F1": 2 * recall * precision / (recall + precision),

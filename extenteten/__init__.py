@@ -1,4 +1,5 @@
 from .assertion import *
+from .attention import *
 from .batch import *
 from .classification import *
 from .control import *

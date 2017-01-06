@@ -9,6 +9,9 @@ from .summary import summarize, image_summary
 from .softmax import softmax
 
 
+__all__ = ['attention_please']
+
+
 @func_scope()
 def attention_please(xs, context_vector_size, sequence_length=None, name=None):
     attention = _calculate_attention(xs, context_vector_size, sequence_length)

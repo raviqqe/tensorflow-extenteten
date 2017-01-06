@@ -21,7 +21,8 @@ def rnn(inputs,
         cell(output_size),
         inputs,
         sequence_length=sequence_length,
-        dtype=inputs.dtype)
+        dtype=inputs.dtype,
+        swap_memory=True)
 
     return _unpack_state_tuple(state) if output_state else outputs
 
@@ -40,7 +41,8 @@ def bidirectional_rnn(inputs,
         create_cell(),
         inputs,
         sequence_length=sequence_length,
-        dtype=inputs.dtype)
+        dtype=inputs.dtype,
+        swap_memory=True)
 
     return (tf.concat(1, [_unpack_state_tuple(state) for state in states])
             if output_state else

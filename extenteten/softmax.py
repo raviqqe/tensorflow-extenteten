@@ -5,12 +5,16 @@ from .util import static_rank, func_scope, dtype_min, dtype_epsilon
 from .mask import mask
 
 
+__all__ = ['softmax']
+
+
 @func_scope()
 def softmax(vector, sequence_length=None):
     assert static_rank(vector) == 2
 
-    return tf.nn.softmax(vector) if sequence_length is None else \
-        _dynamic_softmax(vector, sequence_length)
+    return (tf.nn.softmax(vector)
+            if sequence_length is None else
+            _dynamic_softmax(vector, sequence_length))
 
 
 @func_scope()

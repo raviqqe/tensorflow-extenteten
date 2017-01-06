@@ -7,6 +7,9 @@ from ..util import func_scope
 _DEFAULT_CELL = cell.gru
 
 
+__all__ = ['rnn', 'bidirectional_rnn']
+
+
 @func_scope()
 def rnn(inputs,
         output_size,

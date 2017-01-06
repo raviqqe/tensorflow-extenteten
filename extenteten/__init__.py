@@ -10,6 +10,7 @@ from .layer import *
 from .mask import *
 from .math import *
 from .mlp import *
+from .random import *
 from .regularization import *
 from .rnn import *
 from .softmax import *

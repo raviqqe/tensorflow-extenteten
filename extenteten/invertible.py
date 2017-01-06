@@ -2,7 +2,7 @@ import abc
 import functools
 
 
-__all__ = ['Invertible', 'InvertibleLayer']
+__all__ = ['Invertible', 'InvertibleNetwork']
 
 
 _FORWARD = "forward"
@@ -20,7 +20,7 @@ class Invertible(abc.ABC):
         return NotImplemented
 
 
-class InvertibleLayer(Invertible):
+class InvertibleNetwork(Invertible):
 
     def __init__(self, *layers):
         assert all(isinstance(layer, Invertible) for layer in layers)

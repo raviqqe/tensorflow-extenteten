@@ -4,6 +4,9 @@ import tensorflow as tf
 from .util import func_scope
 
 
+__all__ = ['unpack_to_array', 'with_dependencies', 'sequential']
+
+
 @func_scope()
 def unpack_to_array(tensor):
     return tf.TensorArray(tensor.dtype, tf.shape(tensor)[0]).unpack(tensor)

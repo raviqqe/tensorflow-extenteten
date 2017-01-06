@@ -1,6 +1,7 @@
 from .assertion import *
 from .batch import *
 from .classification import *
+from .control import *
 from .dynamic_length import *
 from .embedding import *
 from .initializers import *

@@ -8,6 +8,7 @@ from .embedding import *
 from .initializers import *
 from .layer import *
 from .mask import *
+from .math import *
 from .mlp import *
 from .regularization import *
 from .rnn import *

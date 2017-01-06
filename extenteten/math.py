@@ -3,6 +3,9 @@ import tensorflow as tf
 from .util import func_scope, static_rank, dtype_epsilon
 
 
+__all__ = ['scalar_to_vec', 'vec_to_mat', 'softmax_inverse']
+
+
 @func_scope()
 def scalar_to_vec(scalar):
     assert static_rank(scalar) == 1

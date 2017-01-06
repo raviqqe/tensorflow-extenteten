@@ -21,6 +21,7 @@ class InvertibleNetwork(InvertibleLayer):
 
     def __init__(self, *layers):
         assert all(isinstance(layer, InvertibleLayer) for layer in layers)
+
         self._layers = layers
 
     def forward(self, x):
@@ -31,6 +32,7 @@ class InvertibleNetwork(InvertibleLayer):
 
     def _reduce_layers(self, method, x):
         assert method in {_FORWARD, _BACKWARD}
+
         return functools.reduce(
             lambda x, layer: getattr(layer, method)(x),
             self._layers if method == _FORWARD else reversed(self._layers),

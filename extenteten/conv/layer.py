@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-from ..invertible import InvertibleLayer
+from ..invertible import Invertible
 from ..util import func_scope, static_rank, static_shape
 from ..variable import variable
 from ..summary import image_summary, num_of_summary_images
@@ -53,7 +53,7 @@ def _summarize_filter(filter_):
         [2, 0, 1]))
 
 
-class InvertibleReLU(InvertibleLayer):
+class InvertibleReLU(Invertible):
 
     def __init__(self):
         pass
@@ -65,7 +65,7 @@ class InvertibleReLU(InvertibleLayer):
         return tf.nn.relu(x)
 
 
-class InvertibleConv2d(InvertibleLayer):
+class InvertibleConv2d(Invertible):
 
     def __init__(self, kernel_shape, num_of_channels):
         assert is_kernel_shape(kernel_shape), kernel_shape
@@ -89,7 +89,7 @@ class InvertibleConv2d(InvertibleLayer):
             strides=_DEFAULT_CONV_STRIDES)
 
 
-class InvertibleMaxPool(InvertibleLayer):
+class InvertibleMaxPool(Invertible):
 
     def __init__(self, kernel_shape):
         assert is_kernel_shape(kernel_shape)

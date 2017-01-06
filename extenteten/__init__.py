@@ -1,3 +1,4 @@
+from .assertion import *
 from .classification import *
 from .dynamic_length import *
 from .embedding import *

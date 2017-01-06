@@ -4,12 +4,6 @@ from .util import static_rank, func_scope, dimension_indices
 
 
 @func_scope()
-def mask(length, max_length, dtype=tf.bool):
-    assert static_rank(length) == 1
-    return tf.sequence_mask(length, max_length, dtype)
-
-
-@func_scope()
 def max_mask(x, reduction_indices=None, dtype=None):
     assert static_rank(x) >= 2
     max = tf.reduce_max(x,

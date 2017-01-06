@@ -2,7 +2,6 @@ import tensorflow as tf
 
 from . import batch
 from .util import static_rank, func_scope, dtype_min, dtype_epsilon
-from .mask import mask
 
 
 __all__ = ['softmax']
@@ -19,7 +18,8 @@ def softmax(vector, sequence_length=None):
 
 @func_scope()
 def _dynamic_softmax(vector, sequence_length):
-    mask_ = tf.cast(mask(sequence_length, tf.shape(vector)[1]), vector.dtype)
+    mask_ = tf.cast(tf.sequence_mask(sequence_length, tf.shape(vector)[1]),
+                    vector.dtype)
     vector_with_min = mask_ * vector + (1 - mask_) * dtype_min(vector.dtype)
 
     unnormal_dist = tf.exp(vector_with_min

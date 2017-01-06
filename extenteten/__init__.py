@@ -1,4 +1,5 @@
 from .assertion import *
+from .batch import *
 from .classification import *
 from .dynamic_length import *
 from .embedding import *

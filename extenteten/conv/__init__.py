@@ -1,1 +1,3 @@
-from .network import *
+from .layer import *
+
+del layer

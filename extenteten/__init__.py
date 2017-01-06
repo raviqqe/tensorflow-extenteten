@@ -1,6 +1,7 @@
 from .assertion import *
 from .attention import *
 from .batch import *
+from .conv import *
 from .classification import *
 from .control import *
 from .dynamic_length import *

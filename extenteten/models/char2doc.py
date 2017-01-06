@@ -23,7 +23,7 @@ def char2doc(document,
     document_embedding = id_sequence_to_embedding(
         document,
         char_embeddings,
-        output_embedding_size=document_embedding_size,
+        output_size=document_embedding_size,
         context_vector_size=context_vector_size)
 
     hidden_layer = dropout(_activate(linear(_activate(document_embedding),

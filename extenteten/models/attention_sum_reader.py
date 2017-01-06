@@ -35,7 +35,7 @@ class AttentionSumReader(Model):
         bi_rnn = partial(bidirectional_id_sequence_to_embeddings,
                          embeddings=word_embeddings,
                          dynamic_length=True,
-                         output_embedding_size=FLAGS.word_embedding_size)
+                         output_size=FLAGS.word_embedding_size)
 
         with tf.variable_scope("query"):
             query_embedding = bi_rnn(query, output_state=True)

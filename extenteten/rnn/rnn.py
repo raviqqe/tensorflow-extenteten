@@ -9,13 +9,13 @@ _DEFAULT_CELL = cell.gru
 
 @func_scope()
 def rnn(inputs,
-        output_embedding_size,
+        output_size,
         *,
         sequence_length=None,
         cell=_DEFAULT_CELL,
         output_state=False):
     outputs, state = tf.nn.dynamic_rnn(
-        cell(output_embedding_size),
+        cell(output_size),
         inputs,
         sequence_length=sequence_length,
         dtype=inputs.dtype)
@@ -25,12 +25,12 @@ def rnn(inputs,
 
 @func_scope()
 def bidirectional_rnn(inputs,
-                      output_embedding_size,
+                      output_size,
                       *,
                       sequence_length=None,
                       cell=_DEFAULT_CELL,
                       output_state=False):
-    create_cell = lambda: cell(output_embedding_size)
+    create_cell = lambda: cell(output_size)
 
     outputs, states = tf.nn.bidirectional_dynamic_rnn(
         create_cell(),

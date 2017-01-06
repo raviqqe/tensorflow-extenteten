@@ -26,7 +26,7 @@ def ar2word2sent2doc(document,
         word_embeddings = bidirectional_id_sequence_to_embedding(
             tf.gather(words, flatten(document)) if save_memory else words,
             char_embeddings,
-            output_embedding_size=word_embedding_size,
+            output_size=word_embedding_size,
             context_vector_size=context_vector_size,
             dropout_keep_prob=dropout_keep_prob,
             dynamic_length=True)

@@ -4,6 +4,13 @@ from . import train
 from .util import static_shape, static_rank, func_scope
 
 
+__all__ = ['num_logits', 'num_labels', 'classify']
+
+
+def num_logits(num_labels, num_classes):
+    return num_labels if num_classes == 2 else num_labels * num_classes
+
+
 def num_labels(labels):
     assert static_rank(labels) in {1, 2}
 

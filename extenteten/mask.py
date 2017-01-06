@@ -3,6 +3,9 @@ import tensorflow as tf
 from .util import static_rank, func_scope, dimension_indices
 
 
+__all__ = ['max_mask', 'mean_mask', 'range_mask']
+
+
 @func_scope()
 def max_mask(x, reduction_indices=None, dtype=None):
     assert static_rank(x) >= 2

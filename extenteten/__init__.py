@@ -4,6 +4,7 @@ from .classification import *
 from .dynamic_length import *
 from .embedding import *
 from .initializers import *
+from .mask import *
 from .mlp import *
 from .regularization import *
 from .rnn import *

@@ -3,6 +3,9 @@ import tensorflow as tf
 from .util import func_scope, static_rank, static_shape
 
 
+__all__ = ['batch', 'dynamic_pack']
+
+
 @func_scope()
 def batch(*tensor_lists_or_dicts):
     type_ = type(tensor_lists_or_dicts[0])

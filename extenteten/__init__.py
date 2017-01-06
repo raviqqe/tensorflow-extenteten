@@ -9,6 +9,7 @@ from .mlp import *
 from .regularization import *
 from .rnn import *
 from .softmax import *
+from .transform import *
 from .util import *
 
 __version__ = "0.0.1"

@@ -5,14 +5,14 @@ from ..variable import variable
 from ..assertion import is_natural_num, is_natural_num_sequence
 
 
-__all__ = ['conv2d', 'max_pool']
+__all__ = ['conv', 'max_pool']
 
 
 _DEFAULT_PADDING = "SAME"
 
 
 @func_scope()
-def conv2d(x, kernel_shape, num_channels):
+def conv(x, kernel_shape, num_channels):
     assert static_rank(x) == 4
     assert _is_kernel_shape(kernel_shape)
     assert is_natural_num(num_channels)

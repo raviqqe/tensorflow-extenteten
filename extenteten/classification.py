@@ -1,3 +1,4 @@
+import functools
 import tensorflow as tf
 
 from . import train
@@ -16,15 +17,30 @@ def num_labels(labels):
 
     return 1 if static_rank(labels) == 1 else static_shape(labels)[1]
 
+_calc_num_labels = num_labels
+
 
 @func_scope()
-def classify(logits, label, binary=True):
-    assert static_rank(logits) == 2
-    assert static_rank(label) in {1, 2}
+def classify(logits, label=None, *, num_classes, num_labels=None):
+    if num_labels is None:
+        assert label is not None
+        num_labels = _calc_num_labels(label)
+
+    assert static_rank(logits) in {1, 2}
+    if label is not None:
+        assert static_rank(label) in {1, 2}
+        assert num_labels == _calc_num_labels(label)
+    assert num_classes >= 2
+    assert num_labels >= 1
 
     predictions, loss = (
-        (_classify_label if num_labels(label) == 1 else _classify_labels)
-        (logits, label, binary=binary))
+        (_classify_label
+         if num_labels == 1 else
+         functools.partial(_classify_labels, num_labels=num_labels))
+        (logits, label, num_classes=num_classes))
+
+    if label is None:
+        return predictions
 
     return (predictions,
             loss,
@@ -47,40 +63,50 @@ def _evaluate(predictions, label):
 
 
 @func_scope()
-def _classify_label(logits, label, binary):
-    assert static_rank(label) == 1
+def _classify_label(logits, label=None, *, num_classes):
+    if label is not None:
+        assert static_rank(label) == 1
 
     return (_classify_binary_label(logits, label)
-            if binary else
+            if num_classes == 2 else
             _classify_multi_class_label(logits, label))
 
 
 @func_scope()
-def _classify_binary_label(logits, label):
-    return (tf.cast(tf.sigmoid(logits) > 0.5, label.dtype),
-            tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(
-                logits,
-                tf.cast(label, logits.dtype))))
+def _classify_binary_label(logits, label=None):
+    logits = tf.squeeze(logits)
+    return (tf.cast(tf.sigmoid(logits) > 0.5,
+                    (tf.int64 if label is None else label.dtype)),
+            (None
+             if label is None else
+             tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(
+                 logits,
+                 tf.cast(label, logits.dtype)))))
 
 
 @func_scope()
-def _classify_multi_class_label(logits, label):
+def _classify_multi_class_label(logits, label=None):
     return (tf.argmax(logits, 1),
-            tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(
-                logits,
-                label)))
+            (None
+             if label is None else
+             tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(
+                 logits,
+                 label))))
 
 
 @func_scope()
-def _classify_labels(logits, labels, binary):
-    assert static_rank(labels) == 2
+def _classify_labels(logits, labels=None, *, num_classes, num_labels):
+    if labels is not None:
+        assert static_rank(labels) == 2
 
     predictions, losses = map(list, zip(*[
-        _classify_label(logits_per_label, label, binary)
+        _classify_label(logits_per_label, label, num_classes=num_classes)
         for logits_per_label, label
-        in zip(tf.split(1, num_labels(labels), logits),
-               tf.unstack(tf.transpose(labels)))
+        in zip(tf.split(1, num_labels, logits),
+               ([None] * num_labels
+                if labels is None else
+                tf.unstack(tf.transpose(labels))))
     ]))
 
     return (tf.transpose(tf.stack(predictions)),
-            tf.reduce_mean(tf.stack(losses)))
+            None if labels is None else tf.reduce_mean(tf.stack(losses)))

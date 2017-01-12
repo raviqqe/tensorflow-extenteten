@@ -63,6 +63,24 @@ def _evaluate(predictions, label):
 
 
 @func_scope()
+def _classify_labels(logits, labels=None, *, num_classes, num_labels):
+    if labels is not None:
+        assert static_rank(labels) == 2
+
+    predictions, losses = map(list, zip(*[
+        _classify_label(logits_per_label, label, num_classes=num_classes)
+        for logits_per_label, label
+        in zip(tf.split(1, num_labels, logits),
+               ([None] * num_labels
+                if labels is None else
+                tf.unstack(tf.transpose(labels))))
+    ]))
+
+    return (tf.transpose(tf.stack(predictions)),
+            None if labels is None else tf.reduce_mean(tf.stack(losses)))
+
+
+@func_scope()
 def _classify_label(logits, label=None, *, num_classes):
     if label is not None:
         assert static_rank(label) == 1
@@ -92,21 +110,3 @@ def _classify_multi_class_label(logits, label=None):
              tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(
                  logits,
                  label))))
-
-
-@func_scope()
-def _classify_labels(logits, labels=None, *, num_classes, num_labels):
-    if labels is not None:
-        assert static_rank(labels) == 2
-
-    predictions, losses = map(list, zip(*[
-        _classify_label(logits_per_label, label, num_classes=num_classes)
-        for logits_per_label, label
-        in zip(tf.split(1, num_labels, logits),
-               ([None] * num_labels
-                if labels is None else
-                tf.unstack(tf.transpose(labels))))
-    ]))
-
-    return (tf.transpose(tf.stack(predictions)),
-            None if labels is None else tf.reduce_mean(tf.stack(losses)))

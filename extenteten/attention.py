@@ -1,11 +1,10 @@
 import tensorflow as tf
 
-from . import collections
+from . import collections, summary
 from .util import static_shape, func_scope
 from .layer import linear
 from .variable import variable
 from .random import sample_crop
-from .summary import summarize, image_summary
 from .softmax import softmax
 
 
@@ -15,8 +14,8 @@ __all__ = ['attention_please']
 @func_scope()
 def attention_please(xs, context_vector_size, sequence_length=None, name=None):
     attention = _calculate_attention(xs, context_vector_size, sequence_length)
-    summarize(attention)
-    image_summary(tf.expand_dims(
+    summary.tensor(attention)
+    summary.image(tf.expand_dims(
         sample_crop(attention, static_shape(attention)[1]),
         0))
     collections.add_attention(attention)

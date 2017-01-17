@@ -26,7 +26,7 @@ def image(variable, name=None):
 
     return tf.summary.image(
         name,
-        variable if rank == 4 else
-        tf.expand_dims(variable, 3) if rank == 3 else
-        tf.expand_dims(tf.expand_dims(variable, 0), 3),
-        max_images=256)
+        (variable if rank == 4 else
+         tf.expand_dims(variable, 3) if rank == 3 else
+         tf.expand_dims(tf.expand_dims(variable, 0), 3)),
+        max_outputs=64)

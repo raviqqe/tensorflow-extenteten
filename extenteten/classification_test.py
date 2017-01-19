@@ -24,7 +24,9 @@ def test_classify():
             [[64, 15], None, 5, 3],
     ]:
         print(logits_shape, labels_shape, num_classes, num_labels)
-        print(classify(tf.Variable(np.zeros(logits_shape)),
+        print(classify(tf.Variable(np.zeros(logits_shape),
+                                   collections=[tf.GraphKeys.GLOBAL_VARIABLES,
+                                                tf.GraphKeys.WEIGHTS]),
                        (None
                         if labels_shape is None else
                         tf.constant(np.zeros(labels_shape, np.int32))),

@@ -2,6 +2,7 @@ import functools
 import tensorflow as tf
 
 from . import train
+from .regularization import l2_regularization_loss
 from .util import static_shape, static_rank, func_scope
 
 
@@ -21,7 +22,12 @@ _calc_num_labels = num_labels
 
 
 @func_scope()
-def classify(logits, label=None, *, num_classes, num_labels=None):
+def classify(logits,
+             label=None,
+             *,
+             num_classes,
+             num_labels=None,
+             regularization_scale=1e-8):
     if num_labels is None:
         assert label is not None
         num_labels = _calc_num_labels(label)
@@ -43,7 +49,7 @@ def classify(logits, label=None, *, num_classes, num_labels=None):
         return predictions
 
     return (predictions,
-            loss,
+            loss + l2_regularization_loss(regularization_scale),
             train.minimize(loss),
             _evaluate(predictions, label))
 

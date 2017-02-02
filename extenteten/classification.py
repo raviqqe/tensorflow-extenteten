@@ -27,6 +27,7 @@ def classify(logits,
              *,
              num_classes,
              num_labels=None,
+             keys=None,
              regularization_scale=1e-8):
     if num_labels is None:
         assert label is not None
@@ -48,7 +49,9 @@ def classify(logits,
     if label is None:
         return predictions
 
-    return (predictions,
+    return ((predictions
+             if keys is None else
+             {'labels': predictions, 'keys': keys}),
             loss + l2_regularization_loss(regularization_scale),
             train.minimize(loss),
             _evaluate(predictions, label))

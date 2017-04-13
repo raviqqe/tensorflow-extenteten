@@ -29,7 +29,10 @@ def classify(logits,
              num_classes,
              num_labels=None,
              key=None,
+             predictions={},
              regularization_scale=1e-8):
+    assert isinstance(predictions, dict)
+
     if num_labels is None:
         assert true_label is not None
         num_labels = _calc_num_labels(true_label)
@@ -41,18 +44,20 @@ def classify(logits,
     assert num_classes >= 2
     assert num_labels >= 1
 
-    predictions, loss = (
+    predicted_labels, loss = (
         (_classify_label
          if num_labels == 1 else
          functools.partial(_classify_labels, num_labels=num_labels))
         (logits, true_label, num_classes=num_classes))
 
+    predictions['label'] = predicted_labels
+    if key is not None:
+        predictions['key'] = key
+
     if true_label is None:
         return predictions
 
-    return ((predictions
-             if key is None else
-             {'label': predictions, 'key': key}),
+    return (predictions,
             loss + l2_regularization_loss(regularization_scale),
             train.minimize(loss),
             _evaluate(predictions, true_label))

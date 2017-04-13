@@ -60,7 +60,7 @@ def classify(logits,
     return (predictions,
             loss + l2_regularization_loss(regularization_scale),
             train.minimize(loss),
-            _evaluate(predictions, true_label))
+            _evaluate(predicted_labels, true_label))
 
 
 @func_scope()

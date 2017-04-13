@@ -24,20 +24,20 @@ _calc_num_labels = num_labels
 
 @func_scope()
 def classify(logits,
-             label=None,
+             true_label=None,
              *,
              num_classes,
              num_labels=None,
              key=None,
              regularization_scale=1e-8):
     if num_labels is None:
-        assert label is not None
-        num_labels = _calc_num_labels(label)
+        assert true_label is not None
+        num_labels = _calc_num_labels(true_label)
 
     assert static_rank(logits) in {1, 2}
-    if label is not None:
-        assert static_rank(label) in {1, 2}
-        assert num_labels == _calc_num_labels(label)
+    if true_label is not None:
+        assert static_rank(true_label) in {1, 2}
+        assert num_labels == _calc_num_labels(true_label)
     assert num_classes >= 2
     assert num_labels >= 1
 
@@ -45,9 +45,9 @@ def classify(logits,
         (_classify_label
          if num_labels == 1 else
          functools.partial(_classify_labels, num_labels=num_labels))
-        (logits, label, num_classes=num_classes))
+        (logits, true_label, num_classes=num_classes))
 
-    if label is None:
+    if true_label is None:
         return predictions
 
     return ((predictions
@@ -55,7 +55,7 @@ def classify(logits,
              {'label': predictions, 'key': key}),
             loss + l2_regularization_loss(regularization_scale),
             train.minimize(loss),
-            _evaluate(predictions, label))
+            _evaluate(predictions, true_label))
 
 
 @func_scope()

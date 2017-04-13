@@ -18,6 +18,7 @@ def num_labels(labels):
 
     return 1 if static_rank(labels) == 1 else static_shape(labels)[1]
 
+
 _calc_num_labels = num_labels
 
 

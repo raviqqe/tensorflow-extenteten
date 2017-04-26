@@ -25,7 +25,7 @@ def mat_vec_mul(matrix, vector):
     assert static_rank(matrix) == 3
     assert static_rank(vector) == 2
 
-    return tf.squeeze(tf.batch_matmul(matrix, vec_to_mat(vector)), [2])
+    return tf.squeeze(tf.matmul(matrix, vec_to_mat(vector)), [2])
 
 
 @func_scope()

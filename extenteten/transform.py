@@ -50,9 +50,9 @@ def _pad_to_shape(x, shape):
     assert static_rank(x) == static_shape(shape)[0]
 
     paddings = tf.concat(
-        1,
         [tf.expand_dims(paddings, 1) for paddings
-         in [tf.zeros_like(shape),  shape - tf.shape(x)]])
+         in [tf.zeros_like(shape),  shape - tf.shape(x)]],
+        1)
 
     return tf.pad(x, paddings)
 

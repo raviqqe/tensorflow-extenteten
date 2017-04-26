@@ -34,7 +34,7 @@ def bidirectional_rnn(inputs,
                       sequence_length=None,
                       cell=_DEFAULT_CELL,
                       output_state=False):
-    create_cell = lambda: cell(output_size)
+    def create_cell(): return cell(output_size)
 
     outputs, states = tf.nn.bidirectional_dynamic_rnn(
         create_cell(),
@@ -44,9 +44,9 @@ def bidirectional_rnn(inputs,
         dtype=inputs.dtype,
         swap_memory=True)
 
-    return (tf.concat(1, [_unpack_state_tuple(state) for state in states])
+    return (tf.concat([_unpack_state_tuple(state) for state in states], 1)
             if output_state else
-            tf.concat(2, outputs))
+            tf.concat(outputs, 2))
 
 
 @func_scope()

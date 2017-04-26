@@ -85,7 +85,7 @@ def _classify_labels(logits, labels=None, *, num_classes, num_labels):
     predictions, losses = map(list, zip(*[
         _classify_label(logits_per_label, label, num_classes=num_classes)
         for logits_per_label, label
-        in zip(tf.split(1, num_labels, logits),
+        in zip(tf.split(logits, num_labels, axis=1),
                ([None] * num_labels
                 if labels is None else
                 tf.unstack(tf.transpose(labels))))
@@ -113,8 +113,8 @@ def _classify_binary_label(logits, label=None):
             (None
              if label is None else
              tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(
-                 logits,
-                 tf.cast(label, logits.dtype)))))
+                 logits=logits,
+                 labels=tf.cast(label, logits.dtype)))))
 
 
 @func_scope()
@@ -123,5 +123,5 @@ def _classify_multi_class_label(logits, label=None):
             (None
              if label is None else
              tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(
-                 logits,
-                 label))))
+                 logits=logits,
+                 labels=label))))

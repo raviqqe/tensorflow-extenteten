@@ -1,7 +1,7 @@
 import tensorflow as tf
 
 from . import collections, summary
-from .util import func_scope
+from .util import static_shape, func_scope
 from .layer import linear
 from .variable import variable
 from .random import sample_crop
@@ -32,7 +32,7 @@ def _calculate_attention(xs: ("batch", "sequence", "embedding"),
     attention_logits = tf.reshape(
         tf.matmul(tf.tanh(linear(tf.reshape(xs,
                                             [tf.shape(xs)[0] * tf.shape(xs)[1],
-                                             tf.shape(xs)[2]]),
+                                             static_shape(xs)[2]]),
                                  context_vector_size)),
                   context_vector),
         tf.shape(xs)[:1])

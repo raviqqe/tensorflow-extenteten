@@ -113,8 +113,8 @@ def _classify_binary_label(logits, label=None):
             (None
              if label is None else
              tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(
-                 logits=logits,
-                 labels=tf.cast(label, logits.dtype)))))
+                 labels=tf.cast(label, logits.dtype),
+                 logits=logits))))
 
 
 @func_scope()
@@ -123,5 +123,5 @@ def _classify_multi_class_label(logits, label=None):
             (None
              if label is None else
              tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(
-                 logits=logits,
-                 labels=label))))
+                 labels=label,
+                 logits=logits))))

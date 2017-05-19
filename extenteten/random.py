@@ -1,7 +1,6 @@
 import tensorflow as tf
 
-from .assertion import is_natural_num
-from .util import func_scope, static_shape
+from .util import func_scope
 
 
 __all__ = ['sample_crop']

@@ -35,7 +35,7 @@ def _calculate_attention(xs: ("batch", "sequence", "embedding"),
                                              static_shape(xs)[2]]),
                                  context_vector_size)),
                   context_vector),
-        tf.shape(xs)[:1])
+        tf.shape(xs)[:2])
 
     return softmax(attention_logits, sequence_length)
 

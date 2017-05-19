@@ -1,7 +1,7 @@
 import tensorflow as tf
 
 from . import collections, summary
-from .util import static_shape, func_scope
+from .util import func_scope
 from .layer import linear
 from .variable import variable
 from .random import sample_crop
@@ -16,7 +16,7 @@ def attention_please(xs, context_vector_size, sequence_length=None, name=None):
     attention = _calculate_attention(xs, context_vector_size, sequence_length)
     summary.tensor(attention)
     summary.image(tf.expand_dims(
-        sample_crop(attention, static_shape(attention)[1]),
+        sample_crop(attention, tf.shape(attention)[1]),
         0))
     collections.add_attention(attention)
     return _give_attention(xs, attention)
@@ -30,10 +30,12 @@ def _calculate_attention(xs: ("batch", "sequence", "embedding"),
     summary.tensor(context_vector)
 
     attention_logits = tf.reshape(
-        tf.matmul(tf.tanh(linear(tf.reshape(xs, [-1, static_shape(xs)[2]]),
+        tf.matmul(tf.tanh(linear(tf.reshape(xs,
+                                            [tf.shape(xs)[0] * tf.shape(xs)[1],
+                                             tf.shape(xs)[2]]),
                                  context_vector_size)),
                   context_vector),
-        [-1, static_shape(xs)[1]])
+        tf.shape(xs)[:1])
 
     return softmax(attention_logits, sequence_length)
 

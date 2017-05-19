@@ -11,4 +11,4 @@ __all__ = ['sample_crop']
 def sample_crop(xs, n):
     return tf.random_crop(
         xs,
-        [tf.minimum(n, tf.shape(xs)[0]), *static_shape(xs)[1:]])
+        tf.concat([[tf.minimum(n, tf.shape(xs)[0])], tf.shape(xs)[1:]], 0))
